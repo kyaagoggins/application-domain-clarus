@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clarus Sprint 1</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0; 
+      padding: 0;
+      background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+      min-height: 100vh;
+    }
+    header {
+      background: #2980b9;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    header .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    header img {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .container {
+      max-width: 420px;
+      margin: 70px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccd6e0;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: #2980b9;
+      outline: none;
+      box-shadow: 0 0 6px rgba(41,128,185,0.4);
+    }
+    button {
+      background: #2980b9;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1f6391;
+    }
+    .hidden { display: none; }
+    .dashboard { 
+      padding: 20px; 
+      background: #fff; 
+      border-radius: 14px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    table {
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 15px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    table, th, td { border: 1px solid #d1d9e6; }
+    th {
+      background: #2980b9;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+    td { 
+      padding: 10px; 
+      text-align: center; 
+      font-size: 14px;
+    }
+    .status-active { color: green; font-weight: bold; }
+    .status-inactive { color: red; font-weight: bold; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER (shown only after login) -->
+  <header id="mainHeader" class="hidden">
+    <h3>Clarus Dashboard</h3>
+    <div class="user-info">
+      <span id="displayUsername"></span>
+      <img id="userPic" src="https://via.placeholder.com/35" alt="Profile">
+    </div>
+  </header>
+
+  <!-- LOGIN FORM -->
+  <div id="loginPage" class="container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <select id="role">
+      <option value="regular">Regular User (Accountant)</option>
+      <option value="manager">Manager</option>
+      <option value="admin">Administrator</option>
+    </select>
+    <button onclick="login()">Login</button>
+    <p id="loginError" style="color:red;"></p>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" class="hidden dashboard">
+    <h2>Admin Panel</h2>
+    <h3>Create User</h3>
+    <input type="text" id="newName" placeholder="Full Name">
+    <select id="newRole">
+      <option value="regular">Regular User</option>
+      <option value="manager">Manager</option>
+      <option value="admin">Administrator</option>
+    </select>
+    <button onclick="createUser()">Add User</button>
+
+    <h3>Manage Users</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Role</th><th>Status</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+
+  <!-- REGULAR / MANAGER DASHBOARD -->
+  <div id="userDashboard" class="hidden dashboard">
+    <h2>Welcome to Clarus</h2>
+    <p>Your role: <span id="userRole"></span></p>
+    <p>This is a placeholder dashboard for managers and regular users.</p>
+  </div>
+
+<script>
+  let users = [
+    {name: "Alice Admin", role: "admin", status: "Active"},
+    {name: "Mike Manager", role: "manager", status: "Active"},
+    {name: "Rita Accountant", role: "regular", status: "Inactive"}
+  ];
+
+  function login() {
+    const username = document.getElementById("username").value.trim();
+    const role = document.getElementById("role").value;
+    const error = document.getElementById("loginError");
+
+    if (username === "") {
+      error.textContent = "Please enter a username.";
+      return;
+    }
+    error.textContent = "";
+
+    // Show header with username + profile pic
+    document.getElementById("mainHeader").classList.remove("hidden");
+    document.getElementById("displayUsername").textContent = username;
+    document.getElementById("userPic").src = "https://i.pravatar.cc/38?u=" + username;
+
+    // Hide login, show dashboard
+    document.getElementById("loginPage").classList.add("hidden");
+
+    if (role === "admin") {
+      document.getElementById("adminDashboard").classList.remove("hidden");
+      renderUsers();
+    } else {
+      document.getElementById("userDashboard").classList.remove("hidden");
+      document.getElementById("userRole").textContent = role;
+    }
+  }
+
+  function renderUsers() {
+    const table = document.getElementById("userTable");
+    table.innerHTML = "";
+    users.forEach((u, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${u.name}</td>
+          <td>${u.role}</td>
+          <td class="${u.status === "Active" ? "status-active":"status-inactive"}">${u.status}</td>
+          <td>
+            <button onclick="toggleStatus(${index})">${u.status === "Active" ? "Deactivate":"Activate"}</button>
+          </td>
+        </tr>`;
+    });
+  }
+
+  function createUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    if (name !== "") {
+      users.push({name: name, role: role, status: "Active"});
+      document.getElementById("newName").value = "";
+      renderUsers();
+      alert("User created successfully (frontend demo).");
+    }
+  }
+
+  function toggleStatus(index) {
+    users[index].status = users[index].status === "Active" ? "Inactive" : "Active";
+    renderUsers();
+  }
+</script>
+</body>
+</html>
