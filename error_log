@@ -1,0 +1,122 @@
+[19-Sep-2025 20:52:30 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:52:30 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:54:47 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:54:47 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:54:56 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:54:56 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 20:59:36 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/create_user.php on line 14
+[19-Sep-2025 20:59:36 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/create_user.php on line 14
+[19-Sep-2025 21:00:24 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/create_user.php on line 14
+[19-Sep-2025 21:00:24 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/create_user.php on line 14
+[19-Sep-2025 21:03:42 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 21:03:42 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 24
+[19-Sep-2025 21:36:12 UTC] PHP Parse error:  syntax error, unexpected token "catch" in /home/fhyronfcx3a8/public_html/login.php on line 136
+[19-Sep-2025 21:47:00 UTC] PHP Parse error:  syntax error, unexpected token "catch" in /home/fhyronfcx3a8/public_html/login.php on line 181
+[19-Sep-2025 22:34:10 UTC] PHP Warning:  Undefined array key "user_id" in /home/fhyronfcx3a8/public_html/login.php on line 96
+[19-Sep-2025 23:11:30 UTC] PHP Warning:  mkdir(): File exists in /home/fhyronfcx3a8/public_html/update_profile.php on line 54
+[19-Sep-2025 23:11:30 UTC] PHP Warning:  move_uploaded_file(uploads/profile_images/admin_1758323490.jpg): Failed to open stream: No such file or directory in /home/fhyronfcx3a8/public_html/update_profile.php on line 77
+[19-Sep-2025 23:11:30 UTC] PHP Warning:  move_uploaded_file(): Unable to move '/tmp/phpiOhSoV' to 'uploads/profile_images/admin_1758323490.jpg' in /home/fhyronfcx3a8/public_html/update_profile.php on line 77
+[19-Sep-2025 23:53:35 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/update_profile.php on line 59
+[19-Sep-2025 23:54:56 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/update_profile.php on line 59
+[20-Sep-2025 00:04:45 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:04:51 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:04:52 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:04:53 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:06:42 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 36
+[20-Sep-2025 00:07:49 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 36
+[20-Sep-2025 00:08:31 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 36
+[20-Sep-2025 00:08:53 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:27:50 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:27:52 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 36
+[20-Sep-2025 00:27:59 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 00:29:08 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 00:29:15 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 37
+[20-Sep-2025 01:12:03 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 01:38:19 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:39:09 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:47:12 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:50:26 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:52:27 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:57:01 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 01:59:33 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 02:01:43 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 02:03:59 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 02:05:22 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 15:54:10 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 17:55:11 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 17:55:17 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 17:56:40 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 17:57:09 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 18:02:42 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 18:06:14 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 18:06:54 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:17:05 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:17:51 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:18:18 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:18:20 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[20-Sep-2025 20:18:22 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:18:51 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:19:48 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:19:54 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:24:43 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:31:28 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/fhyronfcx3a8/public_html/dashboard.php on line 277
+[20-Sep-2025 20:31:37 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/fhyronfcx3a8/public_html/dashboard.php on line 277
+[20-Sep-2025 20:32:15 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:35:11 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/fhyronfcx3a8/public_html/dashboard.php on line 196
+[20-Sep-2025 20:35:19 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/fhyronfcx3a8/public_html/dashboard.php on line 196
+[20-Sep-2025 20:39:10 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:41:35 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:44:17 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:45:25 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:45:50 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:46:03 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:46:15 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:46:30 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 20:46:37 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 21:39:47 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 21:39:52 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 37
+[20-Sep-2025 21:44:18 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 175
+[20-Sep-2025 21:46:35 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:48:46 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:52:35 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:54:07 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:54:20 UTC] PHP Parse error:  syntax error, unexpected token "," in /home/fhyronfcx3a8/public_html/push_user_edits.php on line 145
+[20-Sep-2025 21:56:10 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:57:57 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:58:51 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 21:59:33 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 22:01:13 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/dashboard.php on line 37
+[20-Sep-2025 22:01:21 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 22:39:58 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[20-Sep-2025 22:40:25 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 37
+[22-Sep-2025 02:58:02 UTC] PHP Warning:  Undefined array key "username" in /home/fhyronfcx3a8/public_html/login.php on line 14
+[22-Sep-2025 02:58:02 UTC] PHP Warning:  Undefined array key "password" in /home/fhyronfcx3a8/public_html/login.php on line 15
+[22-Sep-2025 19:26:32 UTC] PHP Warning:  Undefined array key "username" in /home/fhyronfcx3a8/public_html/login.php on line 14
+[22-Sep-2025 19:26:32 UTC] PHP Warning:  Undefined array key "password" in /home/fhyronfcx3a8/public_html/login.php on line 15
+[22-Sep-2025 19:39:43 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[22-Sep-2025 21:29:53 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable or "{" or "$" in /home/fhyronfcx3a8/public_html/dashboard.php on line 273
+[22-Sep-2025 21:32:27 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 170
+[22-Sep-2025 22:27:33 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[22-Sep-2025 22:30:49 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/new_user.php on line 37
+[22-Sep-2025 22:38:35 UTC] PHP Warning:  Undefined variable $user_id in /home/fhyronfcx3a8/public_html/profile.php on line 37
+[22-Sep-2025 23:54:01 UTC] PHP Parse error:  syntax error, unexpected identifier "home", expecting "," or ";" in /home/fhyronfcx3a8/public_html/request_access.php on line 49
+[22-Sep-2025 23:54:15 UTC] PHP Parse error:  syntax error, unexpected identifier "home", expecting "," or ";" in /home/fhyronfcx3a8/public_html/request_access.php on line 49
+[22-Sep-2025 23:54:40 UTC] PHP Parse error:  syntax error, unexpected identifier "Error", expecting "," or ";" in /home/fhyronfcx3a8/public_html/request_access.php on line 51
+[23-Sep-2025 00:38:25 UTC] PHP Warning:  Undefined array key "firstName" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 61
+[23-Sep-2025 00:38:25 UTC] PHP Warning:  Undefined array key "lastName" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 61
+[23-Sep-2025 21:48:04 UTC] PHP Warning:  Undefined array key "first_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 21:48:04 UTC] PHP Warning:  Undefined array key "last_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 21:48:29 UTC] PHP Warning:  Undefined array key "first_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 21:48:29 UTC] PHP Warning:  Undefined array key "last_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 21:50:53 UTC] PHP Warning:  Undefined array key "first_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 21:50:53 UTC] PHP Warning:  Undefined array key "last_name" in /home/fhyronfcx3a8/public_html/process_user_request.php on line 63
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  include(db_connect.txt): Failed to open stream: No such file or directory in /home/fhyronfcx3a8/public_html/login.php on line 4
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  include(): Failed opening 'db_connect.txt' for inclusion (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/fhyronfcx3a8/public_html/login.php on line 4
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  Undefined variable $servername in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  Undefined variable $dbname in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:02 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $servername in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $dbname in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 26
+[23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 26
