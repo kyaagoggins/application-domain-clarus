@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clarus — Accountant</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --blue-1: #e9f4ff;
+      --blue-2: #cfe9ff;
+      --accent: #2980b9;
+      --accent-dark: #1f6391;
+      --card-bg: #ffffff;
+      --muted: #6b7280;
+      --ok: #0b8457;
+      --danger: #c0392b;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      background: var(--blue-1);
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--blue-2);
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar h2 {
+      color: var(--accent-dark);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+    }
+
+    .sidebar li {
+      margin: 12px 0;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: var(--accent-dark);
+      font-weight: 500;
+      padding: 10px 14px;
+      display: block;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 30px 40px;
+      overflow-y: auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      color: var(--accent-dark);
+      font-size: 1.6rem;
+    }
+
+    header button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    header button:hover {
+      background: var(--accent-dark);
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: var(--accent-dark);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: var(--blue-2);
+      color: var(--accent-dark);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: var(--accent-dark);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .error-message {
+      color: var(--danger);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2><i class="fa-solid fa-calculator"></i> Accountant</h2>
+    <ul>
+      <li><a href="#" class="active" onclick="showSection('createJournal', this)">Create Journal Entry</a></li>
+      <li><a href="#" onclick="showSection('viewJournals', this)">View Journals</a></li>
+      <li><a href="#" onclick="showSection('ledger', this)">Ledger & Logs</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>Welcome, <span id="userName">Accountant</span></h1>
+      <button onclick="logout()">Logout</button>
+    </header>
+
+    <!-- Create Journal -->
+    <div id="createJournal" class="section active card">
+      <h2>Create Journal Entry</h2>
+      <form id="journalForm">
+        <div class="form-group">
+          <label>Account Name:</label>
+          <input type="text" id="accountName" placeholder="Enter account name" required />
+        </div>
+        <div class="form-group">
+          <label>Debit Amount:</label>
+          <input type="number" id="debitAmount" min="0" step="0.01" placeholder="Enter debit amount" />
+        </div>
+        <div class="form-group">
+          <label>Credit Amount:</label>
+          <input type="number" id="creditAmount" min="0" step="0.01" placeholder="Enter credit amount" />
+        </div>
+        <div class="form-group">
+          <label>Attach Source Document:</label>
+          <input type="file" id="sourceDoc" accept=".pdf,.docx,.xlsx,.csv,.jpg,.png" />
+        </div>
+        <button type="button" class="btn-primary" onclick="submitJournal()">Submit</button>
+        <div id="errorMsg" class="error-message"></div>
+      </form>
+    </div>
+
+    <!-- View Journals -->
+    <div id="viewJournals" class="section card">
+      <h2>View Journals</h2>
+      <table id="journalTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Debit</th>
+            <th>Credit</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Ledger -->
+    <div id="ledger" class="section card">
+      <h2>Ledger & Event Logs</h2>
+      <table id="ledgerTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Debit</th>
+            <th>Credit</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function showSection(id, element) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
+      element.classList.add("active");
+    }
+
+    function logout() {
+      alert("You have been logged out.");
+    }
+
+    function submitJournal() {
+      const account = document.getElementById("accountName").value.trim();
+      const debit = parseFloat(document.getElementById("debitAmount").value) || 0;
+      const credit = parseFloat(document.getElementById("creditAmount").value) || 0;
+      const errorMsg = document.getElementById("errorMsg");
+      errorMsg.textContent = "";
+
+      if (!account) {
+        errorMsg.textContent = "Account name is required.";
+        return;
+      }
+
+      if (debit <= 0 && credit <= 0) {
+        errorMsg.textContent = "Enter a valid debit or credit amount.";
+        return;
+      }
+
+      if (debit > 0 && credit > 0) {
+        errorMsg.textContent = "A journal entry cannot have both debit and credit values at once.";
+        return;
+      }
+
+      const table = document.getElementById("journalTable").querySelector("tbody");
+      const newRow = table.insertRow();
+      newRow.innerHTML = `
+        <td>${new Date().toLocaleDateString()}</td>
+        <td>${account}</td>
+        <td>${debit > 0 ? debit.toFixed(2) : "-"}</td>
+        <td>${credit > 0 ? credit.toFixed(2) : "-"}</td>
+        <td>Pending</td>
+      `;
+
+      document.getElementById("journalForm").reset();
+      alert("Journal entry submitted successfully.");
+    }
+  </script>
+</body>
+</html>
+
+

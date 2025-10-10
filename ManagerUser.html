@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Clarus — Manager</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<style>
+:root{
+  --blue-1:#e9f4ff;
+  --blue-2:#cfe9ff;
+  --accent:#2980b9;
+  --accent-dark:#1f6391;
+  --card-bg:#ffffff;
+  --muted:#6b7280;
+  --ok:#0b8457;
+  --danger:#c0392b;
+}
+*{box-sizing:border-box}
+body{
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  margin:0;
+  background: linear-gradient(180deg,var(--blue-1),#ffffff 60%);
+  color:#21303b;
+}
+header{
+  background: linear-gradient(90deg,var(--accent),#4da6ff);
+  color:white;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+.brand { font-weight:700; display:flex; align-items:center; gap:10px;}
+.brand .logo { width:40px;height:40px;border-radius:8px;background:white;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800; }
+.user-info {display:flex; gap:10px; align-items:center; font-weight:600;}
+.user-info img{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.35);}
+main{ padding:24px; max-width:1200px; margin: 24px auto; }
+.grid {display:grid; grid-template-columns: 1fr 380px; gap:20px; align-items:start;}
+.card{ background:var(--card-bg); border-radius:12px; padding:18px; box-shadow:0 8px 20px rgba(33,48,59,0.06);}
+h1,h2{ margin:0 0 12px 0; }
+.muted{ color:var(--muted); font-size:14px; }
+/* nav */
+nav { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+.nav-btn{ background:transparent;border:1px solid rgba(41,128,185,0.12); color:var(--accent); padding:8px 12px;border-radius:8px; cursor:pointer; font-weight:600;}
+.nav-btn.active{ background:linear-gradient(90deg,var(--accent),#4da6ff); color:white; border:none; box-shadow:0 6px 16px rgba(41,128,185,0.18);}
+
+/* form inputs */
+.form-row{ display:flex; gap:10px; }
+.form-row .col{ flex:1; }
+input[type=text], select, input[type=date], input[type=number], textarea{
+  width:100%; padding:10px; border-radius:8px; border:1px solid #d6e6f6; font-size:14px;
+}
+label{ display:block; font-weight:600; margin-bottom:6px; font-size:13px; color:#21303b; }
+small.note{ display:block; color:var(--muted); margin-top:6px; }
+
+.btn{ background:var(--accent); color:white; border:none; padding:10px 12px; border-radius:8px; cursor:pointer; font-weight:700;}
+.btn.secondary{ background:#f0f6ff; color:var(--accent); border:1px solid rgba(41,128,185,0.12); font-weight:700; }
+.btn.ghost{ background:transparent; color:var(--accent); border:1px solid rgba(0,0,0,0.06);}
+
+table{ width:100%; border-collapse:collapse; font-size:14px; }
+th, td{ padding:10px; border-bottom:1px solid #eef6ff; text-align:left; vertical-align:middle;}
+th{ background: linear-gradient(90deg,#f6fbff,#ffffff); font-weight:700; color:#203240; position:sticky; top:0;}
+tr.row-hover:hover { background: rgba(41,128,185,0.03); }
+
+.pill { padding:6px 8px; border-radius:999px; font-weight:700; font-size:12px; display:inline-block;}
+.pill.green{ background:#e8faf0; color:var(--ok); border:1px solid rgba(11,132,87,0.12); }
+.pill.red{ background:#fff1f1; color:var(--danger); border:1px solid rgba(192,57,43,0.08); }
+.pill.gray{ background:#f3f6f9; color:#6b7280; }
+
+.small-card{ padding:12px; border-radius:10px; background:#fbfdff; border:1px solid #e6f2ff;}
+.flex{ display:flex; gap:10px; align-items:center; }
+.right { margin-left:auto; }
+
+/* modal */
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:60; }
+.modal{ width:880px; max-width:95%; background:white; border-radius:12px; padding:18px; box-shadow:0 14px 34px rgba(0,0,0,0.15); max-height:80vh; overflow:auto;}
+.modal .close{ float:right; cursor:pointer; color:#666; font-size:18px; }
+
+/* small responsive */
+@media (max-width:1000px){ .grid{ grid-template-columns: 1fr; } .container-right{ order:2; } .container-left{ order:1; } }
+.error { color: var(--danger); font-weight:700; margin-top:8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">C</div>
+    <div>
+      <div style="font-size:18px;">Clarus</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.9)">Manager</div>
+    </div>
+  </div>
+
+  <div class="user-info">
+    <div style="text-align:right;">
+      <div id="mgrName">User: <span id="displayName"></span></div>
+      <div style="font-size:12px; opacity:0.92">Role: Manager</div>
+    </div>
+    <img id="mgrPic" src="https://i.pravatar.cc/48?u=manager" alt="mgr">
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <nav>
+      <button class="nav-btn active" data-view="chart">Chart of Accounts</button>
+      <button class="nav-btn" data-view="journals">Journal Approval</button>
+      <button class="nav-btn" data-view="ledger">Ledger</button>
+      <button class="nav-btn" data-view="events">Event Logs</button>
+    </nav>
+    <div class="muted">Front-end working manager interface (in-memory). Integrate with backend/login to persist.</div>
+  </div>
+
+  <div class="grid" style="margin-top:18px;">
+    <!-- left -->
+    <div class="container-left">
+      <!-- Chart -->
+      <section id="view-chart" class="card view">
+        <h2>Chart of Accounts</h2>
+        <div class="flex" style="margin-bottom:14px;">
+          <div style="flex:1">
+            <label>Search Accounts</label>
+            <input type="text" id="coaSearch" placeholder="Search by account name or id..." oninput="renderChart()" />
+          </div>
+          <div class="right">
+            <button class="btn" onclick="openAddAccount()">+ Add Account</button>
+          </div>
+        </div>
+
+        <table id="coaTable">
+          <thead><tr><th>Account Name</th><th>Type</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Journal Approval -->
+      <section id="view-journals" class="card view hidden">
+        <h2>Journal Entries — Approval</h2>
+
+        <div class="flex" style="gap:12px; margin-bottom:12px; align-items:end;">
+          <div style="flex:1;">
+            <label>Filter by status</label>
+            <select id="journalStatusFilter" onchange="renderJournals()">
+              <option value="pending">Pending Approval</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+
+          <div style="width:220px;">
+            <label>Date from</label>
+            <input type="date" id="journalFrom" onchange="renderJournals()"/>
+          </div>
+          <div style="width:220px;">
+            <label>Date to</label>
+            <input type="date" id="journalTo" onchange="renderJournals()" />
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:8px;">
+          <input type="text" id="journalSearch" placeholder="Search by account, amount or date or ID" style="flex:1" oninput="renderJournals()" />
+          <div>
+            <button class="btn secondary" onclick="openCreateJournal()">+ New Journal</button>
+          </div>
+        </div>
+
+        <table id="journalTable">
+          <thead><tr><th>Date</th><th>ID</th><th>Lines</th><th>Total</th><th>Status</th><th>Submitter</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Ledger -->
+      <section id="view-ledger" class="card view hidden">
+        <h2>Ledger</h2>
+
+        <div style="display:flex; gap:8px; margin-bottom:12px; align-items:end;">
+          <div style="flex:1;">
+            <label>Choose Account</label>
+            <select id="ledgerAccount" onchange="renderLedger()"></select>
+          </div>
+          <div style="width:180px;">
+            <label>From</label>
+            <input type="date" id="ledgerFrom" onchange="renderLedger()" />
+          </div>
+          <div style="width:180px;">
+            <label>To</label>
+            <input type="date" id="ledgerTo" onchange="renderLedger()" />
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+          <input type="text" id="ledgerSearch" placeholder="Search PR, amount, or description" style="flex:1" oninput="renderLedger()" />
+          <div style="min-width:120px;">
+            <button class="btn ghost" onclick="downloadLedgerCsv()">Export CSV</button>
+          </div>
+        </div>
+
+        <div id="ledgerBalance" class="small-card" style="margin-bottom:10px;">Balance: <strong id="ledgerBalanceAmt">$0.00</strong></div>
+
+        <table id="ledgerTable">
+          <thead><tr><th>Date</th><th>PR</th><th>Description</th><th style="text-align:right">Debit</th><th style="text-align:right">Credit</th><th style="text-align:right">Balance</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Event Logs -->
+      <section id="view-events" class="card view hidden">
+        <h2>Event Logs</h2>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <input type="text" id="eventSearch" placeholder="Search account name or user id..." style="flex:1" oninput="renderEvents()" />
+          <div style="min-width:160px;">
+            <select id="eventAccountFilter" onchange="renderEvents()"><option value="">All Accounts</option></select>
+          </div>
+        </div>
+
+        <table id="eventTable">
+          <thead><tr><th>Account</th><th>Change</th><th>User</th><th>When</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- right: summary + quick -->
+    <aside class="container-right card">
+      <div style="margin-bottom:12px;">
+        <h3 style="margin:0">Quick Stats</h3>
+        <small class="muted">At-a-glance</small>
+      </div>
+
+      <div class="small-card" style="margin-bottom:10px;">
+        <div style="display:flex; align-items:center;">
+          <div><strong id="countAccounts">0</strong><div class="muted">Accounts</div></div>
+          <div style="margin-left:auto; text-align:right;">
+            <strong id="countJournals">0</strong><div class="muted">Journals</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="small-card" style="margin-bottom:10px;">
+        <div style="display:flex; align-items:center;">
+          <div><span class="pill green" id="countPending">0 Pending</span></div>
+          <div style="margin-left:8px;"><span class="pill" id="countApproved">0 Approved</span></div>
+          <div style="margin-left:auto;"><span class="pill red" id="countRejected">0 Rejected</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="openCreateJournal()">Create Journal</button>
+        <button class="btn secondary" style="margin-top:8px;" onclick="switchTo('journals')">Go to Journal Approval</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- modal root -->
+<div id="modalRoot" style="display:none;"></div>
+
+<script>
+/* 
+   In-memory data and current user
+    */
+const currentUser = { id: "mgr-1001", name: "" }; // name will be set from your login; blank for now
+document.getElementById('displayName').textContent = currentUser.name || '— please login —';
+
+// sample accounts (seed)
+let accounts = [
+  { id: "A100", name: "Cash", type: "Asset", createdBy: "sys", createdAt: tsOffset(-90) },
+  { id: "A200", name: "Accounts Receivable", type: "Asset", createdBy: "sys", createdAt: tsOffset(-90) },
+  { id: "L100", name: "Accounts Payable", type: "Liability", createdBy: "sys", createdAt: tsOffset(-90) },
+  { id: "R100", name: "Service Revenue", type: "Revenue", createdBy: "sys", createdAt: tsOffset(-90) },
+  { id: "X100", name: "Salaries Expense", type: "Expense", createdBy: "sys", createdAt: tsOffset(-90) }
+];
+
+// logs, journals, ledger
+let eventLogs = []; // { accountId, before, after, userId, when }
+let journals = [];  // { id, date, submitterId, lines: [{accountId, debit, credit, desc}], status, reviewerComment, createdAt }
+let ledger = [];    // { id, accountId, date, pr, debit, credit, balanceAfter }
+
+/* helpers */
+function uid(prefix='id'){ return prefix + '-' + Math.random().toString(36).slice(2,9); }
+function tsNow(){ return new Date().toISOString(); }
+function tsOffset(days){ return new Date(Date.now() + (days*24*60*60*1000)).toISOString().slice(0,10); }
+function money(v){ return Number(v).toLocaleString(undefined,{style:'currency',currency:'USD',minimumFractionDigits:2}); }
+function $(q){ return document.querySelector(q); }
+
+/* 
+   Navigation
+   */
+const navButtons = document.querySelectorAll('.nav-btn');
+navButtons.forEach(b => b.addEventListener('click', () => {
+  navButtons.forEach(n=>n.classList.remove('active'));
+  b.classList.add('active');
+  switchTo(b.dataset.view);
+}));
+
+function switchTo(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+  document.getElementById('view-' + view).classList.remove('hidden');
+  if(view==='chart'){ renderChart(); }
+  if(view==='journals'){ renderJournals(); }
+  if(view==='ledger'){ populateLedgerAccountSelect(); renderLedger(); }
+  if(view==='events'){ renderEvents(); }
+}
+
+/* initial render */
+updateSummary();
+renderChart();
+
+/* 
+   Chart of Accounts
+    */
+function renderChart(){
+  const tbody = $('#coaTable tbody');
+  const q = $('#coaSearch').value.trim().toLowerCase();
+  tbody.innerHTML = '';
+  const list = accounts.filter(a => a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q));
+  list.forEach(ac=>{
+    const tr = document.createElement('tr'); tr.className='row-hover';
+    tr.innerHTML = `
+      <td><a href="#" onclick="openLedgerFromAccount('${ac.id}')">${ac.name}</a>
+          <div style="color:#6b7280;font-size:12px">${ac.id}</div></td>
+      <td>${ac.type}</td>
+      <td style="white-space:nowrap">
+        <button class="btn secondary" onclick="openEditAccount('${ac.id}')">Edit</button>
+        <button class="btn ghost" onclick="viewEventsFor('${ac.id}')">Events</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('countAccounts').textContent = accounts.length;
+  populateAccountFilters();
+}
+
+/* Add account modal */
+function openAddAccount(){
+  const html = `
+    <h3>Add Account</h3>
+    <label>Account ID</label><input type="text" id="m_acct_id" placeholder="e.g., A300" />
+    <label>Account Name</label><input type="text" id="m_acct_name" />
+    <label>Type</label>
+    <select id="m_acct_type"><option>Asset</option><option>Liability</option><option>Equity</option><option>Revenue</option><option>Expense</option></select>
+    <div style="margin-top:12px;"><button class="btn" onclick="submitAddAccount()">Create</button> <button class="btn secondary" onclick="closeModal()">Cancel</button></div>
+  `;
+  showModal(createModal(html));
+  setTimeout(()=>$('#m_acct_id').focus(),10);
+}
+function submitAddAccount(){
+  const id = $('#m_acct_id').value.trim();
+  const name = $('#m_acct_name').value.trim();
+  const type = $('#m_acct_type').value;
+  if(!id || !name){ alert('Please fill id and name'); return; }
+  if(accounts.find(a=>a.id===id)){ alert('Account ID already exists'); return; }
+  const acct = { id, name, type, createdBy: currentUser.id || 'mgr-unknown', createdAt: tsNow() };
+  accounts.push(acct);
+  eventLogs.push({ accountId: id, before: null, after: {...acct}, userId: currentUser.id || 'mgr-unknown', when: tsNow() });
+  closeModal(); renderChart(); updateSummary();
+}
+
+/* Edit account */
+function openEditAccount(accountId){
+  const a = accounts.find(x=>x.id===accountId);
+  if(!a) return;
+  const html = `
+    <h3>Edit Account: ${a.id}</h3>
+    <label>Account Name</label><input type="text" id="m_edit_name" value="${a.name}" />
+    <label>Type</label>
+    <select id="m_edit_type">
+      <option${a.type==='Asset'?' selected':''}>Asset</option>
+      <option${a.type==='Liability'?' selected':''}>Liability</option>
+      <option${a.type==='Equity'?' selected':''}>Equity</option>
+      <option${a.type==='Revenue'?' selected':''}>Revenue</option>
+      <option${a.type==='Expense'?' selected':''}>Expense</option>
+    </select>
+    <div style="margin-top:12px;"><button class="btn" onclick="submitEditAccount('${a.id}')">Save</button> <button class="btn secondary" onclick="closeModal()">Cancel</button></div>
+  `;
+  showModal(createModal(html));
+}
+function submitEditAccount(id){
+  const before = JSON.parse(JSON.stringify(accounts.find(x=>x.id===id)));
+  const name = $('#m_edit_name').value.trim();
+  const type = $('#m_edit_type').value;
+  const acct = accounts.find(x=>x.id===id);
+  acct.name = name; acct.type = type;
+  eventLogs.push({ accountId: id, before, after: {...acct}, userId: currentUser.id || 'mgr-unknown', when: tsNow() });
+  closeModal(); renderChart();
+}
+
+/* 
+   Journals (create, approve, reject)
+   */
+function openCreateJournal(){
+  // allow up to 8 lines
+  let html = `<h3>Create Journal Entry</h3>
+    <label>Date</label><input type="date" id="j_date" value="${tsOffset(0)}" />
+    <label>Submitter (manager creates as ${currentUser.id || 'mgr-unknown'})</label><input type="text" id="j_submitter" value="${currentUser.id || 'mgr-unknown'}" />
+    <div style="margin-top:10px;"><small class="note">Use only accounts from chart of accounts. Debit OR Credit per line. Debits should come before credits for readability.</small></div>
+    <div style="margin-top:12px;">`;
+  for(let i=0;i<8;i++){
+    html += `<div style="display:flex; gap:8px; margin-bottom:8px;">
+      <select id="j_acc_${i}" style="flex:2">${accounts.map(a=>`<option value="${a.id}">${a.id} - ${a.name}</option>`).join('')}</select>
+      <input type="number" id="j_debit_${i}" placeholder="Debit" style="flex:1" min="0" step="0.01" />
+      <input type="number" id="j_credit_${i}" placeholder="Credit" style="flex:1" min="0" step="0.01" />
+    </div>`;
+  }
+  html += `</div>
+    <div style="margin-top:8px;"><label>Description (optional)</label><input type="text" id="j_desc" /></div>
+    <div style="margin-top:12px;"><button class="btn" onclick="submitJournal()">Submit Journal</button> <button class="btn secondary" onclick="closeModal()">Cancel</button></div>`;
+  showModal(createModal(html));
+}
+
+function submitJournal(){
+  const date = $('#j_date').value || tsOffset(0);
+  const submitter = $('#j_submitter').value || (currentUser.id || 'mgr-unknown');
+  const desc = $('#j_desc').value || '';
+  const lines = [];
+  for(let i=0;i<8;i++){
+    const acc = $('#j_acc_'+i).value;
+    const debit = parseFloat($('#j_debit_'+i).value || 0);
+    const credit = parseFloat($('#j_credit_'+i).value || 0);
+    if(debit>0 || credit>0){
+      if(debit>0 && credit>0){ alert('Line ' + (i+1) + ': both debit and credit set.'); return; }
+      lines.push({ accountId: acc, debit: debit, credit: credit, desc });
+    }
+  }
+  if(lines.length===0){ alert('Please add at least one line.'); return; }
+  // require at least one debit and one credit across lines
+  const hasDebit = lines.some(l=>l.debit>0);
+  const hasCredit = lines.some(l=>l.credit>0);
+  if(!hasDebit || !hasCredit){ alert('A transaction must include at least one debit and one credit.'); return; }
+  // balancing
+  const totalD = lines.reduce((s,l)=>s + (l.debit||0),0);
+  const totalC = lines.reduce((s,l)=>s + (l.credit||0),0);
+  if(Math.abs(totalD - totalC) > 0.0001){ alert('Debits and credits must balance. Debits: '+totalD+' Credits: '+totalC); return; }
+
+  const j = { id: uid('J'), date, submitterId: submitter, lines, status:'pending', reviewerComment:null, createdAt: tsNow() };
+  journals.push(j);
+  closeModal();
+  renderJournals();
+  updateSummary();
+  alert('Journal submitted (pending approval)');
+}
+
+/* render journals with filters/search */
+function renderJournals(){
+  const status = $('#journalStatusFilter').value;
+  const from = $('#journalFrom').value;
+  const to = $('#journalTo').value;
+  const q = $('#journalSearch').value.trim().toLowerCase();
+  const tbody = $('#journalTable tbody'); tbody.innerHTML = '';
+  let list = journals.slice().reverse();
+  if(status!=='all') list = list.filter(j=> j.status===status);
+  if(from) list = list.filter(j=> j.date >= from);
+  if(to) list = list.filter(j=> j.date <= to);
+  if(q){
+    list = list.filter(j=>{
+      const linesText = j.lines.map(l=>l.accountId+' '+(accounts.find(a=>a.id===l.accountId)?.name||'')).join(' ').toLowerCase();
+      return linesText.includes(q) || j.id.toLowerCase().includes(q) || (j.submitterId||'').toLowerCase().includes(q) || j.date.includes(q) || j.lines.some(l => (l.debit && String(l.debit).includes(q)) || (l.credit && String(l.credit).includes(q)));
+    });
+  }
+  list.forEach(j=>{
+    const total = j.lines.reduce((s,l)=>s + (l.debit||0) + (l.credit||0),0);
+    const tr = document.createElement('tr'); tr.className='row-hover';
+    tr.innerHTML = `
+      <td style="width:120px">${j.date}</td>
+      <td style="width:110px">${j.id}</td>
+      <td>${j.lines.length}</td>
+      <td>${money(total)}</td>
+      <td><span class="pill ${j.status==='approved'?'green': j.status==='rejected'?'red':'gray'}">${j.status}</span></td>
+      <td>${j.submitterId}</td>
+      <td style="text-align:right">
+        <button class="btn ghost" onclick="openViewJournal('${j.id}')">View</button>
+        ${j.status==='pending' ? `<button class="btn" onclick="approveJournal('${j.id}')">Approve</button>
+        <button class="btn secondary" onclick="rejectJournalPrompt('${j.id}')">Reject</button>` : ''}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateSummary();
+}
+
+/* view journal modal */
+function openViewJournal(jid){
+  const j = journals.find(x=>x.id===jid);
+  if(!j) return alert('Not found');
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>Journal ${j.id}</h3><div class="muted">${j.date}</div>
+              </div>
+              <div style="margin-top:8px;"><strong>Submitter:</strong> ${j.submitterId}</div>
+              <table style="margin-top:12px;"><thead><tr><th>Account</th><th style="text-align:right">Debit</th><th style="text-align:right">Credit</th></tr></thead><tbody>`;
+  j.lines.forEach(l=>{
+    const accName = (accounts.find(a=>a.id===l.accountId)||{name:'(deleted)'}).name;
+    html += `<tr><td>${l.accountId} - ${accName}</td><td style="text-align:right">${l.debit?money(l.debit):''}</td><td style="text-align:right">${l.credit?money(l.credit):''}</td></tr>`;
+  });
+  html += `</tbody></table><div style="margin-top:12px;"><strong>Status:</strong> <span class="pill ${j.status==='approved'?'green': j.status==='rejected'?'red':'gray'}">${j.status}</span></div>`;
+  if(j.reviewerComment) html += `<div style="margin-top:8px;"><strong>Reviewer Comment:</strong> ${j.reviewerComment}</div>`;
+  if(j.status==='pending') html += `<div style="margin-top:12px;"><button class="btn" onclick="approveJournal('${j.id}')">Approve</button> <button class="btn secondary" onclick="rejectJournalPrompt('${j.id}')">Reject</button></div>`;
+  showModal(createModal(html));
+}
+
+/* approve: post to ledger */
+function approveJournal(jid){
+  const j = journals.find(x=>x.id===jid);
+  if(!j || j.status!=='pending') return;
+  j.status = 'approved';
+  j.approvedBy = currentUser.id || 'mgr-unknown';
+  j.approvedAt = tsNow();
+
+  j.lines.forEach(line=>{
+    const accountId = line.accountId;
+    const date = j.date;
+    const debit = line.debit || 0;
+    const credit = line.credit || 0;
+    // prior balance
+    const priorEntries = ledger.filter(e=> e.accountId===accountId).sort((a,b)=>a.date.localeCompare(b.date));
+    const priorBalance = priorEntries.length ? priorEntries[priorEntries.length-1].balanceAfter : 0;
+    const balAfter = Number(priorBalance) + Number(debit) - Number(credit);
+    const le = { id: uid('L'), accountId, date, pr: j.id, debit, credit, balanceAfter: +balAfter.toFixed(2) };
+    ledger.push(le);
+  });
+
+  closeModal(); renderJournals(); updateSummary();
+  if(!$('#view-ledger').classList.contains('hidden')) renderLedger();
+  alert('Journal approved and posted to ledger.');
+}
+
+/* reject with required comment */
+function rejectJournalPrompt(jid){
+  const reason = prompt('Enter rejection reason/comment (required):');
+  if(!reason) { alert('Rejection requires a reason.'); return; }
+  rejectJournal(jid, reason);
+}
+function rejectJournal(jid, reason){
+  const j = journals.find(x=>x.id===jid);
+  if(!j) return;
+  j.status = 'rejected';
+  j.reviewerComment = reason;
+  j.rejectedBy = currentUser.id || 'mgr-unknown';
+  j.rejectedAt = tsNow();
+  closeModal(); renderJournals(); updateSummary();
+  alert('Journal rejected.');
+}
+
+/* 
+   Ledger
+   */
+function populateLedgerAccountSelect(){
+  const sel = $('#ledgerAccount');
+  sel.innerHTML = accounts.map(a => `<option value="${a.id}">${a.id} - ${a.name}</option>`).join('');
+}
+
+function openLedgerFromAccount(accountId){
+  populateLedgerAccountSelect();
+  $('#ledgerAccount').value = accountId;
+  switchTo('ledger');
+}
+
+function renderLedger(){
+  const accountId = $('#ledgerAccount').value || accounts[0]?.id;
+  const from = $('#ledgerFrom').value;
+  const to = $('#ledgerTo').value;
+  const q = $('#ledgerSearch').value.trim().toLowerCase();
+  const tbody = $('#ledgerTable tbody'); tbody.innerHTML = '';
+  if(!accountId){ tbody.innerHTML = '<tr><td colspan="6">No account selected.</td></tr>'; return; }
+  let entries = ledger.filter(e=> e.accountId===accountId).sort((a,b)=>a.date.localeCompare(b.date));
+  if(from) entries = entries.filter(e=> e.date >= from);
+  if(to) entries = entries.filter(e=> e.date <= to);
+  if(q) entries = entries.filter(e=> (e.pr && e.pr.toLowerCase().includes(q)) || String(e.debit).includes(q) || String(e.credit).includes(q) || (e.description && e.description.toLowerCase().includes(q)));
+  entries.forEach(e=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="width:110px">${e.date}</td>
+      <td style="width:90px"><a href="#" onclick="openViewJournal('${e.pr}')">${e.pr}</a></td>
+      <td>${e.description || ''}</td>
+      <td style="text-align:right">${e.debit?money(e.debit):''}</td>
+      <td style="text-align:right">${e.credit?money(e.credit):''}</td>
+      <td style="text-align:right">${money(e.balanceAfter)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  const bal = entries.length ? entries[entries.length-1].balanceAfter : 0;
+  $('#ledgerBalanceAmt').textContent = money(bal);
+}
+
+/* export ledger CSV */
+function downloadLedgerCsv(){
+  const acc = $('#ledgerAccount').value;
+  const entries = ledger.filter(e=> e.accountId===acc).sort((a,b)=>a.date.localeCompare(b.date));
+  const rows = [['date','pr','debit','credit','balance']];
+  entries.forEach(r=> rows.push([r.date,r.pr,r.debit||'',r.credit||'',r.balanceAfter]));
+  const csv = rows.map(r=> r.map(c=> `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const url = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  const a = document.createElement('a'); a.href = url; a.download = `ledger_${acc}.csv`; a.click();
+}
+
+/* 
+   Event logs
+    */
+function renderEvents(){
+  const q = $('#eventSearch').value.trim().toLowerCase();
+  const accFilter = $('#eventAccountFilter').value;
+  const tbody = $('#eventTable tbody'); tbody.innerHTML = '';
+  let list = eventLogs.slice().reverse();
+  if(accFilter) list = list.filter(e=> e.accountId===accFilter);
+  if(q) list = list.filter(e=> (e.accountId||'').toLowerCase().includes(q) || (e.userId||'').toLowerCase().includes(q) || (e.after?.name||'').toLowerCase().includes(q) || (e.before?.name||'').toLowerCase().includes(q));
+  list.forEach(ev=>{
+    const beforeName = ev.before ? ev.before.name : '(new)';
+    const afterName = ev.after ? ev.after.name : '(deleted)';
+    const tr = document.createElement('tr'); tr.className='row-hover';
+    tr.innerHTML = `<td>${ev.accountId} <div style="font-size:12px;color:#6b7280">${beforeName} → ${afterName}</div></td>
+                    <td>${ev.before?`Before: ${beforeName}<br/>After: ${afterName}`:`Created: ${afterName}`}</td>
+                    <td>${ev.userId}</td>
+                    <td>${new Date(ev.when).toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* quick event view for account */
+function viewEventsFor(accountId){
+  $('#eventAccountFilter').value = accountId;
+  switchTo('events');
+  renderEvents();
+}
+
+/* 
+   Modal utilities
+   */
+function createModal(innerHtml){ return `<div class="modal"><div class="close" onclick="closeModal()"><i class="fa fa-times"></i></div>${innerHtml}</div>`; }
+function showModal(html){ const root = document.getElementById('modalRoot'); root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">${html}</div>`; root.style.display='block'; window.scrollTo(0,0); }
+function closeModal(){ const root = document.getElementById('modalRoot'); root.innerHTML=''; root.style.display='none'; }
+
+/* 
+   Populate filters summary updates
+    */
+function populateAccountFilters(){
+  const sel = $('#eventAccountFilter');
+  sel.innerHTML = `<option value="">All Accounts</option>${accounts.map(a=>`<option value="${a.id}">${a.id} - ${a.name}</option>`).join('')}`;
+  if($('#ledgerAccount')) populateLedgerAccountSelect();
+}
+function updateSummary(){
+  $('#countJournals').textContent = journals.length;
+  $('#countAccounts').textContent = accounts.length;
+  $('#countPending').textContent = journals.filter(j=>j.status==='pending').length + ' Pending';
+  $('#countApproved').textContent = journals.filter(j=>j.status==='approved').length + ' Approved';
+  $('#countRejected').textContent = journals.filter(j=>j.status==='rejected').length + ' Rejected';
+}
+
+/* ===========================
+   Expose openCreateJournal globally (calls itself)
+   =========================== */
+window.openCreateJournal = openCreateJournal;
+
+/* ===========================
+   Seed sample journal for clarity
+   =========================== */
+(function seed(){
+  const j = { id: uid('J'), date: tsOffset(0), submitterId: 'acct-2001', lines: [{accountId:'A100', debit:1000, credit:0},{accountId:'R100', debit:0, credit:1000}], status:'pending', createdAt: tsNow() };
+  journals.push(j);
+  updateSummary();
+  renderJournals();
+})();
+</script>
+</body>
+</html>
+
