@@ -16,33 +16,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_SESSION['username'];
     $user_id = $_SESSION['user_id'];
     
-    // Get form data
-    $firstName = $_POST['firstName'];
-    $lastName = $_POST['lastName'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $repeatPassword = $_POST['repeatPassword'];
-    $address = $_POST['address'];
-    $dateOfBirth = $_POST['dateOfBirth'];
-    $securityAnswer1 = $_POST['securityAnswer1'];
-    $securityAnswer2 = $_POST['securityAnswer2'];
-    $securityAnswer3 = $_POST['securityAnswer3'];
+    // Get form data and trim whitespace
+    $firstName = trim($_POST['firstName'] ?? '');
+    $lastName = trim($_POST['lastName'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $repeatPassword = trim($_POST['repeatPassword'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+    $dateOfBirth = trim($_POST['dateOfBirth'] ?? '');
+    $securityAnswer1 = trim($_POST['securityAnswer1'] ?? '');
+    $securityAnswer2 = trim($_POST['securityAnswer2'] ?? '');
+    $securityAnswer3 = trim($_POST['securityAnswer3'] ?? '');
     
-    // Validate passwords match
-    if ($password !== $repeatPassword) {
-        die("Passwords do not match.");
+    // Validate passwords if provided
+    if (!empty($password) || !empty($repeatPassword)) {
+        if ($password !== $repeatPassword) {
+            die("Passwords do not match.");
+        }
+        
+        if (empty($password)) {
+            die("Password cannot be empty if repeat password is provided.");
+        }
     }
     
-    // Hash the password
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    
-    // Hash security question answers for security
-    $security_hash_1 = password_hash($securityAnswer1, PASSWORD_DEFAULT);
-    $security_hash_2 = password_hash($securityAnswer2, PASSWORD_DEFAULT);
-    $security_hash_3 = password_hash($securityAnswer3, PASSWORD_DEFAULT);
-    
     // Handle profile image upload
+    $profile_image_uploaded = false;
     $profile_image_url = "";
+    
     if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) {
         
         $target_dir = "uploads/profile_images/";
@@ -53,8 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         $imageFileType = strtolower(pathinfo($_FILES['profileImage']['name'], PATHINFO_EXTENSION));
-        //$target_file = $target_dir . $username . "_" . time() . "." . $imageFileType;
-        $target_file = $target_dir . $user_id ."." . $imageFileType;
+        $target_file = $target_dir . $user_id . "." . $imageFileType;
         
         // Check if image file is valid
         $check = getimagesize($_FILES['profileImage']['tmp_name']);
@@ -75,6 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Upload file
         if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $target_file)) {
             $profile_image_url = $target_file;
+            $profile_image_uploaded = true;
         } else {
             die("Error uploading profile image.");
         }
@@ -85,68 +85,148 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        // Prepare UPDATE statement
-        $sql = "UPDATE users SET 
-                first_name = :first_name,
-                last_name = :last_name,
-                email = :email,
-                password_hash = :password_hash,
-                address = :address,
-                date_of_birth = :date_of_birth,
-                security_question_answer_1 = :security_answer_1,
-                security_question_answer_2 = :security_answer_2,
-                security_question_answer_3 = :security_answer_3";
+        // Build dynamic UPDATE query based on non-empty fields
+        $updateFields = [];
+        $params = [];
         
-        // Add profile image to query if uploaded
-        //if (!empty($profile_image_url)) {
-            //$sql .= ", profile_image_url = :profile_image_url";
-        //}
+        // Check each field and add to update if not empty
+        if (!empty($firstName)) {
+            $updateFields[] = "first_name = :first_name";
+            $params[':first_name'] = $firstName;
+        }
         
-        $sql .= " WHERE username = :username";
+        if (!empty($lastName)) {
+            $updateFields[] = "last_name = :last_name";
+            $params[':last_name'] = $lastName;
+        }
+        
+        if (!empty($email)) {
+            $updateFields[] = "email = :email";
+            $params[':email'] = $email;
+        }
+        
+        if (!empty($password)) {
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
+            $updateFields[] = "password_hash = :password_hash";
+            $params[':password_hash'] = $password_hash;
+            
+            // Update last password reset time
+            $updateFields[] = "last_password_reset_datetime = NOW()";
+        }
+        
+        if (!empty($address)) {
+            $updateFields[] = "address = :address";
+            $params[':address'] = $address;
+        }
+        
+        if (!empty($dateOfBirth)) {
+            $updateFields[] = "date_of_birth = :date_of_birth";
+            $params[':date_of_birth'] = $dateOfBirth;
+        }
+        
+        if (!empty($securityAnswer1)) {
+            $security_hash_1 = password_hash($securityAnswer1, PASSWORD_DEFAULT);
+            $updateFields[] = "security_question_answer_1 = :security_answer_1";
+            $params[':security_answer_1'] = $security_hash_1;
+        }
+        
+        if (!empty($securityAnswer2)) {
+            $security_hash_2 = password_hash($securityAnswer2, PASSWORD_DEFAULT);
+            $updateFields[] = "security_question_answer_2 = :security_answer_2";
+            $params[':security_answer_2'] = $security_hash_2;
+        }
+        
+        if (!empty($securityAnswer3)) {
+            $security_hash_3 = password_hash($securityAnswer3, PASSWORD_DEFAULT);
+            $updateFields[] = "security_question_answer_3 = :security_answer_3";
+            $params[':security_answer_3'] = $security_hash_3;
+        }
+        
+        if ($profile_image_uploaded) {
+            $updateFields[] = "profile_image_url = :profile_image_url";
+            $params[':profile_image_url'] = $profile_image_url;
+        }
+        
+        // Check if there are any fields to update
+        if (empty($updateFields)) {
+            echo "<div style='color: orange; padding: 10px; border: 1px solid #ffc107; background-color: #fff3cd; border-radius: 4px; margin: 10px;'>";
+            echo "<strong>No Updates:</strong> No fields were provided for update. Please fill in at least one field to update your profile.";
+            echo "<br><br><a href='complete_profile.php'>Back to Profile</a>";
+            echo "</div>";
+            exit;
+        }
+        
+        // Always update the updated_at timestamp
+        //$updateFields[] = "updated_at = NOW()";
+        
+        // Build final SQL query
+        $sql = "UPDATE users SET " . implode(", ", $updateFields) . " WHERE username = :username";
+        $params[':username'] = $username;
         
         $stmt = $pdo->prepare($sql);
         
-        // Bind parameters
-        $stmt->bindParam(':first_name', $firstName);
-        $stmt->bindParam(':last_name', $lastName);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password_hash', $password_hash);
-        $stmt->bindParam(':address', $address);
-        $stmt->bindParam(':date_of_birth', $dateOfBirth);
-        $stmt->bindParam(':security_answer_1', $security_hash_1);
-        $stmt->bindParam(':security_answer_2', $security_hash_2);
-        $stmt->bindParam(':security_answer_3', $security_hash_3);
-        $stmt->bindParam(':username', $username);
-        
-        //if (!empty($profile_image_url)) {
-            //$stmt->bindParam(':profile_image_url', $profile_image_url);
-        //}
-        
         // Execute the update
-        if ($stmt->execute()) {
+        if ($stmt->execute($params)) {
             $rowsAffected = $stmt->rowCount();
             
             if ($rowsAffected > 0) {
-                echo "Profile updated successfully!<br>";
-                echo "Username: " . htmlspecialchars($username) . "<br>";
-                echo "Name: " . htmlspecialchars($firstName) . " " . htmlspecialchars($lastName) . "<br>";
-                echo "Email: " . htmlspecialchars($email) . "<br>";
-                if (!empty($profile_image_url)) {
-                    echo "Profile Image: " . htmlspecialchars($profile_image_url) . "<br>";
+                echo "<div style='color: green; padding: 15px; border: 1px solid #28a745; background-color: #d4edda; border-radius: 4px; margin: 10px;'>";
+                echo "<h3>✅ Profile Updated Successfully!</h3>";
+                echo "<strong>Username:</strong> " . htmlspecialchars($username) . "<br>";
+                
+                // Show which fields were updated
+                echo "<strong>Updated Fields:</strong><br>";
+                $updatedFieldsList = [];
+                
+                if (!empty($firstName)) $updatedFieldsList[] = "First Name: " . htmlspecialchars($firstName);
+                if (!empty($lastName)) $updatedFieldsList[] = "Last Name: " . htmlspecialchars($lastName);
+                if (!empty($email)) $updatedFieldsList[] = "Email: " . htmlspecialchars($email);
+                if (!empty($password)) $updatedFieldsList[] = "Password: Updated";
+                if (!empty($address)) $updatedFieldsList[] = "Address: Updated";
+                if (!empty($dateOfBirth)) $updatedFieldsList[] = "Date of Birth: " . htmlspecialchars($dateOfBirth);
+                if (!empty($securityAnswer1)) $updatedFieldsList[] = "Security Answer 1: Updated";
+                if (!empty($securityAnswer2)) $updatedFieldsList[] = "Security Answer 2: Updated";
+                if (!empty($securityAnswer3)) $updatedFieldsList[] = "Security Answer 3: Updated";
+                if ($profile_image_uploaded) $updatedFieldsList[] = "Profile Image: " . htmlspecialchars(basename($profile_image_url));
+                
+                foreach ($updatedFieldsList as $field) {
+                    echo "• " . $field . "<br>";
                 }
-                echo "<br><a href='dashboard.php'>Go to Dashboard</a>";
+                
+                echo "<br><a href='dashboard.php' style='background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px;'>Go to Dashboard</a> ";
+                echo "<a href='complete_profile.php' style='background-color: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; margin-left: 10px;'>Edit Profile Again</a>";
+                echo "</div>";
+                
+                // Log the profile update
+                error_log("Profile updated for user: $username (ID: $user_id). Fields updated: " . count($updatedFieldsList));
+                
             } else {
-                echo "No changes were made to the profile.";
+                echo "<div style='color: #856404; padding: 10px; border: 1px solid #ffc107; background-color: #fff3cd; border-radius: 4px; margin: 10px;'>";
+                echo "<strong>No Changes:</strong> No changes were made to the profile. The provided data may be the same as existing data.";
+                echo "<br><br><a href='complete_profile.php'>Back to Profile</a>";
+                echo "</div>";
             }
         } else {
-            echo "Error updating profile.";
+            echo "<div style='color: #721c24; padding: 10px; border: 1px solid #dc3545; background-color: #f8d7da; border-radius: 4px; margin: 10px;'>";
+            echo "<strong>Error:</strong> Error updating profile. Please try again.";
+            echo "<br><br><a href='complete_profile.php'>Back to Profile</a>";
+            echo "</div>";
         }
         
     } catch(PDOException $e) {
-        echo "Database Error: " . $e->getMessage();
+        echo "<div style='color: #721c24; padding: 10px; border: 1px solid #dc3545; background-color: #f8d7da; border-radius: 4px; margin: 10px;'>";
+        echo "<strong>Database Error:</strong> " . htmlspecialchars($e->getMessage());
+        echo "<br><br><a href='complete_profile.php'>Back to Profile</a>";
+        echo "</div>";
+        
+        // Log the error
+        error_log("Profile update database error for user $username: " . $e->getMessage());
     }
     
 } else {
-    echo "Invalid request method.";
+    echo "<div style='color: #721c24; padding: 10px; border: 1px solid #dc3545; background-color: #f8d7da; border-radius: 4px; margin: 10px;'>";
+    echo "<strong>Invalid Request:</strong> Invalid request method. Please use the profile form.";
+    echo "<br><br><a href='complete_profile.php'>Back to Profile</a>";
+    echo "</div>";
 }
 ?>
