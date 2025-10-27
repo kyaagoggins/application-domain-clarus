@@ -36,10 +36,7 @@ $userId = $_SESSION['user_id'];
 <body>
     <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
     <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
-    <h2 class="logo" style="float:left"><img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" height="24px">
- <span>Clarus</span></h2>
-    <?php echo'<img src="/uploads/profile_images/'.$userId.'.jpg" style="width:50px; float: right; border-radius: 50%; border: 3px solid black"><div style="clear:both"></div><span style="float: right">'.$username.'</span>';?>
-    <div style="clear:both"></div>
+    <?php include 'header.php'; ?>
     
     <?php
     echo $_SESSION['password_message'];
@@ -62,7 +59,7 @@ try {
             active,
             suspension_remove_date,
             CASE 
-                WHEN last_password_reset_datetime IS NULL THEN 'Never Reset'
+                WHEN last_password_reset_datetime IS NULL THEN 'Never Set'
                 WHEN DATEDIFF(NOW(), last_password_reset_datetime) > 30 THEN 'Expired'
                 ELSE 'Valid'
             END AS password_status

@@ -199,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
         } else {
             $pdo->rollBack();
-            echo "No changes were made to the profile.";
+            echo "No changes were made to the profile. <a href='dashboard.php'>Return to the user dashboard.</a>";
         }
         
     } catch(Exception $e) {
