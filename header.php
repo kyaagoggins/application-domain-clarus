@@ -1,33 +1,201 @@
 <?php
-    session_start();
-    $username = $_SESSION['username'] ?? 'User';
-    $userId = $_SESSION['user_id'];
-    $accessLevel = $_SESSION['access_level'];
-    
-    echo '<h2 class="logo" style="">
-        <img src="assets/logo.png" style="float:left; border: 1px solid black; border-radius: 5px; height:30px">
-        <span style="float:left; margin-left: 10px">Clarus</span>';
-        
-        
-            echo'<div style="float:right"><a href="profile.php" style="text-decoration: none; color: black;"><img src="/uploads/profile_images/'.$userId.'.jpg" style="width:50px; border-radius: 50%; border: 3px solid black">
-            
-            <center><div style="font-size: 14px;">'.$username.'</div></center></a></div>';
-        
-        echo '<a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="sign_out.php">Sign Out</a>
-        <a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="help.php">Help</a>';
-        if($accessLevel>1)
-        {
-        echo '<a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="view_change_log.php">Event Log</a>';
-        }
-        if($accessLevel>2)
-        {
-        echo '<a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="dashboard.php">User Management</a>';
-        }
-        echo '<a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="chart_of_accounts.php">Chart of Accounts</a>
-        <a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="accounts_dashboard.php">Accounts</a>
-        <a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="view_journal_entries.php">Journal Entries</a>
-        <a style="float:right; margin-right: 10px; padding: 10px; text-decoration:none; background-color: #efefef; color: black; font-size: 14px" href="landing.php">Home</a>
-   </h2>
-    <div style="clear:both; margin-bottom: 30px"></div>';
-
+session_start();
+$username = $_SESSION['username'] ?? 'User';
+$userId = $_SESSION['user_id'];
+$accessLevel = $_SESSION['access_level'];
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clarus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<style>
+    header {
+        width: 100%;
+        position: fixed;
+        /* keeps it at the top */
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    .custom-navbar {
+        justify-content: space-between;
+        background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(8px);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .navbar-brand.logo-text {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #ffffff !important;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        padding-left: 1%;
+        padding-right: 5%;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.6rem 1rem;
+        color: #ffffff !important;
+        font-weight: 500;
+        transition: color 0.3s, transform 0.2s;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #f1f1f1 !important;
+        transform: translateY(-1px);
+    }
+
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        filter: brightness(0) invert(1);
+    }
+
+    /* Dropdown menu (Admin) styling */
+    .dropdown-menu {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+    }
+
+    .dropdown-item {
+        color: #333;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #2980b9;
+        color: #fff;
+    }
+
+    .dropdown-item.text-danger:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .btn-outline-light {
+        border-color: #fff;
+        color: #fff;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #ffffff;
+        color: #2980b9;
+    }
+
+    body {
+        padding-top: 80px;
+    }
+
+    .nav-link.dropdown-toggle {
+        color: #000 !important;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+
+    .nav-link.dropdown-toggle:hover {
+        color: #333 !important;
+    }
+</style>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg custom-navbar">
+            <div class="container-fluid">
+                <img src="assets/logo.png" style="
+          float: left;
+          border: 1px solid black;
+          border-radius: 5px;
+          height: 30px;
+        " />
+                <a class="navbar-brand logo-text" href="landing.php">Clarus</a>
+                <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="landing.php">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chart_of_accounts.php">Chart of Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="accounts_dashboard.php">Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_journal_entries.php">Journal Entries</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.php">Help</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
+                        <li class="nav-item">
+                            <a href="profile.php">
+                                <img src="/uploads/profile_images/<?php echo $userId; ?>.jpg" style="
+                  width: 50px;
+                  border-radius: 50%;
+                  border: 3px solid black;
+                  display: block;
+                  margin: 0 auto;
+                " alt="Profile" />
+                            </a>
+
+                            <a class="nav-link dropdown-toggle mt-1" href="#" id="adminDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="display: block">
+                                <?php echo htmlspecialchars($username); ?>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                                <?php if ($accessLevel > 1) { ?>
+                                    <li>
+                                        <a class="dropdown-item" href="view_change_log.php">Event Log</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                <?php } ?>
+                                <?php if ($accessLevel > 2) { ?>
+                                    <li>
+                                        <a class="dropdown-item" href="dashboard.php">User Management</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                <?php } ?>
+
+                                <li>
+                                    <a class="dropdown-item text-danger" href="sign_out.php">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div style="clear:both; margin-bottom: 30px"></div>
+    </header>

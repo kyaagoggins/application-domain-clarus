@@ -116,10 +116,15 @@
   <nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container-fluid">
       <img
-        src="assets/simple-logo-grad.png"
-        style="border: 1px solid black; border-radius: 5px; height: 30px"
+        src="assets/logo.png"
+        style="
+          float: left;
+          border: 1px solid black;
+          border-radius: 5px;
+          height: 30px;
+        "
       />
-      <a class="navbar-brand logo-text" href="/">Clarus</a>
+      <a class="navbar-brand logo-text" href="landing.php">Clarus</a>
       <button
         class="navbar-toggler navbar-dark"
         type="button"
@@ -135,36 +140,84 @@
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
           <li class="nav-item">
-            <a class="nav-link active" href="#">Dashboard</a>
+            <a class="nav-link active" href="landing.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Chart of Accounts</a>
+            <a class="nav-link" href="chart_of_accounts.php"
+              >Chart of Accounts</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Journal</a>
+            <a class="nav-link" href="accounts_dashboard.php">Accounts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="view_journal_entries.php"
+              >Journal Entries</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="help.php">Help</a>
           </li>
         </ul>
 
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
+          <li class="nav-item">
+            <a href="profile.php">
+              <img
+                src="/uploads/profile_images/<?php echo $userId; ?>.jpg"
+                style="
+                  width: 50px;
+                  border-radius: 50%;
+                  border: 3px solid black;
+                  display: block;
+                  margin: 0 auto;
+                "
+                alt="Profile"
+              />
+            </a>
+
+            <!-- Username triggers dropdown -->
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link dropdown-toggle mt-1"
               href="#"
               id="adminDropdown"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              style="display: block"
             >
+              <!-- <?php echo htmlspecialchars($username); ?> -->
               Admin
             </a>
+
             <ul
               class="dropdown-menu dropdown-menu-end"
               aria-labelledby="adminDropdown"
             >
-              <li><a class="dropdown-item" href="#">Profile</a></li>
-              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <?php if ($accessLevel >
+              1) { ?>
+              <li>
+                <a class="dropdown-item" href="view_change_log.php"
+                  >Event Log</a
+                >
+              </li>
               <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+              <?php } ?>
+              <?php if ($accessLevel >
+              2) { ?>
+              <li>
+                <a class="dropdown-item" href="dashboard.php"
+                  >User Management</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <?php } ?>
+
+              <li>
+                <a class="dropdown-item text-danger" href="sign_out.php"
+                  >Logout</a
+                >
+              </li>
             </ul>
           </li>
         </ul>

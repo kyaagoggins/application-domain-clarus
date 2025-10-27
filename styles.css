@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, Arial;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
   min-height: 100vh;
   display: flex;
@@ -16,13 +16,21 @@ body {
   margin: 0;
 }
 
+.container {
+  background: #ffffff;
+  padding: 40px 30px 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  width: 360px;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
 .logo {
-  width: 400px; /* your container width */
-  height: 200px; /* your container height */
-  background-image: url("../assets/Logo.svg");
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-bottom: -75px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #2980b9;
+  margin-bottom: 15px;
 }
 
 h3 {
@@ -196,20 +204,4 @@ input:focus {
   background: #6dd5fa;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-/* Error Messages */
-.error-message {
-  color: #dc3545;
-  font-size: 0.9rem;
-  margin-top: 8px;
-  padding: 10px;
-  background: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 5px;
-  display: none;
-}
-
-.error-message.show {
-  display: block;
 }
