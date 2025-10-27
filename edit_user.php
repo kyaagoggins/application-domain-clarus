@@ -18,7 +18,8 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     header('Location: home.html?error=session_expired');
     exit;
 }
-
+$username = $_SESSION['username'] ?? 'User';
+$userId = $_SESSION['user_id'];
 $current_username = $_SESSION['username'] ?? 'User';
 $current_user_id = $_SESSION['user_id'];
 
@@ -57,12 +58,13 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Edit User Profile</title>
 </head>
 <body>
-    <img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">
-    <?php echo'<img src="/uploads/profile_images/'.$current_user_id.'.jpg" style="width:50px; float: right"><br><span style="float: right">'.$current_username.'</span>';?>
-    
+    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
+    <?php include 'header.php'; ?>
     <h1>Edit Profile: <?php echo htmlspecialchars($user_data['first_name'] . ' ' . $user_data['last_name']); ?></h1>
     <p><strong>Editing User ID:</strong> <?php echo $edit_user_id; ?> | <strong>Username:</strong> <?php echo htmlspecialchars($user_data['username']); ?></p>
     
@@ -136,6 +138,7 @@ try {
         </select>
     </div>
     <br>
+    <div style="display:none">
     <div>
         <label for="securityAnswer1">Security Question Answer 1:</label>
         <input type="text" id="securityAnswer1" name="securityAnswer1" placeholder="What was your first pet's name?">
@@ -153,10 +156,11 @@ try {
         <input type="text" id="securityAnswer3" name="securityAnswer3" placeholder="What was your mother's maiden name?">
         <small style="color: #666;">Leave blank to keep current answer</small>
     </div>
+    </div>
     <br>
     <div>
         <input type="submit" value="Update Profile">
-        <a href="user_management.php" style="margin-left: 20px; color: #666;">Cancel</a>
+        <a href="dashboard.php" style="margin-left: 20px; color: #666;">Cancel</a>
     </div>
 </form>
 
@@ -169,7 +173,7 @@ try {
     <p><strong>Last Password Reset:</strong> <?php echo $user_data['last_password_reset_datetime'] ?: 'Never'; ?></p>
     <p><strong>Failed Login Attempts:</strong> <?php echo $user_data['unsuccessful_login_attempts']; ?></p>
 </div>
-
+</div>
 <script>
 function validatePassword() {
     const password = document.getElementById('password').value;

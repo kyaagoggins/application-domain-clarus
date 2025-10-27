@@ -34,22 +34,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 if ($current_time >= $suspension_end) {
                     // Suspension period has passed, reactivate the user
-                    $reactivate_stmt = $pdo->prepare("UPDATE users SET active = 1, suspension_remove_date = NULL, updated_at = NOW() WHERE username = :username");
+                    $reactivate_stmt = $pdo->prepare("UPDATE users SET active = 1, suspension_remove_date = NULL WHERE username = :username");
                     $reactivate_stmt->bindParam(':username', $username);
                     $reactivate_stmt->execute();
                     
-                    echo "Your suspension has been automatically lifted. Welcome back!<br>";
+                    //echo "Your suspension has been automatically lifted. Welcome back!   <a href='home.html'>Return home.</a><br>";
                     // Continue with login process - user is now active
                 } else {
                     // Still suspended
                     $suspension_end_formatted = date('F j, Y', $suspension_end);
                     echo "Your account is suspended until " . $suspension_end_formatted . ".";
-                    echo "<br>Please contact the administrator if you believe this is an error.";
+                    echo "<br>Please contact the administrator if you believe this is an error.   <a href='home.html'>Return home.</a>";
                     exit();
                 }
             } elseif ($row['active'] == 0) {
                 // Account is deactivated (not suspended)
-                echo "The account is locked. Please contact the administrator.";
+                echo "The account is locked. Please contact the administrator.   <a href='home.html'>Return home.</a>";
                 exit();
             }
             // If we reach here, account is active (either was already active or just reactivated)
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         // Prepare SQL statement for main login verification
-        $stmt = $pdo->prepare("SELECT user_id, username, password_hash, active FROM users WHERE username = :username");
+        $stmt = $pdo->prepare("SELECT user_id, username, password_hash, active, access_level FROM users WHERE username = :username");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         
@@ -116,6 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['logged_in'] = true;
                 $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['access_level'] = $user['access_level'];
 
                 // Optional: Set session timeout
                 $_SESSION['login_time'] = time();
@@ -277,7 +278,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         echo "✅ PROFILE COMPLETE: All required fields are populated.";
                         // Redirect to dashboard or home page BACK IN OG LOGIN SCRIPT
-                        header("Location: dashboard.php");
+                        header("Location: landing.php");
                         exit();
                     }
                     
@@ -286,7 +287,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 
             } else {
-                echo "Account is deactivated. Please contact administrator.";
+                echo "Account is deactivated. Please contact administrator.  <a href='home.html'>Return home.</a>";
             }
         } else {
             // Login failed - increment unsuccessful attempts
@@ -295,13 +296,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $fail_stmt->bindParam(':username', $username);
                 $fail_stmt->execute();
             }
-            echo "Invalid username or password.";
+            echo "Invalid username or password. <a href='home.html'>Try again.</a>";
         }
         
     } catch(PDOException $e) {
         echo "Connection failed: " . $e->getMessage();
     }
 } else {
-    echo "Invalid request method.";
+    echo "Invalid request method.  <a href='home.html'>Try again.</a>";
 }
 ?>

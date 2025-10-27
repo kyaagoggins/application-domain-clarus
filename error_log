@@ -120,3 +120,280 @@
 [23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $dbname in /home/fhyronfcx3a8/public_html/login.php on line 26
 [23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/login.php on line 26
 [23-Sep-2025 22:09:55 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/login.php on line 26
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  include(./db_connect.php): Failed to open stream: No such file or directory in /home/fhyronfcx3a8/public_html/create_account.php on line 16
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  include(): Failed opening './db_connect.php' for inclusion (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/fhyronfcx3a8/public_html/create_account.php on line 16
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  Undefined variable $servername in /home/fhyronfcx3a8/public_html/create_account.php on line 90
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  Undefined variable $dbname in /home/fhyronfcx3a8/public_html/create_account.php on line 90
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/create_account.php on line 90
+[24-Sep-2025 00:26:05 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/create_account.php on line 90
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  include(./db_connect.php): Failed to open stream: No such file or directory in /home/fhyronfcx3a8/public_html/view_account.php on line 33
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  include(): Failed opening './db_connect.php' for inclusion (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/fhyronfcx3a8/public_html/view_account.php on line 33
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  Undefined variable $servername in /home/fhyronfcx3a8/public_html/view_account.php on line 37
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  Undefined variable $dbname in /home/fhyronfcx3a8/public_html/view_account.php on line 37
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  Undefined variable $username_db in /home/fhyronfcx3a8/public_html/view_account.php on line 37
+[24-Sep-2025 17:56:55 UTC] PHP Warning:  Undefined variable $password_db in /home/fhyronfcx3a8/public_html/view_account.php on line 37
+[24-Sep-2025 18:56:25 UTC] Deactivating account 1001 with non-zero balance: 130
+[24-Sep-2025 18:56:25 UTC] Could not check recent transactions: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.transactions' doesn't exist
+[24-Sep-2025 18:56:25 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'SET'
+[24-Sep-2025 19:09:21 UTC] Deactivating account 1001 with non-zero balance: 130
+[24-Sep-2025 19:09:21 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'SET'
+[24-Sep-2025 19:19:50 UTC] Deactivating account 1001 with non-zero balance: 130
+[24-Sep-2025 19:19:50 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'SET'
+[25-Sep-2025 00:06:57 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[25-Sep-2025 00:17:47 UTC] PHP Warning:  Undefined variable $accountBalance in /home/fhyronfcx3a8/public_html/view_account.php on line 63
+[25-Sep-2025 00:21:26 UTC] PHP Warning:  Undefined variable $accountBalance in /home/fhyronfcx3a8/public_html/view_account.php on line 63
+[25-Sep-2025 00:22:04 UTC] PHP Warning:  Undefined variable $accountBalance in /home/fhyronfcx3a8/public_html/view_account.php on line 63
+[25-Sep-2025 00:22:50 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[25-Sep-2025 00:22:50 UTC] Account update error: No changes were made to the account or account not found.
+[25-Sep-2025 00:23:33 UTC] PHP Warning:  Undefined variable $accountBalance in /home/fhyronfcx3a8/public_html/view_account.php on line 63
+[25-Sep-2025 16:57:57 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:01:38 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:03:14 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:03:23 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:03:44 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:07:18 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:07:47 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:07:52 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:08:10 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:19:31 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:47:54 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:48:22 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:48:31 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:49:08 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:49:47 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:56:19 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 17:56:40 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 17:57:49 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 18:00:20 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 18:02:21 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 18:17:49 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 18:45:47 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:12:32 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:20:26 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:21:22 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:21:25 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:21:32 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:22:07 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:22:53 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 19:23:12 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:23:48 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 19:23:53 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:27:58 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 19:29:40 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 19:30:07 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 22:39:34 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[25-Sep-2025 22:40:58 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[25-Sep-2025 22:44:05 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:17:14 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:18:53 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:37:37 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:38:26 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:38:35 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:38:44 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:38:58 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:40:36 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:40:57 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:48:42 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:48:51 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:48:58 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:49:34 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:49:46 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:49:49 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:50:12 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:50:32 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:51:04 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:51:09 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:52:02 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:54:20 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:54:28 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 45
+[26-Sep-2025 18:57:11 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:57:25 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:58:00 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 18:58:45 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 20:07:33 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 20:08:12 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 20:08:35 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 23:00:03 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 46
+[26-Sep-2025 23:52:56 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 23:56:55 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[26-Sep-2025 23:59:17 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 00:00:03 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 00:04:50 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 00:05:05 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 16:55:33 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:11:35 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:14:59 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:30:24 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:33:54 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:43:27 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:47:41 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:47:44 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 17:47:55 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:12:56 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:15:40 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:19:34 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:37:16 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:38:49 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:40:59 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[27-Sep-2025 19:42:11 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[29-Sep-2025 15:19:13 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[29-Sep-2025 15:31:24 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 167
+[29-Sep-2025 15:33:23 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:33:23 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:33:23 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 180
+[29-Sep-2025 15:33:24 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:33:24 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:33:24 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 180
+[29-Sep-2025 15:56:27 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:56:27 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:56:27 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 180
+[29-Sep-2025 15:57:08 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:57:08 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:57:08 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 180
+[29-Sep-2025 15:58:13 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:58:13 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:58:13 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 182
+[29-Sep-2025 15:58:58 UTC] PHP Warning:  Undefined variable $userId in /home/fhyronfcx3a8/public_html/edit_user.php on line 71
+[29-Sep-2025 15:58:58 UTC] PHP Warning:  Undefined variable $username in /home/fhyronfcx3a8/public_html/edit_user.php on line 73
+[29-Sep-2025 15:58:58 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 182
+[29-Sep-2025 16:06:27 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[29-Sep-2025 16:19:27 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[29-Sep-2025 16:44:57 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[29-Sep-2025 22:15:12 UTC] Profile update database error for user admin: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'SET'
+[29-Sep-2025 22:15:58 UTC] Profile updated for user: admin (ID: 1). Fields updated: 5
+[29-Sep-2025 22:16:34 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[29-Sep-2025 22:16:36 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[29-Sep-2025 22:17:41 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 54
+[29-Sep-2025 22:45:14 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 54
+[04-Oct-2025 14:14:29 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[09-Oct-2025 22:10:17 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:10:29 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:10:57 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[09-Oct-2025 22:11:22 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:11:56 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[09-Oct-2025 22:12:02 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:12:10 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:12:23 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:12:42 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[09-Oct-2025 22:12:47 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 22:15:06 UTC] Profile updated for user: TAccountant1025 (ID: 38). Fields updated: 9
+[09-Oct-2025 22:16:03 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[09-Oct-2025 23:49:48 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 00:12:01 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 00:57:53 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 00:58:23 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 00:59:01 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 00:59:03 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:00:22 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:00:32 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:00:37 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:00:41 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:00:44 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[10-Oct-2025 01:00:48 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:54:54 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 01:57:14 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 02:05:18 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 02:57:02 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[10-Oct-2025 02:57:10 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 03:03:27 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[10-Oct-2025 03:05:59 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[10-Oct-2025 03:59:04 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 18:15:22 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 18:24:33 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 18:47:35 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 18:56:26 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 19:30:43 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 19:30:51 UTC] PHP Warning:  Undefined array key "updated_at" in /home/fhyronfcx3a8/public_html/edit_user.php on line 183
+[10-Oct-2025 19:31:01 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[10-Oct-2025 19:32:22 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[11-Oct-2025 01:24:19 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[11-Oct-2025 01:46:58 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 56
+[11-Oct-2025 01:47:27 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[11-Oct-2025 15:20:55 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[11-Oct-2025 18:29:23 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[11-Oct-2025 18:29:53 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[11-Oct-2025 23:27:52 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[11-Oct-2025 23:28:19 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[12-Oct-2025 17:27:18 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 57
+[12-Oct-2025 17:27:45 UTC] PHP Warning:  Undefined array key "password_message" in /home/fhyronfcx3a8/public_html/dashboard.php on line 58
+[15-Oct-2025 14:52:21 UTC] Could not log account update: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'clarus.account_audit_log' doesn't exist
+[15-Oct-2025 14:52:36 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 58
+[16-Oct-2025 17:09:48 UTC] PHP Warning:  Undefined variable $userId in /home/kc35593xycx0/public_html/header.php on line 10
+[16-Oct-2025 17:11:38 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/chart_of_accounts.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:11:40 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/chart_of_accounts.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:17:08 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:17:48 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:18:17 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entry.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:18:59 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/account_ledger.php on line 26) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:19:05 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:19:58 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:20:42 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_account.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:21:29 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/edit_account.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:21:40 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:22:18 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/new_account.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:22:25 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/chart_of_accounts.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:22:29 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/account_ledger.php on line 26) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:23:11 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entry.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:23:15 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/account_ledger.php on line 26) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:23:49 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/create_journal_entry.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:23:59 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 58
+[16-Oct-2025 17:24:35 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:24:35 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[16-Oct-2025 17:24:38 UTC] PHP Warning:  Undefined array key "updated_at" in /home/kc35593xycx0/public_html/edit_user.php on line 183
+[16-Oct-2025 17:25:00 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/edit_user.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:25:00 UTC] PHP Warning:  Undefined array key "updated_at" in /home/kc35593xycx0/public_html/edit_user.php on line 171
+[16-Oct-2025 17:25:04 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:25:04 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[16-Oct-2025 17:25:28 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/new_user.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:25:31 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:25:31 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[16-Oct-2025 17:26:02 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/expired_users.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:26:16 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:26:16 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[16-Oct-2025 17:26:51 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_access_requests.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:26:59 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:26:59 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[16-Oct-2025 17:27:05 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_access_requests.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:27:44 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/help.php on line 4) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:28:23 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/profile.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:28:36 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:28:44 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:28:54 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/new_account.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[16-Oct-2025 17:30:29 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:23:42 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:23:59 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:24:17 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:30:08 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:30:13 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:32:04 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:33:01 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:33:53 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:33:57 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:40:55 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:41:24 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:41:48 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:42:33 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/chart_of_accounts.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 18:42:47 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 19:28:49 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 19:28:53 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 19:30:34 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[20-Oct-2025 19:30:42 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[21-Oct-2025 20:40:35 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[21-Oct-2025 20:40:38 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[21-Oct-2025 20:40:38 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[22-Oct-2025 20:10:15 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:10:39 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:11:54 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/accounts_dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:07 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/chart_of_accounts.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:13 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/account_ledger.php on line 26) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:22 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/create_journal_entry.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:33 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:44 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:44 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[22-Oct-2025 20:12:47 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_change_log.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:55 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/dashboard.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[22-Oct-2025 20:12:55 UTC] PHP Warning:  Undefined array key "password_message" in /home/kc35593xycx0/public_html/dashboard.php on line 42
+[22-Oct-2025 20:13:01 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/view_journal_entries.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[26-Oct-2025 15:30:33 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[27-Oct-2025 15:32:05 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2
+[27-Oct-2025 15:34:31 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/kc35593xycx0/public_html/landing.php on line 7) in /home/kc35593xycx0/public_html/header.php on line 2

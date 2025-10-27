@@ -1,6 +1,6 @@
 <?php
 // Set the password to test
-$passwordTest = "Admin123!";
+$passwordTest = "swe4713!";
 
 // Hash the password using PHP's built-in password_hash function
 $hashedPassword = password_hash($passwordTest, PASSWORD_DEFAULT);

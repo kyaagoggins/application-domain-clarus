@@ -27,7 +27,8 @@ if (isset($_GET['user_id']) && isset($_GET['action'])) {
         $stmt = $pdo->prepare("
             UPDATE users 
             SET active = :status, 
-                suspension_remove_date = NULL
+                suspension_remove_date = NULL,
+                unsuccessful_login_attempts = 0
             WHERE user_id = :user_id
         ");
         

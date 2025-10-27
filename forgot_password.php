@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body>
         <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-        <h2 class="logo"><img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" height="24px">
+        <h2 class="logo"><img src="assets/logo.png" style="border: 1px solid black; border-radius: 5px; height:30px">
  <span>Clarus</span></h2>
         <h1>Account Verification</h1>
         <p>Please provide your email and answer the security questions to verify your identity.</p>
