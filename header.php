@@ -17,6 +17,7 @@ $accessLevel = $_SESSION['access_level'];
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="style.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <style>
@@ -142,9 +143,9 @@ $accessLevel = $_SESSION['access_level'];
                         <li class="nav-item">
                             <a class="nav-link" href="chart_of_accounts.php">Chart of Accounts</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="accounts_dashboard.php">Accounts</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="view_journal_entries.php">Journal Entries</a>
                         </li>
