@@ -435,7 +435,7 @@ include 'header.php';
             margin-left: 0;
         }
 
-        .search-row {
+        .filter-row {
             flex-direction: column;
             align-items: stretch;
         }

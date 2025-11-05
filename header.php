@@ -138,26 +138,39 @@ $accessLevel = $_SESSION['access_level'];
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="landing.php">Home</a>
+                            <a class="nav-link active" href="landing.php" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="Landing page that includes financial ratios and dashboard.">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="chart_of_accounts.php">Chart of Accounts</a>
-                        </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="accounts_dashboard.php">Accounts</a>
-                        </li> -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="view_journal_entries.php">Journal Entries</a>
+                            <a class="nav-link" href="chart_of_accounts.php" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="List of all financial accounts and transactions for a business.">Chart of
+                                Accounts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="help.php">Help</a>
+                            <a class="nav-link" href="accounts_dashboard.php" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="Manage and view all accounts and available actions.">Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="view_journal_entries.php" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="Formal records of a financial transaction and its details.">Journal
+                                Entries</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.php" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                title="Additional Information on the pages and features of this application.">Help</a>
                         </li>
                     </ul>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
                         <li class="nav-item">
                             <a href="profile.php">
-                                <img src="/uploads/profile_images/<?php echo $userId; ?>.jpg" style="
+                                <img src="/uploads/profile_images/<?php echo $userId; ?>.jpg" data-bs-toggle="tooltip"
+                                    data-bs-placement="left"
+                                    title="Specific information regarding your personal profile." style="
                   width: 50px;
                   border-radius: 50%;
                   border: 3px solid black;
@@ -174,7 +187,10 @@ $accessLevel = $_SESSION['access_level'];
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
                                 <?php if ($accessLevel > 1) { ?>
                                     <li>
-                                        <a class="dropdown-item" href="view_change_log.php">Event Log</a>
+                                        <a class="dropdown-item" href="view_change_log.php" data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            title="Table displaying all entries and events made in the application.">Event
+                                            Log</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider" />
@@ -182,7 +198,10 @@ $accessLevel = $_SESSION['access_level'];
                                 <?php } ?>
                                 <?php if ($accessLevel > 2) { ?>
                                     <li>
-                                        <a class="dropdown-item" href="dashboard.php">User Management</a>
+                                        <a class="dropdown-item" href="dashboard.php" data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            title="User dashboard containing all users of the app and available actions.">User
+                                            Management</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider" />

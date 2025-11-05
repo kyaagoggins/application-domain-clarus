@@ -31,7 +31,7 @@ if (!isset($servername) || !isset($dbname) || !isset($username_db) || !isset($pa
 
 // Check if form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     // Get form data
     $account_number = trim($_POST['account_number'] ?? '');
     $name = trim($_POST['name'] ?? '');
@@ -46,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $statement = $_POST['statement'] ?? '';
     $comment = trim($_POST['comment'] ?? '');
     $user_id = $_SESSION['user_id'];
-    
+
     // Validation
     $errors = [];
-    
+
     // Required field validation
     if (empty($account_number)) {
         $errors[] = "Account number is required.";
@@ -63,63 +63,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($category)) {
         $errors[] = "Category is required.";
     }
-    
+
     // Account number validation (only integers, no decimals, spaces, or alphanumeric)
     if (!empty($account_number) && !preg_match('/^[0-9]+$/', $account_number)) {
         $errors[] = "Account number must contain only numbers (no decimals, spaces, or letters).";
     }
-    
+
     // Monetary value validation and formatting
-    function validateAndFormatMoney($value, $fieldName) {
+    function validateAndFormatMoney($value, $fieldName)
+    {
         global $errors;
-        
+
         if (empty($value)) {
             return '0.00';
         }
-        
+
         // Remove commas and whitespace
         $cleanValue = str_replace([',', ' '], '', $value);
-        
+
         // Validate numeric
         if (!is_numeric($cleanValue)) {
             $errors[] = "$fieldName must be a valid monetary amount.";
             return '0.00';
         }
-        
+
         // Format to 2 decimal places
-        return number_format((float)$cleanValue, 2, '.', '');
+        return number_format((float) $cleanValue, 2, '.', '');
     }
-    
+
     // Format monetary values
     $initial_balance = validateAndFormatMoney($initial_balance, "Initial balance");
     $debit = validateAndFormatMoney($debit, "Debit");
     $credit = validateAndFormatMoney($credit, "Credit");
-    
+
     // Calculate balance
-    $balance = number_format((float)$initial_balance + (float)$debit - (float)$credit, 2, '.', '');
-    
+    $balance = number_format((float) $initial_balance + (float) $debit - (float) $credit, 2, '.', '');
+
     // Database validation and insertion
     if (empty($errors)) {
         try {
             $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
+
             // Check for duplicate account number
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE account_number = :account_number");
             $stmt->execute([':account_number' => $account_number]);
-            
+
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account number '$account_number' already exists. Please use a different account number.";
             }
-            
+
             // Check for duplicate account name
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE name = :name");
             $stmt->execute([':name' => $name]);
-            
+
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account name '$name' already exists. Please use a different account name.";
             }
-            
+
             // If no errors, insert the account
             if (empty($errors)) {
                 $stmt = $pdo->prepare("
@@ -133,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         NOW(), :user_id, :order_type, :statement, :comment
                     )
                 ");
-                
+
                 $result = $stmt->execute([
                     ':account_number' => $account_number,
                     ':name' => $name,
@@ -150,45 +151,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':statement' => $statement,
                     ':comment' => $comment
                 ]);
-                
+
                 if ($result) {
                     // Success message with formatted values
-                    $formatted_initial = '$' . number_format((float)$initial_balance, 2);
-                    $formatted_debit = '$' . number_format((float)$debit, 2);
-                    $formatted_credit = '$' . number_format((float)$credit, 2);
-                    $formatted_balance = '$' . number_format((float)$balance, 2);
-                    
+                    $formatted_initial = '$' . number_format((float) $initial_balance, 2);
+                    $formatted_debit = '$' . number_format((float) $debit, 2);
+                    $formatted_credit = '$' . number_format((float) $credit, 2);
+                    $formatted_balance = '$' . number_format((float) $balance, 2);
+
                     echo "<script>
                         alert('Account created successfully!\\n\\n" .
                         "Account Number: $account_number\\n" .
                         "Account Name: $name\\n" .
                         "Initial Balance: $formatted_initial\\n" .
                         "Current Balance: $formatted_balance');
-                        window.location.href='new_account.php';
+                        window.location.href='accounts_dashboard.php';
                     </script>";
                 } else {
                     $errors[] = "Error creating account. Please try again.";
                 }
             }
-            
-        } catch(PDOException $e) {
+
+        } catch (PDOException $e) {
             $errors[] = "Database Error: " . $e->getMessage();
         }
     }
-    
+
     // Display errors if any
     if (!empty($errors)) {
         $errorMessage = "Please correct the following errors:\\n\\n";
         foreach ($errors as $error) {
             $errorMessage .= "• " . $error . "\\n";
         }
-        
+
         echo "<script>
-            alert(".$errorMessage.");
+            alert(" . $errorMessage . ");
             history.back();
         </script>";
     }
-    
+
 } else {
     // If not POST request, redirect to form
     header("Location: create_account.php");

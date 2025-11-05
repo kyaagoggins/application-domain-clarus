@@ -405,8 +405,13 @@ include 'header.php';
                 <td class="actions-column">
                     <button class="action-btn view-btn"
                         onclick="viewAccount('<?php echo htmlspecialchars($account['account_number']); ?>')"
-                        title="View Details about this Account">
-                        👁️ View
+                        title="View Details about this Account.">
+                        👁️ View Account
+                    </button>
+                    <button class="action-btn view-btn"
+                        onclick="viewAccountLedger('<?php echo htmlspecialchars($account['account_number']); ?>')"
+                        title="View the ledger for this account.">
+                        👁️ View Ledger
                     </button>
 
                     <?php if ($canEditAccounts): ?>
@@ -474,6 +479,10 @@ include 'header.php';
         // Account management functions
         function viewAccount(accountNumber) {
             window.location.href = 'view_account.php?account_number=' + encodeURIComponent(accountNumber);
+        }
+
+        function viewAccountLedger(accountNumber) {
+            window.location.href = 'account_ledger.php?account_number=' + encodeURIComponent(accountNumber);
         }
 
         function editAccount(accountNumber) {
