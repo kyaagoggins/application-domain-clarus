@@ -22,8 +22,8 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
 $username = $_SESSION['username'] ?? 'User';
 $userId = $_SESSION['user_id'];
 $userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
-//$canApprove = ($userAccessLevel > 1); // Only managers and above can approve
-$canApprove = true;
+$canApprove = ($userAccessLevel > 1); // Only managers and above can approve
+//$canApprove = true;
 // Get account_id from URL parameter (optional)
 $account_id = isset($_GET['account_id']) ? trim($_GET['account_id']) : null;
 

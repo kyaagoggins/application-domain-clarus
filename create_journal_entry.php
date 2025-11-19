@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Create Journal Entry
  * This page allows users to create new accounting journal entries
@@ -111,6 +112,36 @@ try {
         .form-group textarea {
             min-height: 80px;
             resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #2980b9;
+            border-radius: 4px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        
+        .checkbox-group .checkbox-description {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+            margin-left: 30px;
         }
         
         .required {
@@ -431,6 +462,16 @@ try {
                 <div class="form-group">
                     <label for="reference">Reference Number</label>
                     <input type="text" id="reference" name="reference" placeholder="Optional reference number (e.g., INV-001, PO-123)">
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isAdjustingEntry" name="is_adjusting_entry" value="1">
+                        <label for="isAdjustingEntry">Adjusting Journal Entry</label>
+                    </div>
+                    <div class="checkbox-description">
+                        Check this box if this is an adjusting entry (e.g., accruals, deferrals, depreciation, corrections)
+                    </div>
                 </div>
             </div>
             
@@ -816,6 +857,10 @@ try {
             formData.append('description', document.getElementById('description').value);
             formData.append('reference', document.getElementById('reference').value);
             formData.append('user_id', '<?php echo $userId; ?>');
+            
+            // Add adjusting entry checkbox value
+            const isAdjustingEntry = document.getElementById('isAdjustingEntry').checked ? 1 : 0;
+            formData.append('is_adjusting_entry', isAdjustingEntry);
             
             // Add entry lines
             const accountSelects = document.querySelectorAll('select[name="line_account[]"]');

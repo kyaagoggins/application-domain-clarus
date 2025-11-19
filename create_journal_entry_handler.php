@@ -26,6 +26,7 @@ try {
     $entry_date = $_POST['entry_date'] ?? '';
     $description = $_POST['description'] ?? '';
     $reference = $_POST['reference'] ?? '';
+    $is_adjusting_entry = isset($_POST['is_adjusting_entry']) ? (int)$_POST['is_adjusting_entry'] : 0;
     $entry_lines = json_decode($_POST['entry_lines'] ?? '[]', true);
     
     // Validate data
@@ -77,10 +78,10 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO journal_entries (
             account_id, entry_date, description, reference_number, 
-            total_debit, total_credit, created_by, created_at, status, source_documents
+            total_debit, total_credit, is_adjusting_entry, created_by, created_at, status, source_documents
         ) VALUES (
             :account_id, :entry_date, :description, :reference,
-            :total_debit, :total_credit, :user_id, NOW(), 'pending', :documents
+            :total_debit, :total_credit, :is_adjusting_entry, :user_id, NOW(), 'pending', :documents
         )
     ");
     
@@ -91,6 +92,7 @@ try {
         ':reference' => $reference,
         ':total_debit' => $total_debit,
         ':total_credit' => $total_credit,
+        ':is_adjusting_entry' => $is_adjusting_entry,
         ':user_id' => $userId,
         ':documents' => json_encode($uploaded_files)
     ]);
