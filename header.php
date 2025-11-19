@@ -185,7 +185,7 @@ $accessLevel = $_SESSION['access_level'];
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                                <?php if ($accessLevel > 1) { ?>
+                                <?php if ($accessLevel > 0) { ?>
                                     <li>
                                         <a class="dropdown-item" href="view_change_log.php" data-bs-toggle="tooltip"
                                             data-bs-placement="left"

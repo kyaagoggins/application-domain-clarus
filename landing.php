@@ -803,7 +803,11 @@ include 'header.php';
         if ($userAccessLevel > 1) {
             echo '<a href="view_change_log.php" style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             📜 Change Log
-        </a>';
+        </a>
+        <a href="financial_reports.php"
+   style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+   📊 Financial Reports
+</a>';
         }
 
         if ($userAccessLevel > 2) {
