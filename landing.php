@@ -756,7 +756,9 @@ include 'header.php';
                     <?php foreach ($pendingEntries as $entry): ?>
                         <tr>
                             <td>
-                                <a href="view_journal_entry.php?entry_id=<?php echo $entry['entry_id']; ?>" class="entry-link">
+                                <a href="view_journal_entry.php?entry_id=<?php echo $entry['entry_id']; ?>" class="entry-link"
+                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                    title="Navigate to the specific individual journal entry.">
                                     #JE-<?php echo str_pad($entry['entry_id'], 6, '0', STR_PAD_LEFT); ?>
                                 </a>
                             </td>
@@ -768,7 +770,8 @@ include 'header.php';
                             <td><?php echo htmlspecialchars($entry['created_by_name']); ?></td>
                             <td>
                                 <a href="view_journal_entry.php?entry_id=<?php echo $entry['entry_id']; ?>"
-                                    class="action-btn btn-view">
+                                    class="action-btn btn-view" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="Navigate to the specific individual journal entry.">
                                     👁️ Review
                                 </a>
                             </td>
@@ -784,34 +787,41 @@ include 'header.php';
     <div
         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
         <a href="chart_of_accounts.php"
-            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="List of all financial accounts and transactions for a business.">
             📊 Chart of Accounts
         </a>
         <a href="view_journal_entries.php"
-            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="Formal records of all financial transactions and their details.">
             📋 Journal Entries
         </a>
         <a href="create_journal_entry.php"
-            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #28a745; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #28a745; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="Create a new journal entry for a new transaction.">
             ➕ New Entry
         </a>
         <a href="accounts_dashboard.php"
-            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="Manage and view all accounts and available actions.">
             🏦 View Accounts
         </a>
         <?php
         if ($userAccessLevel > 1) {
-            echo '<a href="view_change_log.php" style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            echo '<a href="view_change_log.php" style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="View all actions and events made in the application.">
             📜 Change Log
         </a>
         <a href="financial_reports.php"
-   style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+   style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+   data-bs-toggle="tooltip" title="Generate a comprehensive report of financial statements and transactions.">
    📊 Financial Reports
 </a>';
         }
 
         if ($userAccessLevel > 2) {
-            echo '<a href="dashboard.php" style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            echo '<a href="dashboard.php" style="padding: 20px; background: white; border-radius: 8px; text-decoration: none; color: #2980b9; font-weight: bold; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+            data-bs-toggle="tooltip" title="User dashboard containing all users of the app and available actions.">
             👥 User Management
         </a>';
         }

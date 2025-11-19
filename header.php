@@ -156,7 +156,7 @@ $accessLevel = $_SESSION['access_level'];
                         <li class="nav-item">
                             <a class="nav-link" href="view_journal_entries.php" data-bs-toggle="tooltip"
                                 data-bs-placement="bottom"
-                                title="Formal records of a financial transaction and its details.">Journal
+                                title="Formal records of all financial transactions and their details.">Journal
                                 Entries</a>
                         </li>
                         <li class="nav-item">
@@ -189,8 +189,14 @@ $accessLevel = $_SESSION['access_level'];
                                     <li>
                                         <a class="dropdown-item" href="view_change_log.php" data-bs-toggle="tooltip"
                                             data-bs-placement="left"
-                                            title="Table displaying all entries and events made in the application.">Event
+                                            title="View all actions and events made in the application.">Event
                                             Log</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="financial_reports.php" data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            title="Generate a comprehensive report of financial statements and transactions.">Financial
+                                            Reports</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider" />

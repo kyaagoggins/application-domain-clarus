@@ -487,19 +487,23 @@ include 'header.php';
     <div class="action-buttons">
         <div class="action">
             <a href="view_account.php?account_number=<?php echo urlencode($account_number); ?>" role="button"
-                class="btn btn-secondary">
+                class="btn btn-secondary" data-bs-toggle="tooltip"
+                title="View details, transactions, and status of this account.">
                 ⬅️ Account Details
             </a>
             <a href="create_journal_entry.php?account_id=<?php echo urlencode($account_number); ?>" role="button"
-                style="margin-left:5px" class="btn btn-success">
+                style="margin-left:5px" class="btn btn-success" data-bs-toggle="tooltip"
+                title="Create a new journal entry for this account.">
                 ➕ New Journal Entry
             </a>
         </div>
         <div class="export">
-            <button onclick="window.print()" style="width: 30%" class="btn btn-primary">
+            <button onclick="window.print()" style="width: 30%" class="btn btn-primary" data-bs-toggle="tooltip"
+                title="Print account ledger details.">
                 🖨️ Print Ledger
             </button>
-            <button onclick="exportLedger()" style="width: 30%" class="btn btn-primary">
+            <button onclick="exportLedger()" style="width: 30%" class="btn btn-primary" data-bs-toggle="tooltip"
+                title="Download the account ledger formatted as a CSV.">
                 📊 Export CSV
             </button>
         </div>
