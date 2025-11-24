@@ -1,8 +1,7 @@
 <?php
-/**
- * Account Ledger
- * This page displays the ledger for a specific account showing all approved journal entries
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to view an account's ledger
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -19,35 +18,35 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
+$userAccessLevel = $_SESSION['access_level'];
 
-// Get account_number from URL parameter
-$account_number = isset($_GET['account_number']) ? trim($_GET['account_number']) : null;
+// Get account number from URL parameter
+$account_number = $_GET['account_number'];
 
 if (!$account_number) {
-    die("Error: Account Number is required. Please provide a valid account_number parameter in the URL.");
+    die("Hmm... the account number is missing from the URL. Please go back and try again.");
 }
 
-// Include database configuration
+// Connect to external db file
 include '../db_connect.php';
 
-try {
+
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Fetch account details
-    $stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
-    $stmt->execute([':account_number' => $account_number]);
-    $account = $stmt->fetch(PDO::FETCH_ASSOC);
+    $getAccountDetails = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
+    $getAccountDetails->execute([':account_number' => $account_number]);
+    $account = $getAccountDetails->fetch(PDO::FETCH_ASSOC);
 
     if (!$account) {
-        die("Error: Account not found with Account Number: $account_number");
+        die("Hmm... no details were found for an Account with the number: $account_number");
     }
 
     // Fetch all approved journal entry lines for this account
-    $stmt = $pdo->prepare("
+    $getLedgerEntries = $pdo->prepare("
         SELECT 
             jel.*,
             je.entry_id,
@@ -62,37 +61,33 @@ try {
         ORDER BY je.entry_date ASC, je.entry_id ASC, jel.line_id ASC
     ");
 
-    $stmt->execute([':account_number' => $account_number]);
-    $ledgerEntries = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$getLedgerEntries->execute([':account_number' => $account_number]);
+$ledgerEntries = $getLedgerEntries->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calculate running balance
-    $runningBalance = (float) $account['initial_balance'];
-    $normalSide = $account['normal_side'];
+// Calculate running balance
+$runningBalance = (float) $account['initial_balance'];
+$normalSide = $account['normal_side'];
 
-    foreach ($ledgerEntries as &$entry) {
-        $debit = (float) $entry['debit_amount'];
-        $credit = (float) $entry['credit_amount'];
+foreach ($ledgerEntries as &$entry) {
+    $debit = (float) $entry['debit_amount'];
+    $credit = (float) $entry['credit_amount'];
 
-        // Calculate balance based on normal side
-        if ($normalSide === 'Debit') {
-            // For debit accounts: balance increases with debits, decreases with credits
-            $runningBalance += $debit - $credit;
-        } else {
-            // For credit accounts: balance increases with credits, decreases with debits
-            $runningBalance += $credit - $debit;
-        }
-
-        $entry['balance'] = $runningBalance;
+    // Calculate balance based on normal side
+    if ($normalSide === 'Debit') {
+        // For debit accounts, the balance increases with debits, decreases with credits
+        $runningBalance += $debit - $credit;
+    } else {
+        // For credit accounts, the balance increases with credits, decreases with debits
+        $runningBalance += $credit - $debit;
     }
 
-    // Calculate statistics
-    $totalDebits = array_sum(array_column($ledgerEntries, 'debit_amount'));
-    $totalCredits = array_sum(array_column($ledgerEntries, 'credit_amount'));
-    $currentBalance = $runningBalance;
-
-} catch (PDOException $e) {
-    die("Database Error: " . $e->getMessage());
+    $entry['balance'] = $runningBalance;
 }
+
+// Calculate statistics
+$totalDebits = array_sum(array_column($ledgerEntries, 'debit_amount'));
+$totalCredits = array_sum(array_column($ledgerEntries, 'credit_amount'));
+$currentBalance = $runningBalance;
 
 function formatMoney($value)
 {
@@ -481,9 +476,8 @@ include 'header.php';
 </style>
 
 <div class="container"
-    style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
 
-    <!-- Action Buttons -->
     <div class="action-buttons">
         <div class="action">
             <a href="view_account.php?account_number=<?php echo urlencode($account_number); ?>" role="button"
@@ -502,10 +496,7 @@ include 'header.php';
                 title="Print account ledger details.">
                 🖨️ Print Ledger
             </button>
-            <button onclick="exportLedger()" style="width: 30%" class="btn btn-primary" data-bs-toggle="tooltip"
-                title="Download the account ledger formatted as a CSV.">
-                📊 Export CSV
-            </button>
+
         </div>
     </div>
 
@@ -513,8 +504,8 @@ include 'header.php';
     <div class="account-header">
         <h1>📒 Account Ledger</h1>
         <div style="font-size: 20px; margin-bottom: 10px;">
-            <strong>Account <?php echo htmlspecialchars($account['account_number']); ?>:</strong>
-            <?php echo htmlspecialchars($account['name']); ?>
+            <strong>Account <?php echo $account['account_number']; ?>:</strong>
+            <?php echo $account['name']; ?>
         </div>
 
         <div class="account-info-grid">
@@ -765,45 +756,7 @@ include 'header.php';
         updateVisibleTotals();
     }
 
-    function exportLedger() {
-        const accountNumber = '<?php echo addslashes($account_number); ?>';
-        const accountName = '<?php echo addslashes($account['name']); ?>';
 
-        let csv = `Account Ledger - ${accountNumber}: ${accountName}\n`;
-        csv += `Generated: ${new Date().toLocaleString()}\n\n`;
-        csv += 'Date,Post Reference,Description,Debit,Credit,Balance\n';
-
-        // Opening balance
-        csv += `"<?php echo date('M j, Y', strtotime($account['created_at'])); ?>","—","Opening Balance","","","<?php echo $account['initial_balance']; ?>"\n`;
-
-        // All transactions
-        const rows = document.querySelectorAll('.ledger-row:not([style*="display: none"])');
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const date = cells[0].textContent.trim();
-            const pr = cells[1].textContent.trim();
-            const description = cells[2].textContent.trim().replace(/\n/g, ' ').replace(/"/g, '""');
-            const debit = row.dataset.debit || '0';
-            const credit = row.dataset.credit || '0';
-            const balance = cells[5].textContent.trim().replace('$', '').replace(',', '');
-
-            csv += `"${date}","${pr}","${description}","${debit}","${credit}","${balance}"\n`;
-        });
-
-        // Closing balance
-        csv += `"","","Closing Balance","<?php echo $totalDebits; ?>","<?php echo $totalCredits; ?>","<?php echo $currentBalance; ?>"\n`;
-
-        // Download CSV
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `ledger_${accountNumber}_${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }
 </script>
 </body>
 

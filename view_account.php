@@ -1,8 +1,4 @@
 <?php
-/**
- * View Account Page
- * This page displays details of a specific accounting account
- */
 
 session_start();
 
@@ -19,50 +15,35 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-
-// Check user access level for edit/deactivate permissions
-$userAccessLevel = isset($_SESSION['access_level']) ? (int)$_SESSION['access_level'] : 0;
+$userAccessLevel = $_SESSION['access_level'];
 $canEditAccount = ($userAccessLevel >= 3);
-
-// Get account_number from URL parameter
-$account_number = isset($_GET['account_number']) ? trim($_GET['account_number']) : null;
-
-if (!$account_number) {
-    die("Error: Account Number is required. Please provide a valid account_number parameter in the URL.");
-}
-
-// Include database configuration
+$account_number = $_GET['account_number'];
 include '../db_connect.php';
 
 // Fetch account details from database
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
-    $stmt->execute([':account_number' => $account_number]);
-    $account = $stmt->fetch(PDO::FETCH_ASSOC);
+$getAccount = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
+$getAccount->execute([':account_number' => $account_number]);
+$account = $getAccount->fetch(PDO::FETCH_ASSOC);
     
-    if (!$account) {
-        die("Error: Account not found with Account Number: $account_number");
-    }
+if (!$account) {
+    die("Hmm.. something went wrong. There is no account found for the provided account number. Please go back and try again.");
+}
     
     // Fetch all users for email dropdown
     $stmt = $pdo->query("SELECT user_id, username, first_name, last_name, email FROM users WHERE access_level > 1 ORDER BY username");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
-}
+
 
 // Format monetary values for display
 function formatMoney($value) {
     return '$' . number_format((float)$value, 2);
 }
 
-// Check if account is active and has a balance
 $isActive = isset($account['is_active']) ? (int)$account['is_active'] : 1;
 $accountBalance = (float)$account['balance'];
 $hasBalance = ($accountBalance != 0);
@@ -73,7 +54,7 @@ $hasBalance = ($accountBalance != 0);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>View Account - <?php echo htmlspecialchars($account['name']); ?></title>
+    <title>View Account - <?php echo $account['name']; ?></title>
     <style>
         .form-container {
             display: grid;
@@ -378,75 +359,64 @@ $hasBalance = ($accountBalance != 0);
     </style>
 </head>
 <body>
-    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
     <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
     <?php include 'header.php'; ?>
     
     <div class="account-header <?php echo $isActive ? '' : 'inactive'; ?>">
-        <div class="account-number"><?php echo htmlspecialchars($account['account_number']); ?></div>
-        <div class="account-name"><?php echo htmlspecialchars($account['name']); ?></div>
-        <div class="info-badge"><?php echo htmlspecialchars($account['category']); ?></div>
-        <div class="info-badge"><?php echo htmlspecialchars($account['normal_side']); ?> Side</div>
-        <div class="info-badge"><?php echo htmlspecialchars($account['statement']); ?></div>
+        <div class="account-name"><?php echo $account['name']; ?></div>
         <div class="status-badge <?php echo $isActive ? 'status-active' : 'status-inactive'; ?>">
-            <?php echo $isActive ? '✓ ACTIVE' : '✗ INACTIVE'; ?>
+            <?php echo $isActive ? 'ACTIVE' : 'INACTIVE'; ?>
         </div>
         <div class="account-balance <?php echo (float)$account['balance'] >= 0 ? 'balance-positive' : 'balance-negative'; ?>">
             Balance: <?php echo formatMoney($account['balance']); ?>
         </div>
     </div>
     
-    <?php if (!$canEditAccount): ?>
-    <div class="access-restricted">
-        🔒 Your access level (<?php echo $userAccessLevel; ?>) does not permit account editing or deactivation. Contact an administrator for assistance.
-    </div>
-    <?php endif; ?>
-    
     <h1>Account Details</h1>
     
     <form>
         <div class="form-container">
-            <!-- Left Column -->
             <div class="form-column">
                 <div class="form-group">
                     <label for="accountNumber">Account Number</label>
-                    <input type="text" id="accountNumber" value="<?php echo htmlspecialchars($account['account_number']); ?>" readonly class="readonly-field">
+                    <input type="text" id="accountNumber" value="<?php echo $account['account_number']; ?>" readonly class="readonly-field">
                     <div class="help-text">Unique account identifier</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="accountName">Account Name</label>
-                    <input type="text" id="accountName" value="<?php echo htmlspecialchars($account['name']); ?>" readonly class="readonly-field">
+                    <input type="text" id="accountName" value="<?php echo $account['name']; ?>" readonly class="readonly-field">
                     <div class="help-text">Display name for this account</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" rows="3" readonly class="readonly-field"><?php echo htmlspecialchars($account['description']); ?></textarea>
+                    <textarea id="description" rows="3" readonly class="readonly-field"><?php echo $account['description']; ?></textarea>
                     <div class="help-text">Detailed description of the account</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="normalSide">Normal Side</label>
-                    <input type="text" id="normalSide" value="<?php echo htmlspecialchars($account['normal_side']); ?>" readonly class="readonly-field">
+                    <input type="text" id="normalSide" value="<?php echo $account['normal_side']; ?>" readonly class="readonly-field">
                     <div class="help-text">Debit or Credit normal balance side</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <input type="text" id="category" value="<?php echo htmlspecialchars($account['category']); ?>" readonly class="readonly-field">
+                    <input type="text" id="category" value="<?php echo $account['category']; ?>" readonly class="readonly-field">
                     <div class="help-text">Primary account classification</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="subcategory">Subcategory</label>
-                    <input type="text" id="subcategory" value="<?php echo htmlspecialchars($account['subcategory']); ?>" readonly class="readonly-field">
+                    <input type="text" id="subcategory" value="<?php echo $account['subcategory']; ?>" readonly class="readonly-field">
                     <div class="help-text">Secondary account classification</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="statement">Financial Statement</label>
-                    <input type="text" id="statement" value="<?php echo htmlspecialchars($account['statement']); ?>" readonly class="readonly-field">
+                    <input type="text" id="statement" value="<?php echo $account['statement']; ?>" readonly class="readonly-field">
                     <div class="help-text">Which financial statement this account appears on</div>
                 </div>
                 
@@ -457,7 +427,6 @@ $hasBalance = ($accountBalance != 0);
                 </div>
             </div>
             
-            <!-- Right Column -->
             <div class="form-column">
                 <div class="form-group">
                     <label for="initialBalance">Initial Balance</label>
@@ -485,7 +454,7 @@ $hasBalance = ($accountBalance != 0);
                 
                 <div class="form-group">
                     <label for="orderType">Order Type</label>
-                    <input type="text" id="orderType" value="<?php echo htmlspecialchars($account['order_type']); ?>" readonly class="readonly-field">
+                    <input type="text" id="orderType" value="<?php echo $account['order_type']; ?>" readonly class="readonly-field">
                     <div class="help-text">Classification for financial statement ordering</div>
                 </div>
                 
@@ -497,48 +466,45 @@ $hasBalance = ($accountBalance != 0);
                 
                 <div class="form-group">
                     <label for="comment">Comments</label>
-                    <textarea id="comment" rows="4" readonly class="readonly-field"><?php echo htmlspecialchars($account['comment']); ?></textarea>
+                    <textarea id="comment" rows="4" readonly class="readonly-field"><?php echo $account['comment']; ?></textarea>
                     <div class="help-text">Additional notes about this account</div>
                 </div>
             </div>
             
-            <!-- Form Footer -->
             <div class="form-footer">
                 <?php if ($canEditAccount): ?>
                     <a href="edit_account.php?account_number=<?php echo urlencode($account_number); ?>" 
                        class="action-btn edit-btn <?php echo $isActive ? '' : 'disabled-btn'; ?>"
                        <?php echo $isActive ? '' : 'onclick="return false;" title="Cannot edit inactive account"'; ?>>
-                       ✏️ Edit Account
+                        Edit Account
                     </a>
                 <?php endif; ?>
                 
-                <a href="view_transactions.php?account_number=<?php echo urlencode($account_number); ?>" class="action-btn edit-btn">📋 View Transactions</a>
+                <a href="view_transactions.php?account_number=<?php echo $account_number;?>" class="action-btn edit-btn">View Transactions</a>
                 
-                <a type="button" onclick="openEmailModal()" class="action-btn edit-btn">
-                    ✉️ Send Email
-                </a>
-                <br><br>
-                
+                <a type="button" onclick="openEmailModal()" class="action-btn edit-btn">Send Email</a>
+                <br>
+                <br>
                 <?php if ($canEditAccount): ?>
                     
                     <?php if ($isActive && !$hasBalance): ?>
                         <button type="button" onclick="confirmDeactivate()" class="action-btn deactivate-btn">
-                            🚫 Deactivate Account
+                            Deactivate Account
                         </button>
                     <?php else: ?>
                         <button type="button" class="action-btn deactivate-btn">
-                            🚫 Cannot Deactivate: Balance Greater than 0
+                            Cannot Deactivate: Balance Greater than 0
                         </button>
                     <?php endif; ?>
                     <?php if (!$isActive): ?>
                         <button type="button" onclick="confirmReactivate()" class="action-btn reactivate-btn">
-                            ✅ Reactivate Account
+                            Reactivate Account
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
                 <br/>
                 <br/>
-                <a href="accounts_dashboard.php" class="action-btn back-btn">⬅️ Back to Accounts Dashboard</a>
+                <a href="accounts_dashboard.php" class="action-btn back-btn"> Back to Accounts Dashboard</a>
             </div>
         </div>
     </form>
@@ -549,7 +515,7 @@ $hasBalance = ($accountBalance != 0);
     <div class="modal-content">
         <div class="modal-header">
             <span class="close" onclick="closeEmailModal()">&times;</span>
-            <h2>✉️ Send Email to User</h2>
+            <h2> Send Email to User</h2>
         </div>
         <div class="modal-body">
             <form id="emailForm" onsubmit="return sendEmail(event)">
@@ -558,14 +524,14 @@ $hasBalance = ($accountBalance != 0);
                     <select id="recipientUser" name="recipient_user" required>
                         <option value="">Select a user...</option>
                         <?php foreach ($users as $user): ?>
-                            <?php if ($user['user_id'] != $userId): // Don't show current user ?>
-                                <option value="<?php echo htmlspecialchars($user['user_id']); ?>" 
-                                        data-email="<?php echo htmlspecialchars($user['email']); ?>">
-                                    <?php echo htmlspecialchars($user['username']); ?> 
+                            <?php if ($user['user_id'] != $userId): // Disable abiliy for the logged in user to email his/herself ?>
+                                <option value="<?php echo $user['user_id']; ?>" 
+                                        data-email="<?php echo $user['email']; ?>">
+                                    <?php echo $user['username']; ?> 
                                     <?php if (!empty($user['first_name']) || !empty($user['last_name'])): ?>
-                                        (<?php echo htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])); ?>)
+                                        (<?php echo $user['first_name'] . ' ' . $user['last_name']; ?>)
                                     <?php endif; ?>
-                                    - <?php echo htmlspecialchars($user['email']); ?>
+                                    - <?php echo $user['email']; ?>
                                 </option>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -576,7 +542,7 @@ $hasBalance = ($accountBalance != 0);
                     <label for="emailSubject">Subject <span class="required-star">*</span></label>
                     <input type="text" id="emailSubject" name="subject" required 
                            placeholder="Enter email subject..." 
-                           value="Account Information: <?php echo htmlspecialchars($account['account_number'] . ' - ' . $account['name']); ?>">
+                           value="Account Information: <?php echo $account['account_number'] . ' - ' . $account['name']; ?>">
                 </div>
                 
                 <div class="email-form-group">
@@ -586,16 +552,15 @@ $hasBalance = ($accountBalance != 0);
 
 I wanted to share information about the following account:
 
-Account Number: <?php echo htmlspecialchars($account['account_number']); ?>
-Account Name: <?php echo htmlspecialchars($account['name']); ?>
-Category: <?php echo htmlspecialchars($account['category']); ?>
+Account Number: <?php echo $account['account_number']; ?>
+Account Name: <?php echo $account['name']; ?>
+Category: <?php echo $account['category']; ?>
 Current Balance: <?php echo formatMoney($account['balance']); ?>
 Status: <?php echo $isActive ? 'Active' : 'Inactive'; ?>
 
 Please review and let me know if you have any questions.
 
-Best regards,
-<?php echo htmlspecialchars($username); ?></textarea>
+</textarea>
                 </div>
             </form>
         </div>
@@ -607,7 +572,7 @@ Best regards,
 </div>
 
 <script>
-<?php if ($canEditAccount): ?>
+
 function confirmDeactivate() {
     const accountName = "<?php echo addslashes($account['name']); ?>";
     const accountNumber = "<?php echo addslashes($account['account_number']); ?>";
@@ -627,6 +592,7 @@ function confirmDeactivate() {
     }
 }
 
+
 function confirmReactivate() {
     const accountName = "<?php echo addslashes($account['name']); ?>";
     const accountNumber = "<?php echo addslashes($account['account_number']); ?>";
@@ -640,13 +606,7 @@ function confirmReactivate() {
         window.location.href = `deactivate_account.php?account_number=<?php echo urlencode($account_number); ?>&action=reactivate`;
     }
 }
-<?php endif; ?>
 
-function printAccount() {
-    window.print();
-}
-
-// Email Modal Functions
 function openEmailModal() {
     document.getElementById('emailModal').style.display = 'block';
 }
@@ -655,21 +615,7 @@ function closeEmailModal() {
     document.getElementById('emailModal').style.display = 'none';
 }
 
-// Close modal when clicking outside of it
-window.onclick = function(event) {
-    const modal = document.getElementById('emailModal');
-    if (event.target == modal) {
-        closeEmailModal();
-    }
-}
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeEmailModal();
-    }
-});
-
+//function to send email to a selected user about the viewed account
 function sendEmail(event) {
     event.preventDefault();
     
@@ -694,7 +640,6 @@ function sendEmail(event) {
         return false;
     }
     
-    // Prepare form data
     const formData = new FormData();
     formData.append('recipient_user_id', recipientUserId);
     formData.append('recipient_email', recipientEmail);
@@ -702,7 +647,6 @@ function sendEmail(event) {
     formData.append('content', content);
     formData.append('account_number', '<?php echo addslashes($account_number); ?>');
     
-    // Send AJAX request
     fetch('send_email_from_account.php', {
         method: 'POST',
         body: formData
@@ -712,9 +656,7 @@ function sendEmail(event) {
         if (data.success) {
             alert('Email sent successfully!');
             closeEmailModal();
-            // Reset form
             document.getElementById('emailForm').reset();
-            // Restore default subject
             document.getElementById('emailSubject').value = 'Account Information: <?php echo addslashes($account['account_number'] . ' - ' . $account['name']); ?>';
         } else {
             alert('Error sending email: ' + (data.message || 'Unknown error occurred'));
@@ -727,22 +669,6 @@ function sendEmail(event) {
     
     return false;
 }
-
-// Add keyboard shortcut for editing (Ctrl+E) - only if user has sufficient access level and account is active
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 'e') {
-        e.preventDefault();
-        <?php if ($canEditAccount): ?>
-            <?php if ($isActive): ?>
-                window.location.href = 'edit_account.php?account_number=<?php echo urlencode($account_number); ?>';
-            <?php else: ?>
-                alert('Cannot edit inactive account. Please reactivate the account first.');
-            <?php endif; ?>
-        <?php else: ?>
-            alert('Your access level (<?php echo $userAccessLevel; ?>) does not permit account editing. Contact an administrator.');
-        <?php endif; ?>
-    }
-});
 </script>
 </body>
 </html>

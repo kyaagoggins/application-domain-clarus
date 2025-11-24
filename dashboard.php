@@ -1,12 +1,11 @@
 <?php
-/**
- * View Dashboard of All Users
- * This page is shown to admins to review the details of all users in the system
- */
+//KSU student project for Clarus Accounting tool
+//This page is used by managers to view all system users
+//Initially drafted by Eric Poole
 
 session_start();
 
-// Check if user is logged in
+// Check if user is logged in, if not redirect to the sign in page
 if (!isset($_SESSION['user_id'])) {
     header('Location: home.html?error=session_expired');
     exit;
@@ -19,28 +18,30 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+//set the session values to local variables
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 
-// If accessed directly and profile is already complete, redirect to home
-// In real implementation, you'd check the database here
 
 include 'header.php';
 ?>
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <!--Commenting out this default icon, Kyaa is creating a custom icon and will include in the header -->
     <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
 
     <?php
     echo $_SESSION['password_message'];
+    
+    //connect to the external config db file
     include '../db_connect.php';
 
-    try {
-        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Get all users with password expiration status
-        $stmt = $pdo->query("
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Get all users with password expiration status
+    $getUsers = $pdo->query("
         SELECT 
             user_id,
             username,
@@ -51,20 +52,16 @@ include 'header.php';
             last_password_reset_datetime,
             active,
             suspension_remove_date,
-            CASE 
-                WHEN last_password_reset_datetime IS NULL THEN 'Never Set'
-                WHEN DATEDIFF(NOW(), last_password_reset_datetime) > 30 THEN 'Expired'
-                ELSE 'Valid'
-            END AS password_status
+        CASE 
+            WHEN last_password_reset_datetime IS NULL THEN 'Never Set'
+            WHEN DATEDIFF(NOW(), last_password_reset_datetime) > 30 THEN 'Expired'
+            ELSE 'Valid'
+        END AS password_status
         FROM users 
         ORDER BY last_name, first_name
     ");
 
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    } catch (PDOException $e) {
-        die("Database Error: " . $e->getMessage());
-    }
+    $users = $getUsers->fetchAll(PDO::FETCH_ASSOC);
     ?>
 
     <!DOCTYPE html>
@@ -290,15 +287,9 @@ include 'header.php';
     <body>
         <h1>User Management Dashboard</h1>
         <div style="margin-top: 20px;">
-            <button style="width:300px" onclick="addNewUser()" title="Add New User">
-                ➕ Add New User
-            </button>
-            <button style="width:300px" onclick="viewExpiredUsers()" title="View Users with Expired Passwords">
-                ❌ View Users with Expired Passwords
-            </button>
-            <button style="width:300px" onclick="viewAccessRequests()" title="View New User Access Requests">
-                📋 View New User Access Requests
-            </button>
+            <button style="width:300px" onclick="addNewUser()" title="Add New User">Add New User</button>
+            <button style="width:300px" onclick="viewExpiredUsers()" title="View Users with Expired Passwords">View Users with Expired Passwords</button>
+            <button style="width:300px" onclick="viewAccessRequests()" title="View New User Access Requests">View New User Access Requests</button>
         </div>
         <table>
             <tr>
@@ -309,12 +300,12 @@ include 'header.php';
                 <th>Account Status</th>
                 <th class="actions-column">Actions</th>
             </tr>
-
             <?php foreach ($users as $user): ?>
                 <tr <?php echo !$user['active'] ? 'class="inactive-row"' : ''; ?>>
-                    <td><?php echo htmlspecialchars($user['first_name']); ?></td>
-                    <td><?php echo htmlspecialchars($user['last_name']); ?></td>
-                    <td><?php echo ucfirst(htmlspecialchars($user['access_level'])); ?></td>
+                    <td><?php echo $user['first_name']; ?></td>
+                    <td><?php echo $user['last_name']; ?></td>
+                    <td><?php echo $user['access_level']; ?></td>
+                    <!--the following td element references the php twice, once to set the css class name to color the td content, then again to insert the text-->
                     <td class="<?php echo strtolower($user['password_status']); ?>">
                         <?php echo $user['password_status']; ?>
                     </td>
@@ -331,53 +322,23 @@ include 'header.php';
                         ?>
                     </td>
                     <td class="actions-column">
-                        <button class="action-btn edit-btn" onclick="editUser(<?php echo $user['user_id']; ?>)"
-                            title="Edit User">
-                            ✏️ Edit
-                        </button><br>
-
-                        <button class="action-btn email-btn"
-                            onclick="emailUser('<?php echo htmlspecialchars($user['email']); ?>', '<?php echo htmlspecialchars($user['first_name']); ?>', '<?php echo htmlspecialchars($user['last_name']); ?>')"
-                            title="Send Email">
-                            📧 Email
-                        </button><br>
-
+                        <button class="action-btn edit-btn" onclick="editUser(<?php echo $user['user_id']; ?>)"title="Edit User">Edit</button>
+                        <br>
+                        <button class="action-btn email-btn" onclick="emailUser('<?php echo htmlspecialchars($user['email']); ?>', '<?php echo htmlspecialchars($user['first_name']); ?>', '<?php echo htmlspecialchars($user['last_name']); ?>')" title="Send Email">Email</button>
+                        <br>
                         <?php if ($user['active']): ?>
-                            <button class="action-btn suspend-btn"
-                                onclick="showSuspendModal(<?php echo $user['user_id']; ?>, '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')"
-                                title="Suspend User">
-                                ⏸️ Suspend
-                            </button><br>
-
-                            <button class="action-btn deactivate-btn"
-                                onclick="toggleUserStatus(<?php echo $user['user_id']; ?>, 'deactivate', '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')"
-                                title="Deactivate User">
-                                ❌ Deactivate
-                            </button><br>
+                            <button class="action-btn suspend-btn" onclick="showSuspendModal(<?php echo $user['user_id']; ?>, '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')" title="Suspend User">Suspend</button>
+                            <br>
+                            <button class="action-btn deactivate-btn" onclick="toggleUserStatus(<?php echo $user['user_id']; ?>, 'deactivate', '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')"title="Deactivate User">Deactivate</button>
+                            <br>
                         <?php else: ?>
-                            <button class="action-btn activate-btn"
-                                onclick="toggleUserStatus(<?php echo $user['user_id']; ?>, 'activate', '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')"
-                                title="Activate User">
-                                ✅ Activate
-                            </button><br>
+                            <button class="action-btn activate-btn" onclick="toggleUserStatus(<?php echo $user['user_id']; ?>, 'activate', '<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>')" title="Activate User">Activate</button>
+                            <br>
                         <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </table>
-
-        <p><strong>Total Users:</strong> <?php echo count($users); ?></p>
-        <p><strong>Active Users:</strong>
-            <?php echo count(array_filter($users, function ($u) {
-                return $u['active'];
-            })); ?>
-        </p>
-        <p><strong>Inactive Users:</strong>
-            <?php echo count(array_filter($users, function ($u) {
-                return !$u['active'];
-            })); ?>
-        </p>
-
         <!-- Suspend User Modal -->
         <div id="suspendModal" class="modal">
             <div class="modal-content">

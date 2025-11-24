@@ -1,6 +1,10 @@
 <?php
+//KSU student project for Clarus Accounting tool
+//This page provides help context for each part of the applications
+//Initially drafted by Eric Poole, Expanded on by Kyaa Goggins
 
-
+//Question: why do we need to start a session for this page? 
+//Answer: yes because of the requirement to show logged in users name on each page
 session_start();
 
 // Check if user is logged in
@@ -16,9 +20,9 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
+$userAccessLevel = $_SESSION['access_level'];
 $canEditAccounts = ($userAccessLevel >= 5);
 
 include 'header.php';

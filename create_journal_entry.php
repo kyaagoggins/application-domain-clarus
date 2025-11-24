@@ -1,9 +1,7 @@
 <?php
-
-/**
- * Create Journal Entry
- * This page allows users to create new accounting journal entries
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to create a new journal entry
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -20,40 +18,36 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int)$_SESSION['access_level'] : 0;
+$userAccessLevel = $_SESSION['access_level'];
 
 // Get account_id from URL parameter
-$account_id = isset($_GET['account_id']) ? trim($_GET['account_id']) : null;
+$account_id = $_GET['account_id'];
 
 if (!$account_id) {
-    die("Error: Account ID is required. Please provide a valid account_id parameter in the URL.");
+    die("Hmm... it looks like the Account ID is missing from the URL, please go back and try again.");
 }
 
-// Include database configuration
+// Connect to external database config file
 include '../db_connect.php';
 
 // Fetch account details
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_id");
-    $stmt->execute([':account_id' => $account_id]);
-    $account = $stmt->fetch(PDO::FETCH_ASSOC);
+$getAccountDetails = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_id");
+$getAccountDetails->execute([':account_id' => $account_id]);
+$account = $getAccountDetails->fetch(PDO::FETCH_ASSOC);
     
-    if (!$account) {
-        die("Error: Account not found with Account ID: $account_id");
-    }
-    
-    // Fetch all accounts for dropdown
-    $stmt = $pdo->query("SELECT account_number, name, category FROM accounts WHERE is_active = 1 ORDER BY account_number");
-    $allAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
+if (!$account) {
+    die("Hmm.. something went wrong. No Account ID was found for: $account_id");
 }
+    
+// Fetch all accounts for dropdown
+$getAccounts = $pdo->query("SELECT account_number, name, category FROM accounts WHERE is_active = 1 ORDER BY account_number");
+$allAccounts = $getAccounts->fetchAll(PDO::FETCH_ASSOC);
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -433,13 +427,13 @@ try {
     
     <!-- Error Messages -->
     <div id="errorMessages" class="error-message">
-        <strong>⚠️ Please fix the following errors:</strong>
+        <strong>Please fix the following errors:</strong>
         <ul id="errorList"></ul>
     </div>
     
     <!-- Success Message -->
     <div id="successMessage" class="success-message">
-        <strong>✅ Journal entry created successfully!</strong>
+        <strong>Journal entry created successfully!</strong>
     </div>
     
     <form id="journalEntryForm" enctype="multipart/form-data">
@@ -477,14 +471,14 @@ try {
             
             <!-- Journal Entry Lines -->
             <div class="form-section">
-                <h3>💰 Journal Entry Lines</h3>
+                <h3>Journal Entry Lines</h3>
                 
                 <div id="entryLinesContainer">
                     <!-- Entry lines will be added here dynamically -->
                 </div>
                 
                 <button type="button" class="add-line-btn" onclick="addEntryLine()">
-                    ➕ Add Entry Line
+                     Add Entry Line
                 </button>
                 
                 <!-- Totals Section -->
@@ -516,7 +510,7 @@ try {
                            multiple style="display: none;" onchange="handleFileSelect(event)">
                     <button type="button" onclick="document.getElementById('sourceDocuments').click()" 
                             style="padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        📁 Choose Files
+                         Choose Files
                     </button>
                     <p style="margin-top: 10px; color: #666; font-size: 12px;">
                         Accepted formats: PDF, Word, Excel, CSV, JPG, PNG
@@ -529,13 +523,13 @@ try {
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button type="submit" class="btn btn-submit" id="submitBtn">
-                    💾 Create Journal Entry
+                    Create Journal Entry
                 </button>
                 <button type="button" class="btn btn-restart" onclick="restartForm()">
-                    🔄 Restart
+                    Restart
                 </button>
                 <button type="button" class="btn btn-cancel" onclick="cancelForm()">
-                    ❌ Cancel
+                    Cancel
                 </button>
             </div>
             

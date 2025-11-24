@@ -1,8 +1,8 @@
 <?php
-/**
- * Edit User Profile Page
- * This page allows editing of any user's profile based on URL parameter
- */
+//KSU student project for Clarus Accounting tool
+//This page is used by admins to edit an existing system user
+//Initially drafted by Eric Poole
+//Meets sprint 1 requirements
 
 session_start();
 
@@ -18,40 +18,37 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     header('Location: home.html?error=session_expired');
     exit;
 }
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$current_username = $_SESSION['username'] ?? 'User';
+$current_username = $_SESSION['username'];
 $current_user_id = $_SESSION['user_id'];
 
 // Get user_id from URL parameter
-$edit_user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
+$edit_user_id = $_GET['user_id'];
 
 if (!$edit_user_id) {
-    die("Error: No user ID specified. Please provide a valid user_id parameter.");
+    die("Hmm.. something went wrong. No user id was found in the URL. Please go back and try again.");
 }
 
 // Database configuration
 include '../db_connect.php';
 
-try {
-    // Create database connection
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Create database connection
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Get user information
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = :user_id");
-    $stmt->bindParam(':user_id', $edit_user_id);
-    $stmt->execute();
+// Get user information
+$getUserData = $pdo->prepare("SELECT * FROM users WHERE user_id = :user_id");
+$getUserData->bindParam(':user_id', $edit_user_id);
+$getUserData->execute();
     
-    $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+$user_data = $getUserData->fetch(PDO::FETCH_ASSOC);
     
     if (!$user_data) {
-        die("Error: User with ID $edit_user_id not found.");
+        die("Hmm.. the specified user was not found. Please go back and try again.");
     }
-    
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,10 +60,10 @@ try {
 </head>
 <body>
     <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <!--Disabling the original icon, Kyaa is creating a new one and will include it in the header file -->
     <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
     <?php include 'header.php'; ?>
-    <h1>Edit Profile: <?php echo htmlspecialchars($user_data['first_name'] . ' ' . $user_data['last_name']); ?></h1>
-    <p><strong>Editing User ID:</strong> <?php echo $edit_user_id; ?> | <strong>Username:</strong> <?php echo htmlspecialchars($user_data['username']); ?></p>
+    <h1>Edit Profile: <?php echo $user_data['first_name'] . ' ' . $user_data['last_name']; ?></h1>
     
     <form action="push_user_edits.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
         <!-- Hidden field to pass the user_id being edited -->
@@ -74,23 +71,24 @@ try {
         
         <div>
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" value="<?php echo htmlspecialchars($user_data['first_name']); ?>" required>
+            <input type="text" id="firstName" name="firstName" value="<?php echo $user_data['first_name']; ?>" required>
         </div>
     <br>
     <div>
         <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" value="<?php echo htmlspecialchars($user_data['last_name']); ?>" required>
+        <input type="text" id="lastName" name="lastName" value="<?php echo $user_data['last_name']; ?>" required>
     </div>
     <br>
     <div>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_data['email']); ?>" required>
+        <input type="email" id="email" name="email" value="<?php echo $user_data['email']; ?>" required>
     </div>
     <br>
     <div>
         <label for="accessLevel">Access Level:</label>
         <select name="accessLevel" id="accessLevel" required>
             <option value="">Choose Role</option>
+            <!--The option elements use php to reference the table to see which element to select by default on page load, the selected attribute is added to the item that matches the db table -->
             <option value="3" <?php echo $user_data['access_level'] == '3' ? 'selected' : ''; ?>>Administrator</option>
             <option value="2" <?php echo $user_data['access_level'] == '2' ? 'selected' : ''; ?>>Manager</option>
             <option value="1" <?php echo $user_data['access_level'] == '1' ? 'selected' : ''; ?>>Accountant</option>
@@ -116,13 +114,13 @@ try {
         <label for="profileImage">Profile Image:</label>
         <input type="file" id="profileImage" name="profileImage" accept="image/*">
         <?php if (!empty($user_data['profile_image_url'])): ?>
-            <br><small>Current image: <?php echo htmlspecialchars($user_data['profile_image_url']); ?></small>
+            <br><small>Current image: <?php echo $user_data['profile_image_url']; ?></small>
         <?php endif; ?>
     </div>
     <br>
     <div>
         <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="3" cols="50" required><?php echo htmlspecialchars($user_data['address']); ?></textarea>
+        <textarea id="address" name="address" rows="3" cols="50" required><?php echo $user_data['address']; ?></textarea>
     </div>
     <br>
     <div>
@@ -133,6 +131,7 @@ try {
     <div>
         <label for="active">Account Status:</label>
         <select name="active" id="active" required>
+            <!--The option elements use php to reference the table to see which element to select by default on page load, the selected attribute is added to the item that matches the db table -->
             <option value="1" <?php echo $user_data['active'] == 1 ? 'selected' : ''; ?>>Active</option>
             <option value="0" <?php echo $user_data['active'] == 0 ? 'selected' : ''; ?>>Inactive</option>
         </select>
@@ -164,17 +163,9 @@ try {
     </div>
 </form>
 
-<div style="margin-top: 30px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
-    <h3>User Information</h3>
-    <p><strong>User ID:</strong> <?php echo $user_data['user_id']; ?></p>
-    <p><strong>Created:</strong> <?php echo $user_data['created_at']; ?></p>
-    <p><strong>Last Updated:</strong> <?php echo $user_data['updated_at']; ?></p>
-    <p><strong>Last Login:</strong> <?php echo $user_data['last_login_datetime'] ?: 'Never'; ?></p>
-    <p><strong>Last Password Reset:</strong> <?php echo $user_data['last_password_reset_datetime'] ?: 'Never'; ?></p>
-    <p><strong>Failed Login Attempts:</strong> <?php echo $user_data['unsuccessful_login_attempts']; ?></p>
-</div>
 </div>
 <script>
+//this function checks that all of the assigned password security requirements are met before the user can submit 
 function validatePassword() {
     const password = document.getElementById('password').value;
     const errorDiv = document.getElementById('passwordError');
@@ -189,36 +180,36 @@ function validatePassword() {
     
     // Check minimum length (8 characters)
     if (password.length < 8) {
-        errorDiv.innerHTML = 'Password must be at least 8 characters long.';
+        errorDiv.innerHTML = 'Password needs to be at least 8 characters long.';
         return false;
     }
     
     // Check if starts with a letter
     if (!/^[a-zA-Z]/.test(password)) {
-        errorDiv.innerHTML = 'Password must start with a letter.';
+        errorDiv.innerHTML = 'Passwords need to start with a letter.';
         return false;
     }
     
     // Check if contains at least one letter
     if (!/[a-zA-Z]/.test(password)) {
-        errorDiv.innerHTML = 'Password must contain at least one letter.';
+        errorDiv.innerHTML = 'Passwords need to contain at least one letter.';
         return false;
     }
     
     // Check if contains at least one number
     if (!/[0-9]/.test(password)) {
-        errorDiv.innerHTML = 'Password must contain at least one number.';
+        errorDiv.innerHTML = 'Passwords need to contain at least one number.';
         return false;
     }
     
     // Check if contains at least one special character
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-        errorDiv.innerHTML = 'Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?).';
+        errorDiv.innerHTML = 'Passwords need to contain at least one special character.';
         return false;
     }
     
     // If all checks pass
-    errorDiv.innerHTML = '<span style="color: green;">✓ Password meets all requirements</span>';
+    errorDiv.innerHTML = '<span style="color: green;">Nice! This password meets all security requirements</span>';
     return true;
 }
 
@@ -233,10 +224,10 @@ function validatePasswordMatch() {
     }
     
     if (password !== repeatPassword) {
-        errorDiv.innerHTML = 'Passwords do not match.';
+        errorDiv.innerHTML = 'Opps.. these passwords do not match.';
         return false;
     } else if (repeatPassword !== '') {
-        errorDiv.innerHTML = '<span style="color: green;">✓ Passwords match</span>';
+        errorDiv.innerHTML = '<span style="color: green;">Passwords match</span>';
     }
     return true;
 }

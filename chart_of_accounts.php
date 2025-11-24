@@ -1,8 +1,7 @@
 <?php
-/**
- * Chart of Accounts
- * This page displays the complete chart of accounts with search, filter, and navigation capabilities
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to view the chart of accounts dashboard
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -19,10 +18,10 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
-$canEditAccounts = ($userAccessLevel >= 5);
+$userAccessLevel = $_SESSION['access_level'];
+$canEditAccounts = ($userAccessLevel >= 2);
 
 include 'header.php';
 ?>
@@ -459,18 +458,18 @@ include 'header.php';
         </div>
     </div>
 
-    <!-- Main Content -->
+
     <div class="main-content">
         <h1>Chart of Accounts</h1>
 
         <div id="manageButtonDiv"><a id="manageButton" role="button" class="btn btn-link"
                 href="accounts_dashboard.php">Manage Accounts</a></div>
 
-        <!-- Search and Filter Controls -->
+        <!-- Search and Filter Requirements -->
         <div class="search-filter-container">
             <div class="search-row">
                 <div class="search-group form-group">
-                    <label class="form-label">🔍 Quick Search</label>
+                    <label class="form-label">Quick Search</label>
                     <input class="form-control" type="text" id="quickSearch" placeholder="Account number or name...">
                 </div>
 
@@ -540,23 +539,22 @@ include 'header.php';
                 <button class="filter-btn filter-btn-clear"
                     title="Clear any Filters Selected and Revert the Page to Normal" onclick="clearAllFilters()">Clear
                     All</button>
-                <button class="filter-btn filter-btn-export" title="Export All Chart of Accounts Data to a CSV File"
-                    onclick="exportChartOfAccounts()">Export PDF</button>
                 <button class="filter-btn filter-btn-email" title="Send Email to Another User"
                     onclick="openEmailModal()">✉️ Send Email</button>
             </div>
         </div>
 
         <?php
+        //Connect to the external database config file
         include '../db_connect.php';
 
-        try {
-            $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Get all accounts in a single query
-            $stmt = $pdo->query("
-                    SELECT 
+        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Get all accounts in a single query
+        $getAccounts = $pdo->query("
+                SELECT 
                         account_number,
                         name,
                         category,
@@ -566,28 +564,26 @@ include 'header.php';
                         statement,
                         is_active,
                         created_at
-                    FROM accounts 
-                    ORDER BY category, subcategory, account_number
-                ");
+                FROM accounts 
+                ORDER BY category, subcategory, account_number
+            ");
 
-            $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $accounts = $getAccounts->fetchAll(PDO::FETCH_ASSOC);
 
-            $accountCount = count($accounts);
-            $activeCount = 0;
+        $accountCount = count($accounts);
+        $activeCount = 0;
 
-            foreach ($accounts as $account) {
-                if ($account['is_active']) {
-                    $activeCount++;
-                }
+        foreach ($accounts as $account) {
+            if ($account['is_active']) {
+                $activeCount++;
             }
-
-            // Fetch all users for email dropdown
-            $stmt = $pdo->query("SELECT user_id, username, first_name, last_name, email FROM users WHERE access_level < 3 ORDER BY username");
-            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        } catch (PDOException $e) {
-            die("Database Error: " . $e->getMessage());
         }
+
+        // Fetch all users for email dropdown
+        $getUsers = $pdo->query("SELECT user_id, username, first_name, last_name, email FROM users WHERE access_level < 3 ORDER BY username");
+        $users = $getUsers->fetchAll(PDO::FETCH_ASSOC);
+
+
 
         // Format money function
         function formatMoney($value)
@@ -939,36 +935,6 @@ Best regards,
         // Implement date-based filtering logic here
     }
 
-    function exportChartOfAccounts() {
-        // Simple export functionality
-        const visibleRows = document.querySelectorAll('.account-row[style*="table-row"], .account-row:not([style])');
-
-        let csvContent = 'Account Number,Account Name,Category,Subcategory,Normal Side,Balance,Status\n';
-
-        visibleRows.forEach(row => {
-            const accountNumber = row.dataset.accountNumber;
-            const accountName = row.querySelector('.account-name').textContent;
-            const category = row.dataset.category;
-            const subcategory = row.dataset.subcategory;
-            const normalSide = row.dataset.normalSide;
-            const balance = row.dataset.balance;
-            const status = row.dataset.status;
-
-            csvContent += `"${accountNumber}","${accountName}","${category}","${subcategory}","${normalSide}","${balance}","${status}"\n`;
-        });
-
-        // Download CSV
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `chart_of_accounts_${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }
-
     // Email Modal Functions
     function openEmailModal() {
         document.getElementById('emailModal').style.display = 'block';
@@ -977,31 +943,6 @@ Best regards,
     function closeEmailModal() {
         document.getElementById('emailModal').style.display = 'none';
     }
-
-    // Close modal when clicking outside of it
-    window.onclick = function (event) {
-        const modal = document.getElementById('emailModal');
-        if (event.target == modal) {
-            closeEmailModal();
-        }
-    }
-
-    // Close modal with Escape key - but not if it's being used for clearing filters
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            const modal = document.getElementById('emailModal');
-            if (modal.style.display === 'block') {
-                closeEmailModal();
-            } else {
-                clearAllFilters();
-            }
-        }
-
-        if (e.ctrlKey && e.key === 'f') {
-            e.preventDefault();
-            document.getElementById('quickSearch').focus();
-        }
-    });
 
     function sendEmail(event) {
         event.preventDefault();

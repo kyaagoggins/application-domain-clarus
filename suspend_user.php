@@ -1,4 +1,8 @@
 <?php
+//KSU student project for Clarus Accounting tool
+//This page is used to update the user table when an admin deactivates a user's account
+//Initially drafted by Eric Poole
+
 session_start();
 
 // Check if user is logged in
@@ -33,9 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Get user information for confirmation
-        $user_stmt = $pdo->prepare("SELECT first_name, last_name FROM users WHERE user_id = :user_id");
-        $user_stmt->execute([':user_id' => $user_id]);
-        $user_info = $user_stmt->fetch(PDO::FETCH_ASSOC);
+        $get_user_info = $pdo->prepare("SELECT first_name, last_name FROM users WHERE user_id = :user_id");
+        $get_user_info->execute([':user_id' => $user_id]);
+        $user_info = $get_user_info->fetch(PDO::FETCH_ASSOC);
         
         if (!$user_info) {
             echo "<script>alert('Error: User not found.'); window.location.href='user_management.php';</script>";
@@ -43,19 +47,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         // Update user to suspended status
-        $stmt = $pdo->prepare("
+        $update_user = $pdo->prepare("
             UPDATE users 
             SET active = 0, 
                 suspension_remove_date = :suspension_end_date
             WHERE user_id = :user_id
         ");
         
-        $stmt->execute([
+        $update_user->execute([
             ':suspension_end_date' => $suspension_end_date,
             ':user_id' => $user_id
         ]);
         
-        if ($stmt->rowCount() > 0) {
+        if ($update_user->rowCount() > 0) {
             $user_name = $user_info['first_name'] . ' ' . $user_info['last_name'];
             $formatted_date = date('F j, Y', strtotime($suspension_end_date));
             

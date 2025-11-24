@@ -1,23 +1,27 @@
 <?php
-// Database configuration
+//KSU student project for Clarus Accounting tool
+//This page is used to reset a user's password
+//Initially drafted by Eric Poole
+
+// Connect to the external database file
 include '../db_connect.php';
 
-// Check if form was submitted
+// Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Get form data
+    // Get the user input from the form submission
     $email = $_POST['email'];
     $securityAnswer1 = $_POST['securityAnswer1'];
     $securityAnswer2 = $_POST['securityAnswer2'];
     $securityAnswer3 = $_POST['securityAnswer3'];
     
-    // Validate input
+    // Validate input is completely filled out
     if (empty($email) || empty($securityAnswer1) || empty($securityAnswer2) || empty($securityAnswer3)) {
         die("All fields are required.");
     }
     
-    try {
-        // Create database connection
+
+        // Create thedatabase connection
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
@@ -51,10 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
             } else {
                 // One or more answers don't match
-                echo "❌ VALIDATION FAILED<br>";
-                echo "One or more security question answers are incorrect.<br>";
+                echo "Oops, something isn't right...<br>";
+                echo "One or more of your security question answers didn't match. Please try again.<br>";
                 
-                // Optional: Log failed attempt
+                // Login attempt failed, increment count up by 1
                 $log_stmt = $pdo->prepare("UPDATE users SET unsuccessful_login_attempts = unsuccessful_login_attempts + 1 WHERE email = :email");
                 $log_stmt->bindParam(':email', $email);
                 $log_stmt->execute();
@@ -62,13 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
         } else {
             // Email not found
-            echo "❌ VALIDATION FAILED<br>";
-            echo "Email address not found in our records.";
+            echo "Oops, something isn't right...<br>";
+            echo "We didn't recognize this email address.";
         }
         
-    } catch(PDOException $e) {
-        echo "Database Error: " . $e->getMessage();
-    }
     
 } else {
     // Display the form
@@ -93,17 +94,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <br>
             <div>
-                <label for="securityAnswer1">Security Answer 1 (What was your first pet's name?):</label>
+                <label for="securityAnswer1">Security Answer 1 (What was your first vacation spot?):</label>
                 <input type="text" id="securityAnswer1" name="securityAnswer1" required>
             </div>
             <br>
             <div>
-                <label for="securityAnswer2">Security Answer 2 (What city were you born in?):</label>
+                <label for="securityAnswer2">Security Answer 2 (How old were you when you lost your first tooth?):</label>
                 <input type="text" id="securityAnswer2" name="securityAnswer2" required>
             </div>
             <br>
             <div>
-                <label for="securityAnswer3">Security Answer 3 (What was your mother's maiden name?):</label>
+                <label for="securityAnswer3">Security Answer 3 (What is your favorite animal?):</label>
                 <input type="text" id="securityAnswer3" name="securityAnswer3" required>
             </div>
             <br>

@@ -1,8 +1,8 @@
 <?php
-/**
- * Edit Account Page
- * This page allows editing of an existing accounting account
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to view an account's ledger
+//Initially drafted by Eric Poole
+//This page was created to meet Sprint 2 requirements
 
 session_start();
 
@@ -19,37 +19,34 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 
 // Get account_number from URL parameter
-$account_number = isset($_GET['account_number']) ? trim($_GET['account_number']) : null;
+$account_number = $_GET['account_number'];
 
 if (!$account_number) {
-    die("Error: Account Number is required. Please provide a valid account_number parameter in the URL.");
+    die("Hmm.. something went wrong. There is no account number in the URL. Please go back and try again.");
 }
 
 // Include database configuration
 include '../db_connect.php';
 
 // Fetch account details from database
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
-    $stmt->execute([':account_number' => $account_number]);
-    $account = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
+$stmt->execute([':account_number' => $account_number]);
+$account = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if (!$account) {
-        die("Error: Account not found with Account Number: $account_number");
-    }
-    
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
+if (!$account) {
+    die("Hmm.. something went wrong. There was no account found with the provided account number. Please go back and try again.");
 }
 
-// Format monetary values for display (remove commas and dollar signs for editing)
+
+// Remove commas and dollar signs from dollar value fields
 function formatMoneyForEdit($value) {
     return number_format((float)$value, 2, '.', '');
 }
@@ -60,7 +57,7 @@ function formatMoneyForEdit($value) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Edit Account - <?php echo htmlspecialchars($account['name']); ?></title>
+    <title>Clarus - Edit Account</title>
     <style>
         .form-container {
             display: grid;
@@ -190,19 +187,20 @@ function formatMoneyForEdit($value) {
 </head>
 <body>
     <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-    <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
+        <!--Disabling the default icon, Kyaa is creating a custom one, it will be part of the included header-->
+        <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
+    
     <?php include 'header.php'; ?>
     
     <div class="account-header">
-        <div class="account-number"><?php echo htmlspecialchars($account['account_number']); ?></div>
-        <div class="account-name">Editing: <?php echo htmlspecialchars($account['name']); ?></div>
+
+        <div class="account-name"><?php echo $account['name']; ?></div>
     </div>
     
     <h1>Edit Account</h1>
     
     <form action="push_edit_account.php" method="POST" onsubmit="return validateForm()">
-        <input type="hidden" name="original_account_number" value="<?php echo htmlspecialchars($account['account_number']); ?>">
-        <input type="hidden" name="original_name" value="<?php echo htmlspecialchars($account['name']); ?>">
+        <input type="hidden" name="original_name" value="<?php echo $account['name']; ?>">
         
         <div class="form-container">
             <!-- Left Column -->
@@ -210,7 +208,7 @@ function formatMoneyForEdit($value) {
                 <div class="form-group">
                     <label for="accountNumber">Account Number <span class="required">*</span></label>
                     <input type="text" id="accountNumber" name="account_number" 
-                           value="<?php echo htmlspecialchars($account['account_number']); ?>" 
+                           value="<?php echo $account['account_number']; ?>" 
                            required maxlength="20" oninput="validateAccountNumber()" onblur="checkDuplicateAccount()">
                     <div id="accountNumberError" class="error-message"></div>
                     <div class="help-text">Enter a unique account number (numbers only, no spaces or decimals)</div>
@@ -219,7 +217,7 @@ function formatMoneyForEdit($value) {
                 <div class="form-group">
                     <label for="accountName">Account Name <span class="required">*</span></label>
                     <input type="text" id="accountName" name="name" 
-                           value="<?php echo htmlspecialchars($account['name']); ?>" 
+                           value="<?php echo $account['name']; ?>" 
                            required maxlength="100" onblur="checkDuplicateName()">
                     <div id="accountNameError" class="error-message"></div>
                     <div class="help-text">Enter a unique account name (e.g., Cash, Accounts Receivable)</div>
@@ -227,7 +225,7 @@ function formatMoneyForEdit($value) {
                 
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3" maxlength="500"><?php echo htmlspecialchars($account['description']); ?></textarea>
+                    <textarea id="description" name="description" rows="3" maxlength="500"><?php echo $account['description']; ?></textarea>
                     <div class="help-text">Optional detailed description of the account</div>
                 </div>
                 
@@ -245,6 +243,7 @@ function formatMoneyForEdit($value) {
                     <label for="category">Category <span class="required">*</span></label>
                     <select id="category" name="category" required onchange="updateSubcategories()">
                         <option value="">Choose Category</option>
+                        <!--The following option elements have php that references this account in the table, checks its existing category, and adds the "selected" attribute so that the form is prepopulated for the user -->
                         <option value="Assets" <?php echo $account['category'] == 'Assets' ? 'selected' : ''; ?>>Assets</option>
                         <option value="Liabilities" <?php echo $account['category'] == 'Liabilities' ? 'selected' : ''; ?>>Liabilities</option>
                         <option value="Equity" <?php echo $account['category'] == 'Equity' ? 'selected' : ''; ?>>Equity</option>
@@ -257,7 +256,7 @@ function formatMoneyForEdit($value) {
                     <label for="subcategory">Subcategory</label>
                     <select id="subcategory" name="subcategory">
                         <option value="">Choose Subcategory</option>
-                        <!-- Will be populated by JavaScript -->
+                        <!-- Will be populated by the JavaScript function updateSubCategories on page load-->
                     </select>
                 </div>
                 
@@ -265,6 +264,7 @@ function formatMoneyForEdit($value) {
                     <label for="statement">Financial Statement <span class="required">*</span></label>
                     <select id="statement" name="statement" required>
                         <option value="">Choose Statement</option>
+                        <!--The following option elements have php that references this account in the table, checks its existing statement type, and adds the "selected" attribute so that the form is prepopulated for the user -->
                         <option value="Balance Sheet" <?php echo $account['statement'] == 'Balance Sheet' ? 'selected' : ''; ?>>Balance Sheet</option>
                         <option value="Income Statement" <?php echo $account['statement'] == 'Income Statement' ? 'selected' : ''; ?>>Income Statement</option>
                         <option value="Statement of Cash Flows" <?php echo $account['statement'] == 'Statement of Cash Flows' ? 'selected' : ''; ?>>Statement of Cash Flows</option>
@@ -310,6 +310,7 @@ function formatMoneyForEdit($value) {
                     <label for="orderType">Order Type</label>
                     <select id="orderType" name="order_type">
                         <option value="">Choose Order Type</option>
+                        <!--The following option elements have php that references this account in the table, checks its existing order type, and adds the "selected" attribute so that the form is prepopulated for the user -->
                         <option value="Current Assets" <?php echo $account['order_type'] == 'Current Assets' ? 'selected' : ''; ?>>Current Assets</option>
                         <option value="Non-Current Assets" <?php echo $account['order_type'] == 'Non-Current Assets' ? 'selected' : ''; ?>>Non-Current Assets</option>
                         <option value="Current Liabilities" <?php echo $account['order_type'] == 'Current Liabilities' ? 'selected' : ''; ?>>Current Liabilities</option>
@@ -324,17 +325,17 @@ function formatMoneyForEdit($value) {
                 
                 <div class="form-group">
                     <label for="comment">Comments</label>
-                    <textarea id="comment" name="comment" rows="4" maxlength="1000"><?php echo htmlspecialchars($account['comment']); ?></textarea>
+                    <textarea id="comment" name="comment" rows="4" maxlength="1000"><?php echo $account['comment']; ?></textarea>
                     <div class="help-text">Additional notes or comments about this account</div>
                 </div>
             </div>
             
             <!-- Form Footer -->
             <div class="form-footer">
-                <button type="submit" class="submit-btn">💾 Update Account</button>
+                <button type="submit" class="submit-btn">Update Account</button>
                 <br><br>
-                <a href="view_account.php?account_number=<?php echo urlencode($account['account_number']); ?>" class="cancel-btn">👁️ View Account</a>
-                <a href="accounts_dashboard.php" class="cancel-btn">❌ Cancel</a>
+                <a href="view_account.php?account_number=<?php echo $account['account_number']; ?>" class="cancel-btn">View Account</a>
+                <a href="accounts_dashboard.php" class="cancel-btn">Cancel</a>
             </div>
         </div>
     </form>
@@ -342,9 +343,9 @@ function formatMoneyForEdit($value) {
 
 <script>
 // Store original values for duplicate checking
-const originalAccountNumber = "<?php echo addslashes($account['account_number']); ?>";
-const originalAccountName = "<?php echo addslashes($account['name']); ?>";
-const currentSubcategory = "<?php echo addslashes($account['subcategory']); ?>";
+const originalAccountNumber = "<?php echo $account['account_number']; ?>";
+const originalAccountName = "<?php echo $account['name']; ?>";
+const currentSubcategory = "<?php echo $account['subcategory']; ?>";
 
 // Subcategory options based on category
 const subcategories = {
@@ -445,11 +446,11 @@ function checkDuplicateAccount() {
         return true;
     }
     
-    // Simulate AJAX call - replace with actual AJAX call to check_duplicate.php
+    // Placeholder values, duplicate check to tables still under development
     const duplicateAccounts = ['1000', '2000', '3000', '4000', '5000'];
     
     if (duplicateAccounts.includes(value)) {
-        errorDiv.textContent = 'This account number already exists. Please choose a different number.';
+        errorDiv.textContent = 'This account number is taken. Please choose a different number.';
         errorDiv.className = 'error-message';
         input.classList.add('validation-error');
         input.classList.remove('validation-success');
@@ -458,14 +459,14 @@ function checkDuplicateAccount() {
     
     errorDiv.textContent = '';
     errorDiv.className = 'success-message';
-    errorDiv.textContent = '✓ Account number is available.';
+    errorDiv.textContent = 'Account number is available.';
     input.classList.remove('validation-error');
     input.classList.add('validation-success');
     
     return true;
 }
 
-// Check for duplicate account name (exclude current account)
+// Check for duplicate account name (ignores current account's name to resolve a bug we found)
 function checkDuplicateName() {
     const input = document.getElementById('accountName');
     const errorDiv = document.getElementById('accountNameError');
@@ -473,7 +474,7 @@ function checkDuplicateName() {
     
     if (!value) return;
     
-    // If it's the same as the original, no need to check
+    // If it's the same as the original, no need to check it, carry on
     if (value === originalAccountName) {
         errorDiv.textContent = '';
         errorDiv.className = 'success-message';
@@ -483,7 +484,6 @@ function checkDuplicateName() {
         return true;
     }
     
-    // Simulate AJAX call - replace with actual AJAX call to check_duplicate.php
     const duplicateNames = ['cash', 'accounts receivable', 'inventory', 'accounts payable'];
     
     if (duplicateNames.includes(value.toLowerCase())) {
@@ -496,7 +496,7 @@ function checkDuplicateName() {
     
     errorDiv.textContent = '';
     errorDiv.className = 'success-message';
-    errorDiv.textContent = '✓ Account name is available.';
+    errorDiv.textContent = 'Account name is available.';
     input.classList.remove('validation-error');
     input.classList.add('validation-success');
     
@@ -580,7 +580,7 @@ function validateForm() {
     }
     
     if (!validateAccountNumber()) {
-        alert('Please enter a valid account number (numbers only, at least 3 digits).');
+        alert('Please enter a valid account number (only numbers and at least 3 digits).');
         return false;
     }
     

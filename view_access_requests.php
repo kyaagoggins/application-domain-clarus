@@ -1,8 +1,7 @@
 <?php
-/**
- * New User Requests Management
- * This page shows pending user registration requests for admin approval
- */
+//KSU student project for Clarus Accounting tool
+//This page is used by admins to view and approve or reject access requests to the system by outside users
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -19,7 +18,7 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 ?>
 <!DOCTYPE html>
@@ -31,14 +30,14 @@ $userId = $_SESSION['user_id'];
     <title>New User Requests</title>
 </head>
 <body>
-    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
     <?php include 'header.php'; ?>
     
     <?php
-// Database configuration
-include '../db_connect.php';
+    // Connect to the external database config file
+    include '../db_connect.php';
 
-try {
+
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
@@ -68,9 +67,6 @@ try {
     $pending_count = count(array_filter($requests, function($r) { return $r['approved'] == 0; }));
     $approved_count = count(array_filter($requests, function($r) { return $r['approved'] == 1; }));
     
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
-}
 ?>
 
 <!DOCTYPE html>
@@ -166,9 +162,6 @@ try {
             opacity: 0.7;
             background-color: #f8fff9;
         }
-        .old-request {
-            background-color: #fff3cd;
-        }
         
         /* Alert Styles */
         .alert {
@@ -194,31 +187,21 @@ try {
     
     <?php if ($pending_count > 0): ?>
         <div class="alert alert-info">
-            <strong>📋 Pending Requests:</strong> There are <?php echo $pending_count; ?> user registration requests awaiting your review.
+            <strong>Pending Requests:</strong> There are <?php echo $pending_count; ?> user registration requests awaiting your review.
         </div>
     <?php endif; ?>
-    
-    <?php 
-    $old_requests = array_filter($requests, function($r) { return $r['days_waiting'] > 7 && $r['approved'] == 0; });
-    if (count($old_requests) > 0): 
-    ?>
-        <div class="alert alert-warning">
-            <strong>⏰ Attention:</strong> <?php echo count($old_requests); ?> request(s) have been waiting more than 7 days for approval.
-        </div>
-    <?php endif; ?>
-    
     <div style="margin-top: 20px;">
-        <button class="nav-btn nav-btn-back" onclick="goBackToUserManagement()" title="Back to User Management">
+        <button class="nav-btn nav-btn-back" onclick="window.location.href = 'dashboard.php';" title="Back to User Management">
             ← Back to User Management
         </button>
         <!--<button class="nav-btn nav-btn-refresh" onclick="refreshPage()" title="Refresh Page">
-            🔄 Refresh
+            Refresh
         </button>-->
     </div>
     
     <?php if (empty($requests)): ?>
         <div class="alert alert-info">
-            <strong>📭 No Requests Found</strong><br>
+            <strong>No Requests Found</strong><br>
             There are currently no user registration requests in the system.
         </div>
     <?php else: ?>
@@ -231,53 +214,42 @@ try {
             <th>Email Address</th>
             <th>Status</th>
             <th>Request Date</th>
-            <th>Days Waiting</th>
             <th class="actions-column">Actions</th>
         </tr>
         
         <?php foreach ($requests as $request): ?>
-        <tr class="<?php echo $request['approved'] == 1 ? 'approved-row' : ''; ?><?php echo $request['days_waiting'] > 7 && $request['approved'] == 0 ? ' old-request' : ''; ?>">
-            <td><?php echo htmlspecialchars($request['request_id']); ?></td>
-            <td><?php echo htmlspecialchars($request['first_name']); ?></td>
-            <td><?php echo htmlspecialchars($request['last_name']); ?></td>
-            <td><?php echo htmlspecialchars($request['email']); ?></td>
+        <tr>
+            <td><?php echo $request['request_id']; ?></td>
+            <td><?php echo $request['first_name']; ?></td>
+            <td><?php echo $request['last_name']; ?></td>
+            <td><?php echo $request['email']; ?></td>
             <td class="<?php echo strtolower($request['status_text']); ?>">
                 <?php 
                 if ($request['approved'] == 1) {
-                    echo '✅ ' . $request['status_text'];
+                    echo $request['status_text'];
                 } else {
-                    echo '⏳ ' . $request['status_text'];
+                    echo $request['status_text'];
                 }
                 ?>
             </td>
-            <td><?php echo date('M j, Y', strtotime($request['created_at'])); ?><br>
-                <small><?php echo date('g:i A', strtotime($request['created_at'])); ?></small>
-            </td>
-            <td>
-                <?php 
-                if ($request['days_waiting'] == 0) {
-                    echo 'Today';
-                } else {
-                    echo $request['days_waiting'] . ' day' . ($request['days_waiting'] > 1 ? 's' : '');
-                }
-                ?>
-            </td>
+            <td><?php echo date('M j, Y', strtotime($request['created_at'])); ?></td>
+            
             <td class="actions-column">
                 <?php if ($request['approved'] == 0): ?>
                     <button class="action-btn approve-btn" 
                             onclick="approveRequest(<?php echo $request['request_id']; ?>, '<?php echo htmlspecialchars($request['first_name']); ?>','<?php echo $request['last_name']; ?>', '<?php echo htmlspecialchars($request['email']); ?>')"
                             title="Approve Request">
-                        ✅ Approve
+                        Approve
                     </button><br>
                     
                     <button class="action-btn reject-btn" 
                             onclick="rejectRequest(<?php echo $request['request_id']; ?>, '<?php echo htmlspecialchars($request['first_name']); ?>','<?php echo $request['last_name']; ?>', '<?php echo htmlspecialchars($request['email']); ?>')"
                             title="Reject Request">
-                        ❌ Reject
+                        Reject
                     </button>
                 <?php else: ?>
                     <span style="color: #28a745; font-size: 12px;">
-                        ✅ Already Approved
+                        Already Approved
                     </span>
                 <?php endif; ?>
             </td>
@@ -287,25 +259,13 @@ try {
     
     <?php endif; ?>
     
-    <p><strong>Total Requests:</strong> <?php echo count($requests); ?></p>
-    <p><strong>Pending Approval:</strong> <?php echo $pending_count; ?></p>
-    <p><strong>Approved:</strong> <?php echo $approved_count; ?></p>
 
     <script>
-        // Navigation functions
-        function goBackToUserManagement() {
-            window.location.href = 'dashboard.php';
-        }
         
-        function refreshPage() {
-            window.location.reload();
-        }
-        
-        // Approve request function
+        // this function approves a user request and converts the request to an actual user
         function approveRequest(requestId, firstName, lastName, email) {
             const confirmMessage = 'Are you sure you want to APPROVE the account request for:\n\n' + 
                                  'Name: ' + firstName + '\n' +
-                                 'Email: ' + email + '\n\n' +
                                  'This will create a new user account and send a welcome email.';
             
             if (confirm(confirmMessage)) {
@@ -343,11 +303,10 @@ try {
             }
         }
         
-        // Reject request function
+        // this function rejects the user request
         function rejectRequest(requestId, firstName, lastName, email) {
             const confirmMessage = 'Are you sure you want to REJECT the account request for:\n\n' + 
                                  'Name: ' + firstName + '\n' +
-                                 'Email: ' + email + '\n\n' +
                                  'This will mark the request as rejected and send a notification email.';
             
             if (confirm(confirmMessage)) {

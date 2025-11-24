@@ -1,8 +1,7 @@
 <?php
-/**
- * Accounts Management Dashboard
- * This page shows all accounts in the system for management purposes
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to view a dashboard of all accounts
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -19,10 +18,10 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
-$canEditAccounts = ($userAccessLevel >= 5);
+$userAccessLevel = $_SESSION['access_level'];
+$canEditAccounts = ($userAccessLevel >= 2);
 
 include 'header.php';
 ?>
@@ -234,18 +233,20 @@ include 'header.php';
 
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    
+    <!--commenting out this placeholder icon, Kyaa is providing the URL to the updated icon-->
     <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
 
     <?php
     include '../db_connect.php';
 
-    try {
-        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Get all accounts with relevant information
-        $stmt = $pdo->query("
-        SELECT 
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Get all accounts with relevant information
+    $getAccounts = $pdo->query("
+    SELECT 
             account_number,
             name,
             category,
@@ -269,30 +270,28 @@ include 'header.php';
         ORDER BY category, account_number
     ");
 
-        $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $accounts = $getAccounts->fetchAll(PDO::FETCH_ASSOC);
 
-        // Calculate statistics
-        $totalAccounts = count($accounts);
-        $activeAccounts = count(array_filter($accounts, function ($a) {
-            return $a['is_active'];
-        }));
-        $inactiveAccounts = $totalAccounts - $activeAccounts;
-        $zeroBalanceAccounts = count(array_filter($accounts, function ($a) {
-            return (float) $a['balance'] == 0;
-        }));
+    // Calculate statistics
+    $totalAccounts = count($accounts);
+    $activeAccounts = count(array_filter($accounts, function ($a) {
+        return $a['is_active'];
+    }));
+    $inactiveAccounts = $totalAccounts - $activeAccounts;
+    $zeroBalanceAccounts = count(array_filter($accounts, function ($a) {
+        return (float) $a['balance'] == 0;
+    }));
 
-        // Calculate total balances by category
-        $categoryTotals = [];
-        foreach ($accounts as $account) {
-            if (!isset($categoryTotals[$account['category']])) {
-                $categoryTotals[$account['category']] = 0;
-            }
-            $categoryTotals[$account['category']] += (float) $account['balance'];
+    // Calculate total balances by category
+    $categoryTotals = [];
+    foreach ($accounts as $account) {
+        if (!isset($categoryTotals[$account['category']])) {
+            $categoryTotals[$account['category']] = 0;
         }
-
-    } catch (PDOException $e) {
-        die("Database Error: " . $e->getMessage());
+        $categoryTotals[$account['category']] += (float) $account['balance'];
     }
+
+
 
     // Format money function
     function formatMoney($value)
@@ -338,10 +337,7 @@ include 'header.php';
             class="nav-btn nav-btn-filter">
             👁️ Toggle Inactive Accounts
         </button>
-        <button style="width:250px" onclick="exportAccountsReport()" title="Export All Accounts Data to a CSV"
-            class="nav-btn nav-btn-export">
-            📊 Export Report
-        </button>
+        
     </div>
 
     <!-- Filters -->
@@ -502,7 +498,7 @@ include 'header.php';
         }
 
         function showBalanceAlert(balance) {
-            alert('Cannot deactivate account with non-zero balance.\n\nCurrent Balance: ' + balance + '\n\nPlease adjust the balance to $0.00 before deactivating.');
+            alert("You can't deactivate an account with a balance. Please adjust the balance to $0.00 before deactivating.");
         }
 
         function toggleInactiveAccounts() {
@@ -562,33 +558,6 @@ include 'header.php';
             filterTable();
         }
 
-        function exportAccountsReport() {
-            // Simple CSV export
-            let csv = 'Account Number,Account Name,Category,Subcategory,Normal Side,Balance,Statement,Status,Created Date\n';
-
-            const rows = document.querySelectorAll('.account-row');
-            rows.forEach(row => {
-                if (row.style.display !== 'none') {
-                    const cells = row.querySelectorAll('td');
-                    const rowData = [];
-                    for (let i = 0; i < cells.length - 1; i++) { // Exclude actions column
-                        rowData.push('"' + cells[i].textContent.trim().replace(/"/g, '""') + '"');
-                    }
-                    csv += rowData.join(',') + '\n';
-                }
-            });
-
-            // Download CSV
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'accounts_report_' + new Date().toISOString().split('T')[0] + '.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }
     </script>
 </div>
 </body>

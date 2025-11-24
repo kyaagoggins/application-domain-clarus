@@ -1,8 +1,8 @@
 <?php
-/**
- * Complete Profile Page
- * This page is shown to users who need to complete their profile information
- */
+//KSU student project for Clarus Accounting tool
+//This page is used by admins to view users with expired passwords
+//Initially drafted by Eric Poole
+//Meets sprint 1 requirements
 
 session_start();
 
@@ -19,11 +19,11 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 
 // If accessed directly and profile is already complete, redirect to home
-// In real implementation, you'd check the database here
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,54 +31,7 @@ $userId = $_SESSION['user_id'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Dashboard</title>
-</head>
-<body>
-    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-    <?php include 'header.php'; ?>
-    <?php
-        include '../db_connect.php';
-
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Get only users with expired passwords
-    $stmt = $pdo->query("
-        SELECT 
-            user_id,
-            username,
-            first_name, 
-            last_name, 
-            email,
-            access_level,
-            last_password_reset_datetime,
-            active,
-            CASE 
-                WHEN last_password_reset_datetime IS NULL THEN 'Never Reset'
-                WHEN DATEDIFF(NOW(), last_password_reset_datetime) > 30 THEN 'Expired'
-                ELSE 'Valid'
-            END AS password_status
-        FROM users 
-        HAVING password_status = 'Expired'
-        ORDER BY last_name, first_name
-    ");
-    
-    $expired_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Get total user counts for reference
-    $total_stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
-    $total_count = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-} catch(PDOException $e) {
-    die("Database Error: " . $e->getMessage());
-}
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Users with Expired Passwords</title>
+    <title>Expired Users</title>
     <style>
         table { 
             border-collapse: collapse; 
@@ -138,19 +91,58 @@ try {
         }
     </style>
 </head>
+
+    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
+    <?php include 'header.php'; ?>
+    <?php
+        include '../db_connect.php';
+
+
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Get only users with expired passwords
+    $getExpiredUsers = $pdo->query("
+        SELECT 
+            user_id,
+            username,
+            first_name, 
+            last_name, 
+            email,
+            access_level,
+            last_password_reset_datetime,
+            active,
+            CASE 
+                WHEN last_password_reset_datetime IS NULL THEN 'Never Reset'
+                WHEN DATEDIFF(NOW(), last_password_reset_datetime) > 30 THEN 'Expired'
+                ELSE 'Valid'
+            END AS password_status
+        FROM users 
+        HAVING password_status = 'Expired'
+        ORDER BY last_name, first_name
+    ");
+    
+    $expired_users = $getExpiredUsers->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get total user counts for displaying in the UI
+    $all_users = $pdo->query("SELECT COUNT(*) as total FROM users");
+    $total_user_count = $all_users->fetch(PDO::FETCH_ASSOC)['total'];
+
+?>
+
 <body>
-    <button class="nav-btn nav-btn-back" onclick="goBackToUserManagement()" title="Back to User Management">
+    <button class="nav-btn nav-btn-back" onclick="window.location.href = 'dashboard.php';" title="Back to User Management">
             ← Back to User Management
         </button>
     <div class="alert-header">
-        <h2>⚠️ Users with Expired Passwords</h2>
+        <h2> Users with Expired Passwords</h2>
         <p>The following users have passwords that are more than 30 days old and need to be reset for security compliance.</p>
     </div>
 
     <?php if (empty($expired_users)): ?>
         <div style="text-align: center; padding: 40px; color: #4CAF50; font-size: 18px;">
-            <h3>✅ No users with expired passwords!</h3>
-            <p>All users have valid passwords or have reset their passwords within the last 30 days.</p>
+            <h3>Great! You have no users with expired passwords!</h3>
+            <p>This means all users have valid passwords or have reset their passwords within the last 30 days.</p>
         </div>
     <?php else: ?>
     
@@ -167,10 +159,21 @@ try {
         
         <?php foreach ($expired_users as $user): ?>
         <tr <?php echo !$user['active'] ? 'class="inactive-row"' : ''; ?>>
-            <td><?php echo htmlspecialchars($user['first_name']); ?></td>
-            <td><?php echo htmlspecialchars($user['last_name']); ?></td>
-            <td><?php echo htmlspecialchars($user['email']); ?></td>
-            <td><?php echo ucfirst(htmlspecialchars($user['access_level'])); ?></td>
+            <td><?php echo $user['first_name']; ?></td>
+            <td><?php echo $user['last_name']; ?></td>
+            <td><?php echo $user['email']; ?></td>
+            <td>
+                <!--Logic add 11/23 to display the user role as text rather than the integer stored in the db-->
+                <?php 
+                    if($user['access_level']==1){
+                     echo "Accountant";
+                    }else if($user['access_level']==2){
+                     echo "Manager";
+                    }else if($user['access_level']==3){
+                     echo "Admin";
+                    }
+                ?>
+            </td>
             <td class="expired">
                 <?php echo $user['password_status']; ?>
             </td>
@@ -190,28 +193,7 @@ try {
     </table>
     
     <?php endif; ?>
-    
-    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-        <p><strong>Users with Expired Passwords:</strong> <?php echo count($expired_users); ?></p>
-        <p><strong>Total Users in System:</strong> <?php echo $total_count; ?></p>
-        <p><strong>Compliance Rate:</strong> <?php echo $total_count > 0 ? round((($total_count - count($expired_users)) / $total_count) * 100, 1) : 0; ?>%</p>
+
     </div>
-    
-    <div style="margin-top: 20px;">
-        <!--<button style="width:300px" onclick="addNewUser()" title="Add New User">
-            ➕ Add New User
-        </button>-->
-    </div>
-    </div>
-    <script>
-        // Navigation button functions
-        function addNewUser() {
-            window.location.href = 'new_user.php';
-        }
- 
-        function goBackToUserManagement() {
-            window.location.href = 'dashboard.php';
-        }
-    </script>
 </body>
 </html>

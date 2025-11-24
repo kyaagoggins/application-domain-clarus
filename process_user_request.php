@@ -27,27 +27,27 @@ function generateUsername($firstName, $lastName) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $request_id = $_POST['request_id'] ?? '';
-    $first_name = $_POST['first_name'] ?? '';
-    $last_name = $_POST['last_name'] ?? '';
-    $action = $_POST['action'] ?? '';
+    $request_id = $_POST['request_id'];
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $action = $_POST['action'];
     
     if (empty($request_id) || empty($action)) {
         echo "<script>alert('Invalid request data.'); window.location.href='user_requests.php';</script>";
         exit;
     }
     
-    try {
+
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Get request details
-        $stmt = $pdo->prepare("SELECT * FROM `new-user-requests` WHERE request_id = :request_id");
-        $stmt->execute([':request_id' => $request_id]);
-        $request = $stmt->fetch(PDO::FETCH_ASSOC);
+        $getUserRequests = $pdo->prepare("SELECT * FROM `new-user-requests` WHERE request_id = :request_id");
+        $getUserRequests->execute([':request_id' => $request_id]);
+        $request = $getUserRequests->fetch(PDO::FETCH_ASSOC);
         
         if (!$request) {
-            echo "<script>alert('Request not found.'); window.location.href='user_requests.php';</script>";
+            echo "<script>alert('Oops, something went wrong. Please try again.'); window.location.href='user_requests.php';</script>";
             exit;
         }
         
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Begin transaction
             $pdo->beginTransaction();
             
-            try {
+
                 // Generate username using the new rules
                 $base_username = generateUsername($_POST['first_name'], $_POST['last_name']);
                 
@@ -93,14 +93,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $pdo->commit();
                 
                 echo "<script>
-                    alert('Request APPROVED! User account created successfully.\\n\\nUsername: " . addslashes($username) . "\\nTemporary Password: " . addslashes($temp_password) . "\\n\\nPlease send these credentials to the user.');
+                    alert('This user request was approved! User account created successfully.');
                     window.location.href='view_user_requests.php';
                 </script>";
-                
-            } catch (Exception $e) {
-                $pdo->rollBack();
-                throw $e;
-            }
+
             
         } elseif ($action == 'reject') {
             // Simply mark as rejected (set approved to -1 or delete record)
@@ -112,11 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 window.location.href='view_user_requests.php';
             </script>";
         }
-        
-    } catch(PDOException $e) {
-        echo "<script>alert('Database Error: " . addslashes($e->getMessage()) . "'); window.location.href='view_user_requests.php';</script>";
-    }
-    
+
 } else {
     header('Location: view_user_requests.php');
     exit;

@@ -1,8 +1,7 @@
 <?php
-/**
- * Change Log Viewer
- * This page displays all changes made to accounts with before/after comparison
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to view changes that users make to accounts
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -19,9 +18,9 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
-$userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_level'] : 0;
+$userAccessLevel = $_SESSION['access_level'];
 
 include 'header.php';
 ?>
@@ -58,30 +57,6 @@ include 'header.php';
         background-color: #e3f2fd !important;
     }
 
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-        margin: 20px 0;
-    }
-
-    .stat-card {
-        background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .stat-card h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-    }
-
-    .stat-card .stat-number {
-        font-size: 24px;
-        font-weight: bold;
-    }
 
     .filter-container {
         margin: 15px 0;
@@ -258,37 +233,35 @@ include 'header.php';
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
 
     <?php
+    // Connect to the external database file
     include '../db_connect.php';
 
-    try {
-        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Get all change log entries
-        $stmt = $pdo->query("
-            SELECT * FROM change_log 
-            ORDER BY change_time DESC
-        ");
+    // Get all change log entries
+    $stmt = $pdo->query("
+        SELECT * FROM change_log 
+        ORDER BY change_time DESC
+    ");
 
-        $changes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $changes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Calculate statistics
-        $totalChanges = count($changes);
-        $uniqueAccounts = count(array_unique(array_column($changes, 'account_number')));
+    // Calculate statistics
+    $totalChanges = count($changes);
+    $uniqueAccounts = count(array_unique(array_column($changes, 'account_number')));
 
-        // Get changes in last 7 days
-        $recentChanges = count(array_filter($changes, function ($c) {
-            return strtotime($c['change_time']) > strtotime('-7 days');
-        }));
+    // Get changes in last 7 days
+    $recentChanges = count(array_filter($changes, function ($c) {
+        return strtotime($c['change_time']) > strtotime('-7 days');
+    }));
 
-        // Get changes in last 30 days
-        $monthlyChanges = count(array_filter($changes, function ($c) {
-            return strtotime($c['change_time']) > strtotime('-30 days');
-        }));
+    // Get changes in last 30 days
+    $monthlyChanges = count(array_filter($changes, function ($c) {
+        return strtotime($c['change_time']) > strtotime('-30 days');
+    }));
 
-    } catch (PDOException $e) {
-        die("Database Error: " . $e->getMessage());
-    }
+
 
     // Format money function
     function formatMoney($value)
@@ -299,25 +272,7 @@ include 'header.php';
 
     <h1>Account Change Log</h1>
 
-    <!-- Statistics Cards -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <h3>Total Changes</h3>
-            <div class="stat-number"><?php echo $totalChanges; ?></div>
-        </div>
-        <div class="stat-card">
-            <h3>Accounts Modified</h3>
-            <div class="stat-number"><?php echo $uniqueAccounts; ?></div>
-        </div>
-        <div class="stat-card">
-            <h3>Changes (Last 7 Days)</h3>
-            <div class="stat-number"><?php echo $recentChanges; ?></div>
-        </div>
-        <div class="stat-card">
-            <h3>Changes (Last 30 Days)</h3>
-            <div class="stat-number"><?php echo $monthlyChanges; ?></div>
-        </div>
-    </div>
+
 
     <!-- Filters -->
     <div class="filter-container">
@@ -358,7 +313,7 @@ include 'header.php';
                     <td><?php echo htmlspecialchars($change['name_after']); ?></td>
                     <td><?php echo htmlspecialchars($change['category_after']); ?></td>
                     <td><?php echo htmlspecialchars($change['user_id_after']); ?></td>
-                    <td style="text-align: center;">👁️ View</td>
+                    <td style="text-align: center;">View</td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -378,8 +333,8 @@ include 'header.php';
     <div class="modal-content">
         <div class="modal-header">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>📋 Account Change Details</h2>
-            <p style="margin: 5px 0 0 0; font-size: 14px;" id="modalSubtitle"></p>
+            <h2>Account Change Details</h2>
+            
         </div>
         <div class="modal-body">
             <div class="comparison-container">
@@ -522,10 +477,7 @@ include 'header.php';
 
 <script>
     function showChangeDetails(change) {
-        // Set modal subtitle
-        document.getElementById('modalSubtitle').innerHTML =
-            'Account #' + change.account_number + ' | Modified on ' +
-            new Date(change.change_time).toLocaleString();
+        
 
         // List of fields to compare
         const fields = [
@@ -574,20 +526,9 @@ include 'header.php';
         document.getElementById('changeDetailsModal').style.display = 'none';
     }
 
-    // Close modal when clicking outside
-    window.onclick = function (event) {
-        const modal = document.getElementById('changeDetailsModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
+
+
 
     function formatMoney(value) {
         return '$' + parseFloat(value || 0).toLocaleString('en-US', {

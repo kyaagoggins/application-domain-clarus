@@ -1,8 +1,7 @@
 <?php
-/**
- * Update User Profile Handler
- * Processes the edit user profile form submission
- */
+//KSU student project for Clarus Accounting tool
+//This page is used to psh the edits an admin makes to a user's profile
+//Initially drafted by Eric Poole
 
 session_start();
 
@@ -33,28 +32,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $securityAnswer2 = $_POST['securityAnswer2'];
     $securityAnswer3 = $_POST['securityAnswer3'];
     
-    // Validate required fields
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($accessLevel) || empty($address) || empty($dateOfBirth)) {
-        die("All required fields must be filled out.");
-    }
+
     
-    // Validate passwords if provided
+    // Validate passwords match if provided
     if (!empty($password)) {
         if ($password !== $repeatPassword) {
-            die("Passwords do not match.");
+            die("The passwords provided did not match. Please go back and try again.");
         }
         
-        // Validate password strength
-        if (strlen($password) < 8 || 
-            !preg_match('/^[a-zA-Z]/', $password) ||
-            !preg_match('/[a-zA-Z]/', $password) ||
-            !preg_match('/[0-9]/', $password) ||
-            !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
-            die("Password does not meet security requirements.");
-        }
+    
     }
     
-    try {
+
         // Create database connection
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -63,12 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo->beginTransaction();
         
         // Check if user exists
-        $check_stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = :user_id");
-        $check_stmt->execute([':user_id' => $edit_user_id]);
-        $existing_user = $check_stmt->fetch(PDO::FETCH_ASSOC);
+        $checkUser = $pdo->prepare("SELECT user_id FROM users WHERE user_id = :user_id");
+        $checkUser->execute([':user_id' => $edit_user_id]);
+        $existing_user = $checkUser->fetch(PDO::FETCH_ASSOC);
         
         if (!$existing_user) {
-            throw new Exception("User not found.");
+            echo "Oops... An error occured. This user was not found. Please try again.";
+            break;
         }
         
         // Handle profile image upload
@@ -168,45 +158,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $pdo->commit();
             
             // Success message and redirect
-            echo "✅ USER PROFILE UPDATED SUCCESSFULLY!<br><br>";
-            echo "<strong>Updated User Details:</strong><br>";
-            echo "User ID: " . htmlspecialchars($edit_user_id) . "<br>";
-            echo "Name: " . htmlspecialchars($firstName) . " " . htmlspecialchars($lastName) . "<br>";
-            echo "Email: " . htmlspecialchars($email) . "<br>";
-            echo "Access Level: " . htmlspecialchars($accessLevel) . "<br>";
-            echo "Account Status: " . ($active ? 'Active' : 'Inactive') . "<br>";
-            
-            if (!empty($password)) {
-                echo "Password: Updated<br>";
-            }
-            
-            if (!empty($_FILES['profileImage']['name'])) {
-                echo "Profile Image: Updated<br>";
-            }
-            
-            $security_updates = 0;
-            if (!empty($securityAnswer1)) $security_updates++;
-            if (!empty($securityAnswer2)) $security_updates++;
-            if (!empty($securityAnswer3)) $security_updates++;
-            
-            if ($security_updates > 0) {
-                echo "Security Questions: " . $security_updates . " updated<br>";
-            }
-            
-            echo "<br>";
-            echo "<a href='edit_user.php?user_id=" . $edit_user_id . "'>Edit Again</a> | ";
+            echo "The user's profile was updated successfully!<br><br>";
+            echo "<a href='edit_user.php?user_id=" . $edit_user_id . "'>Edit this user again</a> | ";
             echo "<a href='dashboard.php'>Back to User Management</a>";
             
         } else {
             $pdo->rollBack();
             echo "No changes were made to the profile. <a href='dashboard.php'>Return to the user dashboard.</a>";
         }
-        
-    } catch(Exception $e) {
-        $pdo->rollBack();
-        echo "Error updating profile: " . $e->getMessage();
-    }
-    
+
 } else {
     echo "Invalid request method.";
 }

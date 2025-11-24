@@ -1,4 +1,10 @@
 <?php
+//KSU student project for Clarus Accounting tool
+//This page is used to insert a new user into the users table
+//Initially drafted by Eric Poole
+
+
+//connect to the external db config file
 include '../db_connect.php';
 
 function generateUsername($firstName, $lastName) {
@@ -36,10 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $counter = 1;
         
         while (true) {
-            $check_stmt = $pdo->prepare("SELECT username FROM users WHERE username = :username");
-            $check_stmt->execute([':username' => $username]);
+            $check_username = $pdo->prepare("SELECT username FROM users WHERE username = :username");
+            $check_username->execute([':username' => $username]);
             
-            if ($check_stmt->rowCount() == 0) {
+            if ($check_username->rowCount() == 0) {
                 break; // Username is unique
             }
             
@@ -49,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         // Insert user record
-        $stmt = $pdo->prepare("
+        $insertUser = $pdo->prepare("
             INSERT INTO users (
                 username, first_name, last_name, email, password_hash, 
                 address, date_of_birth, access_level, active, 
@@ -61,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             )
         ");
         
-        $stmt->execute([
+        $insertUser->execute([
             ':username' => $username,
             ':first_name' => $_POST['firstName'],
             ':last_name' => $_POST['lastName'],
@@ -71,8 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':date_of_birth' => $_POST['dateOfBirth'],
             ':access_level' => $_POST['accessLevel']
         ]);
-        
-        $user_id = $pdo->lastInsertId();
+
         
         // Handle image upload with user_id filename
         $profile_image_info = "";
@@ -96,20 +101,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         $pdo->commit();
         
-        echo "✅ USER CREATED SUCCESSFULLY!<br><br>";
+        echo "This user was created successfully!<br><br>";
         echo "<strong>Account Details:</strong><br>";
-        echo "User ID: " . $user_id . "<br>";
         echo "Username: <strong>" . htmlspecialchars($username) . "</strong><br>";
         echo "Name: " . htmlspecialchars($_POST['firstName']) . " " . htmlspecialchars($_POST['lastName']) . "<br>";
         echo "Email: " . htmlspecialchars($_POST['email']) . "<br>";
         echo "Access Level: " . htmlspecialchars($_POST['accessLevel']) . "<br>";
         echo $profile_image_info;
-        echo "<br><em>Username Format: " . strtoupper(substr($_POST['firstName'], 0, 1)) . " + " . ucfirst($_POST['lastName']) . " + " . date('m/y') . "</em><br>";
+
         echo "<a href='dashboard.php'>Back to Admin Panel</a>";
         
     } catch(PDOException $e) {
         $pdo->rollBack();
-        echo "❌ Error: " . ($e->getCode() == 23000 ? "Email already exists" : $e->getMessage());
+        echo "Error: " . ($e->getCode() == 23000 ? "Email already exists" : $e->getMessage());
     }
 }
 ?>
