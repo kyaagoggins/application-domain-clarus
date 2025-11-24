@@ -1,7 +1,9 @@
 <?php
 /**
+ * KSU student project for Clarus Accounting tool
  * Create a New Account Page
- * This page is shown to users to create a new accounting account
+ * Initially drafted by Eric Poole; Reviewed and updated by Kyaa Goggins
+ * This page is shown to users that try to create a new accounting account
  */
 
 session_start();
@@ -19,150 +21,14 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
+//session variables
 $username = $_SESSION['username'] ?? 'User';
 $userId = $_SESSION['user_id'];
 
 include 'header.php';
 ?>
 
-<style>
-    .form-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .form-column {
-        display: flex;
-        flex-direction: column;
-        padding: 0px 5px 0px 5px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-
-    .form-group textarea {
-        resize: vertical;
-        min-height: 60px;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
-
-    .required {
-        color: red;
-    }
-
-    .form-footer {
-        grid-column: 1 / -1;
-        text-align: center;
-        margin-top: 20px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .submit-btn {
-        background-color: #2980b9;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        width: 20%;
-        margin-top: 0px;
-        margin-right: 10px;
-    }
-
-    .submit-btn:hover {
-        background-color: #2980b9;
-    }
-
-    .cancel-btn {
-        background-color: #6c757d;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .cancel-btn:hover {
-        background-color: #545b62;
-    }
-
-    .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .success-message {
-        color: green;
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .help-text {
-        color: #666;
-        font-size: 11px;
-        margin-top: 3px;
-    }
-
-    .validation-error {
-        border-color: #dc3545 !important;
-    }
-
-    .validation-success {
-        border-color: #28a745 !important;
-    }
-
-    /* Tooltip styles */
-    .tooltip-icon {
-        color: #007bff;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-        .form-container {
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-    }
-</style>
-
+<link rel="stylesheet" href="/styling/new_account.css">
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
 
@@ -357,9 +223,10 @@ include 'header.php';
             <!-- Form Footer -->
             <div class="form-footer">
                 <button type="submit" class="submit-btn" data-bs-toggle="tooltip"
-                    title="Officially creates the account specified.">💾 Create Account</button>
+                    title="Officially creates the account specified."><i class="fa-solid fa-floppy-disk"></i> Create
+                    Account</button>
                 <a href="accounts_dashboard.php" class="cancel-btn" data-bs-toggle="tooltip"
-                    title="Cancels all fields within the form.">❌ Cancel</a>
+                    title="Cancels all fields within the form."><i class="fa-solid fa-xmark"></i> Cancel</a>
             </div>
         </div>
     </form>
@@ -543,6 +410,8 @@ include 'header.php';
         updateBalance();
     }
 
+    //updates balance information based on the information inputted by user 
+    //updates dynamically
     function updateBalance() {
         const initialBalance = parseCurrency(document.getElementById('initialBalance').value);
         const debitAmount = parseCurrency(document.getElementById('debitAmount').value);
@@ -582,42 +451,42 @@ include 'header.php';
         const hasAccountNameError = document.getElementById('accountNameError').textContent.includes('already exists');
 
         if (hasAccountNumberError) {
-            alert('Please fix the account number error before submitting.');
+            alert('Oh no! Please fix the account number error before submitting.');
             return false;
         }
 
         if (hasAccountNameError) {
-            alert('Please fix the account name error before submitting.');
+            alert('Oh no! Please fix the account name error before submitting.');
             return false;
         }
 
         if (!accountNumber) {
-            alert('Account Number is required.');
+            alert('Wait! Account Number is required.');
             return false;
         }
 
         if (!validateAccountNumber()) {
-            alert('Please enter a valid account number (numbers only, at least 3 digits).');
+            alert('Oh no! Please enter a valid account number (numbers only, at least 3 digits).');
             return false;
         }
 
         if (!accountName) {
-            alert('Account Name is required.');
+            alert('Wait! Account Name is required.');
             return false;
         }
 
         if (!normalSide) {
-            alert('Normal Side is required.');
+            alert('Wait! Normal Side is required.');
             return false;
         }
 
         if (!category) {
-            alert('Category is required.');
+            alert('Wait! Category is required.');
             return false;
         }
 
         if (!statement) {
-            alert('Financial Statement is required.');
+            alert('Wait! Financial Statement is required.');
             return false;
         }
 

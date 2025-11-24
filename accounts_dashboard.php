@@ -1,7 +1,8 @@
 <?php
 //KSU student project for Clarus Accounting tool
 //This page is used to view a dashboard of all accounts
-//Initially drafted by Eric Poole
+//Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
+//This page is where the user can view all accounts in the application. Added for ease of use of application.
 
 session_start();
 
@@ -18,6 +19,7 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
+//session variables
 $username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 $userAccessLevel = $_SESSION['access_level'];
@@ -26,217 +28,9 @@ $canEditAccounts = ($userAccessLevel >= 2);
 include 'header.php';
 ?>
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin: 20px 0;
-        border-radius: 16px;
-    }
-
-    th,
-    td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: rgb(41, 128, 185);
-        color: white;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
-    .positive-balance {
-        color: green;
-        font-weight: bold;
-    }
-
-    .negative-balance {
-        color: red;
-        font-weight: bold;
-    }
-
-    .zero-balance {
-        color: #666;
-    }
-
-    .active-status {
-        color: green;
-        font-weight: bold;
-    }
-
-    .inactive-status {
-        color: red;
-        font-weight: bold;
-    }
-
-    .action-btn {
-        padding: 5px 10px;
-        margin: 2px;
-        border: none;
-        border-radius: 3px;
-        font-size: 12px;
-        display: inline-block;
-        text-align: center;
-        min-width: 60px;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    /* Navigation Button Styles */
-    .nav-btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        margin-left: 10px;
-        color: white;
-        font-weight: bold;
-    }
-
-    .nav-btn:first-child {
-        margin-left: 0;
-    }
-
-    .nav-btn-add {
-        background-color: #2980b9;
-    }
-
-    .nav-btn-add:hover {
-        background-color: #2980b9;
-    }
-
-    .nav-btn-filter {
-        background-color: #2980b9;
-    }
-
-    .nav-btn-filter:hover {
-        background-color: #2980b9;
-    }
-
-    .nav-btn-export {
-        background-color: #2980b9;
-    }
-
-    .nav-btn-export:hover {
-        background-color: #2980b9;
-    }
-
-    .view-btn {
-        background-color: #2980b9;
-        color: white;
-    }
-
-    .view-btn:hover {
-        background-color: #2980b9;
-    }
-
-    .edit-btn {
-        background-color: #2980b9;
-        color: white;
-    }
-
-    .edit-btn:hover {
-        background-color: #2980b9;
-    }
-
-    .deactivate-btn {
-        background-color: #fd7e14;
-        color: white;
-    }
-
-    .deactivate-btn:hover {
-        background-color: #e66a02;
-    }
-
-    .activate-btn {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-    .activate-btn:hover {
-        background-color: #138496;
-    }
-
-    .disabled-btn {
-        background-color: #adb5bd;
-        color: white;
-        cursor: not-allowed;
-    }
-
-    .actions-column {
-        width: 200px;
-        text-align: center;
-    }
-
-    .inactive-row {
-        opacity: 0.6;
-        background-color: #f5f5f5;
-    }
-
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-        margin: 20px 0;
-    }
-
-    .stat-card {
-        background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .stat-card h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-    }
-
-    .stat-card .stat-number {
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .filter-container {
-        margin: 15px 0;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        border: 1px solid #dee2e6;
-    }
-
-    .filter-container select,
-    .filter-container input {
-        padding: 5px 10px;
-        margin: 0 10px 0 5px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
-    }
-
-    .account-number {
-        font-family: monospace;
-        font-weight: bold;
-    }
-
-    .balance-cell {
-        text-align: right;
-        font-family: monospace;
-    }
-</style>
-
+<link rel="stylesheet" href="/styling/accounts_dashboard.css">
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-    
-    <!--commenting out this placeholder icon, Kyaa is providing the URL to the updated icon-->
-    <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
-
     <?php
     include '../db_connect.php';
 
@@ -326,18 +120,18 @@ include 'header.php';
     <div style="margin-top: 20px;">
         <?php if ($canEditAccounts): ?>
             <button style="width:250px" onclick="addNewAccount()" title="Add New Account" class="nav-btn nav-btn-add">
-                ➕ Add New Account
+                <i class="fa-solid fa-plus"></i> Add New Account
             </button>
         <?php endif; ?>
         <button style="width:250px" onclick="addNewAccount()" title="Add a New Account Record"
             class="nav-btn nav-btn-add">
-            ➕ Add New Account
+            <i class="fa-solid fa-plus"></i> Add New Account
         </button>
         <button style="width:250px" onclick="toggleInactiveAccounts()" title="Show/Hide Inactive Accounts"
             class="nav-btn nav-btn-filter">
-            👁️ Toggle Inactive Accounts
+            <i class="fa-solid fa-eye"></i> Toggle Inactive Accounts
         </button>
-        
+
     </div>
 
     <!-- Filters -->
@@ -402,12 +196,12 @@ include 'header.php';
                     <button class="action-btn view-btn"
                         onclick="viewAccount('<?php echo htmlspecialchars($account['account_number']); ?>')"
                         title="View Details about this Account.">
-                        👁️ View Account
+                        <i class="fa-solid fa-magnifying-glass"></i> View Account
                     </button>
                     <button class="action-btn view-btn"
                         onclick="viewAccountLedger('<?php echo htmlspecialchars($account['account_number']); ?>')"
                         title="View the ledger for this account.">
-                        👁️ View Ledger
+                        <i class="fa-solid fa-magnifying-glass"></i> View Ledger
                     </button>
 
                     <?php if ($canEditAccounts): ?>
@@ -415,27 +209,27 @@ include 'header.php';
                             <button class="action-btn edit-btn"
                                 onclick="editAccount('<?php echo htmlspecialchars($account['account_number']); ?>')"
                                 title="Edit Account">
-                                ✏️ Edit
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
                             </button>
 
                             <?php if ((float) $account['balance'] == 0): ?>
                                 <button class="action-btn deactivate-btn"
                                     onclick="confirmDeactivateAccount('<?php echo htmlspecialchars($account['account_number']); ?>', '<?php echo htmlspecialchars($account['name']); ?>')"
                                     title="Deactivate Account">
-                                    🚫 Deactivate
+                                    <i class="fa-solid fa-ban"></i> Deactivate
                                 </button>
                             <?php else: ?>
                                 <button class="action-btn disabled-btn"
                                     onclick="showBalanceAlert('<?php echo formatMoney($account['balance']); ?>')"
                                     title="Cannot deactivate - Non-zero balance">
-                                    🚫 Deactivate
+                                    <i class="fa-solid fa-ban"></i> Deactivate
                                 </button>
                             <?php endif; ?>
                         <?php else: ?>
                             <button class="action-btn activate-btn"
                                 onclick="confirmReactivateAccount('<?php echo htmlspecialchars($account['account_number']); ?>', '<?php echo htmlspecialchars($account['name']); ?>')"
                                 title="Reactivate Account">
-                                ✅ Reactivate
+                                <i class="fa-solid fa-square-check"></i> Reactivate
                             </button>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -510,7 +304,7 @@ include 'header.php';
             });
 
             const button = event.target;
-            button.textContent = showInactive ? '👁️ Hide Inactive Accounts' : '👁️ Show Inactive Accounts';
+            button.textContent = showInactive ? '<i class="fa-solid fa-eye"></i> Hide Inactive Accounts' : '<i class="fa-solid fa-eye"></i> Show Inactive Accounts';
         }
 
         function filterTable() {

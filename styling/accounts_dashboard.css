@@ -1,0 +1,203 @@
+/* all styling that corresponds to the accounts dashboard */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+  border-radius: 16px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: rgb(41, 128, 185);
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.positive-balance {
+  color: green;
+  font-weight: bold;
+}
+
+.negative-balance {
+  color: red;
+  font-weight: bold;
+}
+
+.zero-balance {
+  color: #666;
+}
+
+.active-status {
+  color: green;
+  font-weight: bold;
+}
+
+.inactive-status {
+  color: red;
+  font-weight: bold;
+}
+
+.action-btn {
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  display: inline-block;
+  text-align: center;
+  min-width: 60px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Navigation Button Styles */
+.nav-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.nav-btn:first-child {
+  margin-left: 0;
+}
+
+.nav-btn-add {
+  background-color: #2980b9;
+}
+
+.nav-btn-add:hover {
+  background-color: #2980b9;
+}
+
+.nav-btn-filter {
+  background-color: #2980b9;
+}
+
+.nav-btn-filter:hover {
+  background-color: #2980b9;
+}
+
+.nav-btn-export {
+  background-color: #2980b9;
+}
+
+.nav-btn-export:hover {
+  background-color: #2980b9;
+}
+
+.view-btn {
+  background-color: #2980b9;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #2980b9;
+}
+
+.edit-btn {
+  background-color: #2980b9;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+}
+
+.deactivate-btn {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.deactivate-btn:hover {
+  background-color: #e66a02;
+}
+
+.activate-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.activate-btn:hover {
+  background-color: #138496;
+}
+
+.disabled-btn {
+  background-color: #adb5bd;
+  color: white;
+  cursor: not-allowed;
+}
+
+.actions-column {
+  width: 200px;
+  text-align: center;
+}
+
+.inactive-row {
+  opacity: 0.6;
+  background-color: #f5f5f5;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.stat-card .stat-number {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.filter-container {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.filter-container select,
+.filter-container input {
+  padding: 5px 10px;
+  margin: 0 10px 0 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.account-number {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.balance-cell {
+  text-align: right;
+  font-family: monospace;
+}

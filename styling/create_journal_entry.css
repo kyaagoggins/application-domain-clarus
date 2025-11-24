@@ -1,0 +1,353 @@
+/* all styling that corresponds to the create journal entry page */
+.form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.form-section h3 {
+  margin-top: 0;
+  color: #2980b9;
+  border-bottom: 2px solid #2980b9;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: white;
+  border: 2px solid #2980b9;
+  border-radius: 4px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  margin: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #2980b9;
+}
+
+.checkbox-group .checkbox-description {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+  margin-left: 30px;
+}
+
+.required {
+  color: red;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.error-message ul {
+  margin: 10px 0 0 20px;
+  padding: 0;
+}
+
+.error-message li {
+  margin: 5px 0;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.success-message.show {
+  display: block;
+}
+
+.entry-line {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+}
+
+.entry-line-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.entry-line-number {
+  font-weight: bold;
+  color: #2980b9;
+}
+
+.remove-line-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.remove-line-btn:hover {
+  background-color: #c82333;
+}
+
+.entry-line-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 15px;
+  align-items: end;
+}
+
+.add-line-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.add-line-btn:hover {
+  background-color: #218838;
+}
+
+.totals-section {
+  background: #e9ecef;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.totals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.total-box {
+  text-align: center;
+  padding: 10px;
+  background: white;
+  border-radius: 4px;
+  border: 2px solid #ddd;
+}
+
+.total-label {
+  font-weight: bold;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.total-value {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.total-debit {
+  color: #dc3545;
+}
+
+.total-credit {
+  color: #28a745;
+}
+
+.total-difference {
+  color: #666;
+}
+
+.balanced {
+  border-color: #28a745;
+  background-color: #d4edda;
+}
+
+.unbalanced {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #ddd;
+}
+
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-submit {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-submit:hover {
+  background-color: #218838;
+}
+
+.btn-submit:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-restart {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-restart:hover {
+  background-color: #e0a800;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #545b62;
+}
+
+.file-upload-area {
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  background: white;
+}
+
+.file-list {
+  margin-top: 15px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.file-item-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.file-item-remove {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.account-info-box {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.account-info-box h2 {
+  margin: 0 0 10px 0;
+}
+
+.account-info-box p {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .entry-line-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .totals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}
