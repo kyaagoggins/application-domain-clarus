@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Validate input is completely filled out
     if (empty($email) || empty($securityAnswer1) || empty($securityAnswer2) || empty($securityAnswer3)) {
-        die("All fields are required.");
+        die("Oops.. one or more fields were missing and all are required. Please go back and try again.");
     }
     
 
@@ -26,12 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Prepare SQL statement to get user data
-        $stmt = $pdo->prepare("SELECT username, security_question_answer_1, security_question_answer_2, security_question_answer_3 FROM users WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
+        $getUserData = $pdo->prepare("SELECT username, security_question_answer_1, security_question_answer_2, security_question_answer_3 FROM users WHERE email = :email");
+        $getUserData->bindParam(':email', $email);
+        $getUserData->execute();
         
         // Get user data
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $getUserData->fetch(PDO::FETCH_ASSOC);
         
         if ($user) {
             // Verify all three security answers
@@ -41,17 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($answer1Match && $answer2Match && $answer3Match) {
                 // All security answers match
-                echo "✅ VALIDATION SUCCESSFUL<br>";
-                echo "Email: " . htmlspecialchars($email) . "<br>";
-                echo "Username: " . htmlspecialchars($user['username']) . "<br>";
-                echo "All security question answers match!<br>";
-                echo "<br><strong>User identity verified.</strong>";
-                
-                // Optional: Set session or redirect to password reset
-                session_start();
-                $_SESSION['verified_user'] = $user['username'];
-                $_SESSION['verified_email'] = $email;
-                header("Location: reset_password.php");
+                //no action needed
                 
             } else {
                 // One or more answers don't match
