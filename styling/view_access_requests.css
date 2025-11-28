@@ -1,0 +1,126 @@
+/* all styling that corresponds to the viewing of new user access requests from user management */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+  border-radius: 16px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: rgb(41, 128, 185);
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.pending {
+  color: #ff8c00;
+  font-weight: bold;
+}
+
+.approved {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.action-btn {
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  display: inline-block;
+  text-align: center;
+  min-width: 60px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Navigation Button Styles */
+.nav-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.nav-btn:first-child {
+  margin-left: 0;
+}
+
+.nav-btn-back {
+  background-color: #6c757d;
+}
+
+.nav-btn-back:hover {
+  background-color: #545b62;
+}
+
+.nav-btn-refresh {
+  background-color: #17a2b8;
+}
+
+.nav-btn-refresh:hover {
+  background-color: #138496;
+}
+
+.approve-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.approve-btn:hover {
+  background-color: #218838;
+}
+
+.reject-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #c82333;
+}
+
+.actions-column {
+  width: 180px;
+  text-align: center;
+}
+
+.approved-row {
+  opacity: 0.7;
+  background-color: #f8fff9;
+}
+
+/* Alert Styles */
+.alert {
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 5px;
+  border-left: 4px solid;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+}

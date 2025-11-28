@@ -1,6 +1,8 @@
 <?php
 /**
+ * KSU student project for Clarus Accounting tool
  * Create Account Handler
+ * Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
  * Processes the new account form submission
  */
 

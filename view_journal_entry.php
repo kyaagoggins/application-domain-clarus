@@ -1,8 +1,7 @@
 <?php
 //KSU student project for Clarus Accounting tool
 //This page allows users to view a specific journal entry
-//Initially drafted by Eric Poole
-//This page meets Sprint 3 requirements
+//Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
 
 session_start();
 
@@ -82,12 +81,7 @@ $sourceDocuments = json_decode($entry['source_documents'], true) ?: [];
 include 'header.php';
 ?>
 
-<style>
-    
-</style>
-
-<div class="container"
-    style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
+<div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none;">
 
     <div class="entry-header">
         <div class="entry-id-badge">
@@ -110,14 +104,19 @@ include 'header.php';
     <!-- Action Buttons -->
     <div class="action-buttons" style="margin:auto">
         <div class="route-buttons">
-            <button onclick="window.history.back()" class="btn btn-back" style="width:20%; margin-right:1%">Back</button>
-            <a href="view_journal_entries.php" class="btn btn-back" style="width:20%; margin-top:1%; margin-right:1%;">All Entries</a>
-            <a href="account_ledger.php?account_number=<?php echo $entry['account_id']; ?>" class="btn btn-back" style="width:20%; margin-top:1%;">View Ledger</a>
+            <button onclick="window.history.back()" class="btn btn-back"
+                style="width:20%; margin-right:1%">Back</button>
+            <a href="view_journal_entries.php" class="btn btn-back"
+                style="width:20%; margin-top:1%; margin-right:1%;">All Entries</a>
+            <a href="account_ledger.php?account_number=<?php echo $entry['account_id']; ?>" class="btn btn-back"
+                style="width:20%; margin-top:1%;">View Ledger</a>
         </div>
 
         <?php if ($canApprove && $entry['status'] == 'pending'): ?>
-            <button class="btn btn-approve" onclick="approveEntry(<?php echo $entry_id; ?>)">Approve Entry</button>
-            <button class="btn btn-reject" onclick="openRejectModal(<?php echo $entry_id; ?>)">Reject Entry</button>
+            <button class="btn btn-approve" onclick="approveEntry(<?php echo $entry_id; ?>)">Approve Entry <i
+                    class="fa-solid fa-square-check"></i></button>
+            <button class="btn btn-reject" onclick="openRejectModal(<?php echo $entry_id; ?>)">Reject Entry <i
+                    class="fa-solid fa-xmark"></i></button>
         <?php endif; ?>
     </div>
 
@@ -160,14 +159,14 @@ include 'header.php';
         <div class="info-card">
             <div class="info-label">Total Amount</div>
             <div class="info-value" style="color: #2980b9; font-weight: bold;">
-                 <?php echo formatMoney($entry['total_debit']); ?>
+                <?php echo formatMoney($entry['total_debit']); ?>
             </div>
         </div>
 
         <div class="info-card">
             <div class="info-label">Created By</div>
             <div class="info-value">
-                 <?php echo $entry['created_by_name']; ?>
+                <?php echo $entry['created_by_name']; ?>
                 <?php if ($entry['creator_first_name'] || $entry['creator_last_name']): ?>
                     <br><small>(<?php echo $entry['creator_first_name'] . ' ' . $entry['creator_last_name']; ?>)</small>
                 <?php endif; ?>
@@ -183,7 +182,7 @@ include 'header.php';
             <div class="info-card">
                 <div class="info-label"><?php echo $entry['status'] == 'rejected' ? 'Rejected By' : 'Approved By'; ?></div>
                 <div class="info-value">
-                     <?php echo $entry['approved_by_name']; ?>
+                    <?php echo $entry['approved_by_name']; ?>
                 </div>
             </div>
 
@@ -272,23 +271,24 @@ include 'header.php';
             <div class="documents-grid">
                 <?php foreach ($sourceDocuments as $doc):
                     $extension = strtolower(pathinfo($doc, PATHINFO_EXTENSION));
-                    $icon = '📄';
+                    $icon = '<i class="fa-solid fa-file"></i>';
 
                     if (in_array($extension, ['pdf']))
-                        $icon = '📕';
+                        $icon = '<i class="fa-solid fa-file-pdf"></i>';
                     elseif (in_array($extension, ['doc', 'docx']))
-                        $icon = '📘';
+                        $icon = '<i class="fa-solid fa-file-word"></i>';
                     elseif (in_array($extension, ['xls', 'xlsx']))
-                        $icon = '📗';
+                        $icon = '<i class="fa-solid fa-file-excel"></i>';
                     elseif (in_array($extension, ['jpg', 'jpeg', 'png']))
-                        $icon = '🖼️';
+                        $icon = '<i class="fa-solid fa-file-image"></i>';
                     elseif (in_array($extension, ['csv']))
-                        $icon = '📊';
+                        $icon = '<i class="fa-solid fa-file-csv"></i>';
                     ?>
                     <div class="document-card">
                         <div class="document-icon"><?php echo $icon; ?></div>
                         <div class="document-name"><?php echo basename($doc); ?></div>
-                        <a href="../uploads/journal_documents/<?php echo $doc; ?>" target="_blank" class="document-link">Download</a>
+                        <a href="../uploads/journal_documents/<?php echo $doc; ?>" target="_blank"
+                            class="document-link">Download</a>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -328,6 +328,7 @@ include 'header.php';
 </div>
 
 <script>
+    //functionality for approval of journal entry
     function approveEntry(entryId) {
         if (!confirm('Are you sure you want to approve this journal entry?')) {
             return;
@@ -358,6 +359,7 @@ include 'header.php';
             });
     }
 
+    //modal functionality handling 
     function openRejectModal(entryId) {
         window.currentRejectEntryId = entryId;
         document.getElementById('rejectionReason').value = '';
@@ -369,6 +371,7 @@ include 'header.php';
         window.currentRejectEntryId = null;
     }
 
+    //rejection reasoning submission and content 
     function submitRejection() {
         const reason = document.getElementById('rejectionReason').value.trim();
 
@@ -402,7 +405,6 @@ include 'header.php';
                 alert('An error occurred while rejecting the journal entry.');
             });
     }
-
 </script>
 </body>
 

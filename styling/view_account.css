@@ -1,0 +1,301 @@
+/* all styling that corresponds to the view account details page */
+.form-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.form-column {
+  display: flex;
+  flex-direction: column;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  color: #495057;
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.form-group .readonly-field {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+.help-text {
+  color: #666;
+  font-size: 11px;
+  margin-top: 3px;
+}
+.form-footer {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 20px;
+}
+.action-btn {
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 5px;
+  text-decoration: none;
+  display: inline-block;
+}
+.edit-btn {
+  background-color: #2980b9;
+}
+.edit-btn:hover {
+  background-color: #2980b9;
+}
+.back-btn {
+  background-color: #6c757d;
+}
+.back-btn:hover {
+  background-color: #545b62;
+}
+.deactivate-btn {
+  background-color: #fd7e14;
+}
+.deactivate-btn:hover {
+  background-color: #e66a02;
+}
+.reactivate-btn {
+  background-color: #28a745;
+}
+.reactivate-btn:hover {
+  background-color: #218838;
+}
+.disabled-btn {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.access-restricted {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-size: 12px;
+  text-align: center;
+}
+.account-header {
+  background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.account-header.inactive {
+  background: linear-gradient(135deg, #6c757d, #495057);
+}
+.account-number {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.account-name {
+  font-size: 1.5em;
+  margin-bottom: 5px;
+}
+.account-balance {
+  font-size: 1.8em;
+  font-weight: bold;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.balance-positive {
+  color: #28a745;
+}
+.balance-negative {
+  color: #dc3545;
+}
+.info-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 15px;
+  border-radius: 20px;
+  margin: 5px;
+  font-size: 0.9em;
+}
+.status-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 20px;
+  margin: 10px 5px;
+  font-size: 1em;
+  font-weight: bold;
+}
+.status-inactive {
+  background: #dc3545;
+  color: white;
+}
+.status-active {
+  background: #28a745;
+  color: white;
+}
+
+/* Email Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 0;
+  border: 1px solid #888;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 0 0 8px 8px;
+  text-align: right;
+}
+
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 20px;
+}
+
+.close:hover,
+.close:focus {
+  opacity: 0.7;
+}
+
+.email-form-group {
+  margin-bottom: 20px;
+}
+
+.email-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.email-form-group select,
+.email-form-group input,
+.email-form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.email-form-group textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.email-form-group select:focus,
+.email-form-group input:focus,
+.email-form-group textarea:focus {
+  outline: none;
+  border-color: #17a2b8;
+  box-shadow: 0 0 5px rgba(23, 162, 184, 0.3);
+}
+
+.send-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.send-btn:hover {
+  background-color: #218838;
+}
+
+.cancel-modal-btn {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancel-modal-btn:hover {
+  background-color: #545b62;
+}
+
+.required-star {
+  color: red;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+}

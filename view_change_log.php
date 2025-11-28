@@ -1,7 +1,8 @@
 <?php
 //KSU student project for Clarus Accounting tool
 //This page is used to view changes that users make to accounts
-//Initially drafted by Eric Poole
+//Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
+//This page displays all account changes and events in the application.
 
 session_start();
 
@@ -25,210 +26,7 @@ $userAccessLevel = $_SESSION['access_level'];
 include 'header.php';
 ?>
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin: 20px 0;
-        border-radius: 16px;
-    }
-
-    th,
-    td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: rgb(41, 128, 185);
-        color: white;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
-    tr.clickable-row {
-        cursor: pointer;
-    }
-
-    tr.clickable-row:hover {
-        background-color: #e3f2fd !important;
-    }
-
-
-    .filter-container {
-        margin: 15px 0;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        border: 1px solid #dee2e6;
-        display: flex;
-    }
-
-    .filter-container select,
-    .filter-container input {
-        padding: 5px 10px;
-        margin: 0 10px 0 5px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
-    }
-
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 2% auto;
-        padding: 0;
-        border: 1px solid #888;
-        border-radius: 8px;
-        width: 95%;
-        max-width: 1200px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #2980b9, #3498db);
-        color: white;
-        padding: 20px;
-        border-radius: 8px 8px 0 0;
-    }
-
-    .modal-header h2 {
-        margin: 0;
-        font-size: 1.5em;
-    }
-
-    .modal-body {
-        padding: 20px;
-    }
-
-    .modal-footer {
-        background-color: #f8f9fa;
-        padding: 15px 20px;
-        border-radius: 0 0 8px 8px;
-        text-align: right;
-    }
-
-    .close {
-        color: white;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        line-height: 20px;
-    }
-
-    .close:hover,
-    .close:focus {
-        opacity: 0.7;
-    }
-
-    .comparison-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    .comparison-column {
-        padding: 15px;
-        border-radius: 8px;
-    }
-
-    .before-column {
-        background-color: #fff3cd;
-        border: 2px solid #ffc107;
-    }
-
-    .after-column {
-        background-color: #d4edda;
-        border: 2px solid #28a745;
-    }
-
-    .comparison-column h3 {
-        margin-top: 0;
-        text-align: center;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .before-column h3 {
-        background-color: #ffc107;
-        color: #000;
-    }
-
-    .after-column h3 {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .field-group {
-        margin-bottom: 15px;
-        padding: 10px;
-        background-color: white;
-        border-radius: 5px;
-    }
-
-    .field-label {
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .field-value {
-        padding: 8px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-family: monospace;
-    }
-
-    .changed-field {
-        background-color: #ffe8a1;
-        border: 2px solid #ff9800;
-    }
-
-    .close-modal-btn {
-        background-color: #6c757d;
-        color: white;
-        padding: 10px 25px;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    .close-modal-btn:hover {
-        background-color: #545b62;
-    }
-
-    .change-time {
-        color: #666;
-        font-size: 12px;
-        font-style: italic;
-    }
-
-    @media (max-width: 768px) {
-        .comparison-container {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
+<link rel="stylesheet" href="/styling/view_change_log.css">
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
 
@@ -261,8 +59,6 @@ include 'header.php';
         return strtotime($c['change_time']) > strtotime('-30 days');
     }));
 
-
-
     // Format money function
     function formatMoney($value)
     {
@@ -270,9 +66,7 @@ include 'header.php';
     }
     ?>
 
-    <h1>Account Change Log</h1>
-
-
+    <h1><i class="fa-solid fa-pen-ruler"></i> Account Change Log</h1>
 
     <!-- Filters -->
     <div class="filter-container">
@@ -300,19 +94,19 @@ include 'header.php';
         <tbody>
             <?php foreach ($changes as $change): ?>
                 <tr class="change-row clickable-row" data-change-id="<?php echo $change['change_id']; ?>"
-                    data-account-number="<?php echo htmlspecialchars($change['account_number']); ?>"
+                    data-account-number="<?php echo ($change['account_number']); ?>"
                     data-change-time="<?php echo $change['change_time']; ?>"
-                    onclick="showChangeDetails(<?php echo htmlspecialchars(json_encode($change)); ?>)">
+                    onclick="showChangeDetails(<?php echo (json_encode($change)); ?>)">
 
-                    <td><?php echo htmlspecialchars($change['change_id']); ?></td>
+                    <td><?php echo ($change['change_id']); ?></td>
                     <td><?php echo date('M j, Y g:i A', strtotime($change['change_time'])); ?></td>
                     <td style="font-family: monospace; font-weight: bold;">
-                        <?php echo htmlspecialchars($change['account_number']); ?>
+                        <?php echo ($change['account_number']); ?>
                     </td>
-                    <td><?php echo htmlspecialchars($change['name_before']); ?></td>
-                    <td><?php echo htmlspecialchars($change['name_after']); ?></td>
-                    <td><?php echo htmlspecialchars($change['category_after']); ?></td>
-                    <td><?php echo htmlspecialchars($change['user_id_after']); ?></td>
+                    <td><?php echo ($change['name_before']); ?></td>
+                    <td><?php echo ($change['name_after']); ?></td>
+                    <td><?php echo ($change['category_after']); ?></td>
+                    <td><?php echo ($change['user_id_after']); ?></td>
                     <td style="text-align: center;">View</td>
                 </tr>
             <?php endforeach; ?>
@@ -334,13 +128,13 @@ include 'header.php';
         <div class="modal-header">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Account Change Details</h2>
-            
+
         </div>
         <div class="modal-body">
             <div class="comparison-container">
                 <!-- Before Column -->
                 <div class="comparison-column before-column">
-                    <h3>⚠️ BEFORE Changes</h3>
+                    <h3><i class="fa-solid fa-triangle-exclamation"></i> BEFORE Changes</h3>
 
                     <div class="field-group">
                         <div class="field-label">Account Name</div>
@@ -405,7 +199,7 @@ include 'header.php';
 
                 <!-- After Column -->
                 <div class="comparison-column after-column">
-                    <h3>✅ AFTER Changes</h3>
+                    <h3><i class="fa-solid fa-square-check"></i> AFTER Changes</h3>
 
                     <div class="field-group">
                         <div class="field-label">Account Name</div>
@@ -477,7 +271,6 @@ include 'header.php';
 
 <script>
     function showChangeDetails(change) {
-        
 
         // List of fields to compare
         const fields = [
@@ -526,10 +319,7 @@ include 'header.php';
         document.getElementById('changeDetailsModal').style.display = 'none';
     }
 
-
-
-
-
+    //money format functionality 
     function formatMoney(value) {
         return '$' + parseFloat(value || 0).toLocaleString('en-US', {
             minimumFractionDigits: 2,
@@ -537,6 +327,7 @@ include 'header.php';
         });
     }
 
+    //table filtering 
     function filterTable() {
         const accountNumberFilter = document.getElementById('accountNumberFilter').value.toLowerCase();
         const searchFilter = document.getElementById('searchFilter').value.toLowerCase();

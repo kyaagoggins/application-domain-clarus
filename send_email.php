@@ -1,7 +1,7 @@
 <?php
 //KSU student project for Clarus Accounting tool
 //This page is used to send an email from the Clarus system
-//Initially drafted by Eric Poole
+//Initially drafted by Eric Poole.
 session_start();
 
 // Get form data
@@ -34,12 +34,10 @@ $header_string = '';
 foreach ($headers as $key => $value) {
     $header_string .= $key . ': ' . $value . "\r\n";
 }
-    
-if (mail($to_email, $subject, $message, $header_string)) {
-        echo 'Your email was sent successfully!';
-    } else {
-        echo 'Oops.. it looks like something went wrong. Please try again later.';
-    }
-    
 
+if (mail($to_email, $subject, $message, $header_string)) {
+    echo 'Yay! Your email was sent successfully!';
+} else {
+    echo 'Oops.. it looks like something went wrong. Please try again later.';
+}
 ?>
