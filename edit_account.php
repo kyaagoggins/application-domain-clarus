@@ -1,8 +1,9 @@
 <?php
 //KSU student project for Clarus Accounting tool
-//This page is used to view an account's ledger
-//Initially drafted by Eric Poole
+//This page is used to edit an account's specific details
+//Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
 //This page was created to meet Sprint 2 requirements
+//11-28: Eric made the edit account number field read only after discussing with team
 
 session_start();
 
@@ -19,6 +20,7 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
+//user session details 
 $username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 
@@ -33,225 +35,96 @@ if (!$account_number) {
 include '../db_connect.php';
 
 // Fetch account details from database
-
 $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
 $stmt = $pdo->prepare("SELECT * FROM accounts WHERE account_number = :account_number");
 $stmt->execute([':account_number' => $account_number]);
 $account = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
 if (!$account) {
     die("Hmm.. something went wrong. There was no account found with the provided account number. Please go back and try again.");
 }
 
-
 // Remove commas and dollar signs from dollar value fields
-function formatMoneyForEdit($value) {
-    return number_format((float)$value, 2, '.', '');
+function formatMoneyForEdit($value)
+{
+    return number_format((float) $value, 2, '.', '');
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Clarus - Edit Account</title>
-    <style>
-        .form-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .form-column {
-            display: flex;
-            flex-direction: column;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0,123,255,0.3);
-        }
-        .required {
-            color: red;
-        }
-        .form-footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .submit-btn {
-            background-color: #2980b9;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        .submit-btn:hover {
-            background-color: #2980b9;
-        }
-        .cancel-btn {
-            background-color: #6c757d;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .cancel-btn:hover {
-            background-color: #545b62;
-        }
-        .readonly-field {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-        }
-        .error-message {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .success-message {
-            color: green;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .help-text {
-            color: #666;
-            font-size: 11px;
-            margin-top: 3px;
-        }
-        .validation-error {
-            border-color: #dc3545 !important;
-        }
-        .validation-success {
-            border-color: #28a745 !important;
-        }
-        .account-header {
-            background: linear-gradient(135deg, #fd7e14, #e55a4e);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .account-number {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .account-name {
-            font-size: 1.5em;
-            margin-bottom: 5px;
-        }
-        @media (max-width: 768px) {
-            .form-container {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container" style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-        <!--Disabling the default icon, Kyaa is creating a custom one, it will be part of the included header-->
-        <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
-    
-    <?php include 'header.php'; ?>
-    
-    <div class="account-header">
 
+include 'header.php';
+?>
+
+<link rel="stylesheet" href="/styling/edit_account.css">
+<div class="container"
+    style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+
+    <div class="account-header">
         <div class="account-name"><?php echo $account['name']; ?></div>
     </div>
-    
-    <h1>Edit Account</h1>
-    
+
+    <h1><i class="fa-solid fa-pen-to-square"></i> Edit Account</h1>
+
     <form action="push_edit_account.php" method="POST" onsubmit="return validateForm()">
+        <!--This is a hidden field from when we used to allow the user to change the account number, we disabled this feature during testing -->
         <input type="hidden" name="original_name" value="<?php echo $account['name']; ?>">
-        
+
         <div class="form-container">
             <!-- Left Column -->
             <div class="form-column">
                 <div class="form-group">
-                    <label for="accountNumber">Account Number <span class="required">*</span></label>
-                    <input type="text" id="accountNumber" name="account_number" 
-                           value="<?php echo $account['account_number']; ?>" 
-                           required maxlength="20" oninput="validateAccountNumber()" onblur="checkDuplicateAccount()">
+                    <label for="accountNumber">Account Number (cannot be changed)</label>
+                    <input readonly disabled type="text" id="accountNumber" name="account_number"
+                        value="<?php echo $account['account_number']; ?>" required maxlength="20"
+                        oninput="validateAccountNumber()" onblur="checkDuplicateAccount()">
                     <div id="accountNumberError" class="error-message"></div>
                     <div class="help-text">Enter a unique account number (numbers only, no spaces or decimals)</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="accountName">Account Name <span class="required">*</span></label>
-                    <input type="text" id="accountName" name="name" 
-                           value="<?php echo $account['name']; ?>" 
-                           required maxlength="100" onblur="checkDuplicateName()">
+                    <input type="text" id="accountName" name="name" value="<?php echo $account['name']; ?>" required
+                        maxlength="100" onblur="checkDuplicateName()">
                     <div id="accountNameError" class="error-message"></div>
                     <div class="help-text">Enter a unique account name (e.g., Cash, Accounts Receivable)</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3" maxlength="500"><?php echo $account['description']; ?></textarea>
+                    <textarea id="description" name="description" rows="3"
+                        maxlength="500"><?php echo $account['description']; ?></textarea>
                     <div class="help-text">Optional detailed description of the account</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="normalSide">Normal Side <span class="required">*</span></label>
                     <select id="normalSide" name="normal_side" required onchange="updateBalance()">
                         <option value="">Choose Normal Side</option>
-                        <option value="Debit" <?php echo $account['normal_side'] == 'Debit' ? 'selected' : ''; ?>>Debit</option>
-                        <option value="Credit" <?php echo $account['normal_side'] == 'Credit' ? 'selected' : ''; ?>>Credit</option>
+                        <option value="Debit" <?php echo $account['normal_side'] == 'Debit' ? 'selected' : ''; ?>>
+                            Debit</option>
+                        <option value="Credit" <?php echo $account['normal_side'] == 'Credit' ? 'selected' : ''; ?>>
+                            Credit</option>
                     </select>
                     <div class="help-text">Assets/Expenses = Debit, Liabilities/Equity/Revenue = Credit</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="category">Category <span class="required">*</span></label>
                     <select id="category" name="category" required onchange="updateSubcategories()">
                         <option value="">Choose Category</option>
                         <!--The following option elements have php that references this account in the table, checks its existing category, and adds the "selected" attribute so that the form is prepopulated for the user -->
-                        <option value="Assets" <?php echo $account['category'] == 'Assets' ? 'selected' : ''; ?>>Assets</option>
+                        <option value="Assets" <?php echo $account['category'] == 'Assets' ? 'selected' : ''; ?>>
+                            Assets</option>
                         <option value="Liabilities" <?php echo $account['category'] == 'Liabilities' ? 'selected' : ''; ?>>Liabilities</option>
-                        <option value="Equity" <?php echo $account['category'] == 'Equity' ? 'selected' : ''; ?>>Equity</option>
-                        <option value="Revenue" <?php echo $account['category'] == 'Revenue' ? 'selected' : ''; ?>>Revenue</option>
-                        <option value="Expenses" <?php echo $account['category'] == 'Expenses' ? 'selected' : ''; ?>>Expenses</option>
+                        <option value="Equity" <?php echo $account['category'] == 'Equity' ? 'selected' : ''; ?>>
+                            Equity</option>
+                        <option value="Revenue" <?php echo $account['category'] == 'Revenue' ? 'selected' : ''; ?>>
+                            Revenue</option>
+                        <option value="Expenses" <?php echo $account['category'] == 'Expenses' ? 'selected' : ''; ?>>
+                            Expenses</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="subcategory">Subcategory</label>
                     <select id="subcategory" name="subcategory">
@@ -259,7 +132,7 @@ function formatMoneyForEdit($value) {
                         <!-- Will be populated by the JavaScript function updateSubCategories on page load-->
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="statement">Financial Statement <span class="required">*</span></label>
                     <select id="statement" name="statement" required>
@@ -272,40 +145,40 @@ function formatMoneyForEdit($value) {
                     </select>
                 </div>
             </div>
-            
+
             <!-- Right Column -->
             <div class="form-column">
                 <div class="form-group">
                     <label for="initialBalance">Initial Balance</label>
-                    <input type="text" id="initialBalance" name="initial_balance" 
-                           value="<?php echo formatMoneyForEdit($account['initial_balance']); ?>" 
-                           oninput="formatCurrency(this)" onchange="updateBalance()">
+                    <input type="text" id="initialBalance" name="initial_balance"
+                        value="<?php echo formatMoneyForEdit($account['initial_balance']); ?>"
+                        oninput="formatCurrency(this)" onchange="updateBalance()">
                     <div class="help-text">Starting balance for this account</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="debitAmount">Debit Amount</label>
-                    <input type="text" id="debitAmount" name="debit" 
-                           value="<?php echo formatMoneyForEdit($account['debit']); ?>" 
-                           oninput="formatCurrency(this)" onchange="updateBalance()">
+                    <input type="text" id="debitAmount" name="debit"
+                        value="<?php echo formatMoneyForEdit($account['debit']); ?>" oninput="formatCurrency(this)"
+                        onchange="updateBalance()">
                     <div class="help-text">Total debit transactions</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="creditAmount">Credit Amount</label>
-                    <input type="text" id="creditAmount" name="credit" 
-                           value="<?php echo formatMoneyForEdit($account['credit']); ?>" 
-                           oninput="formatCurrency(this)" onchange="updateBalance()">
+                    <input type="text" id="creditAmount" name="credit"
+                        value="<?php echo formatMoneyForEdit($account['credit']); ?>" oninput="formatCurrency(this)"
+                        onchange="updateBalance()">
                     <div class="help-text">Total credit transactions</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="balance">Current Balance</label>
-                    <input type="text" id="balance" name="balance" 
-                           value="<?php echo formatMoneyForEdit($account['balance']); ?>" readonly class="readonly-field">
+                    <input type="text" id="balance" name="balance"
+                        value="<?php echo formatMoneyForEdit($account['balance']); ?>" readonly class="readonly-field">
                     <div class="help-text">Calculated automatically based on normal side and amounts</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="orderType">Order Type</label>
                     <select id="orderType" name="order_type">
@@ -322,19 +195,21 @@ function formatMoneyForEdit($value) {
                     </select>
                     <div class="help-text">Classification for financial statement ordering</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="comment">Comments</label>
-                    <textarea id="comment" name="comment" rows="4" maxlength="1000"><?php echo $account['comment']; ?></textarea>
+                    <textarea id="comment" name="comment" rows="4"
+                        maxlength="1000"><?php echo $account['comment']; ?></textarea>
                     <div class="help-text">Additional notes or comments about this account</div>
                 </div>
             </div>
-            
+
             <!-- Form Footer -->
             <div class="form-footer">
-                <button type="submit" class="submit-btn">Update Account</button>
+                <button type="submit" class="submit-btn">Update Account <i class="fa-solid fa-pen"></i></button>
                 <br><br>
-                <a href="view_account.php?account_number=<?php echo $account['account_number']; ?>" class="cancel-btn">View Account</a>
+                <a href="view_account.php?account_number=<?php echo $account['account_number']; ?>"
+                    class="cancel-btn">View Account</a>
                 <a href="accounts_dashboard.php" class="cancel-btn">Cancel</a>
             </div>
         </div>
@@ -342,284 +217,288 @@ function formatMoneyForEdit($value) {
 </div>
 
 <script>
-// Store original values for duplicate checking
-const originalAccountNumber = "<?php echo $account['account_number']; ?>";
-const originalAccountName = "<?php echo $account['name']; ?>";
-const currentSubcategory = "<?php echo $account['subcategory']; ?>";
+    // Store original values for duplicate checking
+    const originalAccountNumber = "<?php echo $account['account_number']; ?>";
+    const originalAccountName = "<?php echo $account['name']; ?>";
+    const currentSubcategory = "<?php echo $account['subcategory']; ?>";
 
-// Subcategory options based on category
-const subcategories = {
-    'Assets': ['Cash and Cash Equivalents', 'Accounts Receivable', 'Inventory', 'Prepaid Expenses', 'Property, Plant & Equipment', 'Intangible Assets', 'Investments', 'Other Assets'],
-    'Liabilities': ['Accounts Payable', 'Accrued Liabilities', 'Short-term Debt', 'Long-term Debt', 'Deferred Revenue', 'Other Liabilities'],
-    'Equity': ['Common Stock', 'Preferred Stock', 'Retained Earnings', 'Additional Paid-in Capital', 'Treasury Stock', 'Other Equity'],
-    'Revenue': ['Sales Revenue', 'Service Revenue', 'Interest Revenue', 'Other Revenue'],
-    'Expenses': ['Cost of Goods Sold', 'Operating Expenses', 'Administrative Expenses', 'Interest Expense', 'Tax Expense', 'Other Expenses']
-};
+    // Subcategory options based on category
+    const subcategories = {
+        'Assets': ['Cash and Cash Equivalents', 'Accounts Receivable', 'Inventory', 'Prepaid Expenses', 'Property, Plant & Equipment', 'Intangible Assets', 'Investments', 'Other Assets'],
+        'Liabilities': ['Accounts Payable', 'Accrued Liabilities', 'Short-term Debt', 'Long-term Debt', 'Deferred Revenue', 'Other Liabilities'],
+        'Equity': ['Common Stock', 'Preferred Stock', 'Retained Earnings', 'Additional Paid-in Capital', 'Treasury Stock', 'Other Equity'],
+        'Revenue': ['Sales Revenue', 'Service Revenue', 'Interest Revenue', 'Other Revenue'],
+        'Expenses': ['Cost of Goods Sold', 'Operating Expenses', 'Administrative Expenses', 'Interest Expense', 'Tax Expense', 'Other Expenses']
+    };
 
-// Format currency with commas and two decimal places
-function formatCurrency(input) {
-    let value = input.value.replace(/[^0-9.-]/g, ''); // Remove non-numeric characters except decimal and minus
-    
-    // Ensure only one decimal point
-    let decimalCount = (value.match(/\./g) || []).length;
-    if (decimalCount > 1) {
-        value = value.replace(/\.(?=.*\.)/, '');
+    // Format currency with commas and two decimal places
+    function formatCurrency(input) {
+        let value = input.value.replace(/[^0-9.-]/g, ''); // Remove non-numeric characters except decimal and minus
+
+        // Ensure only one decimal point
+        let decimalCount = (value.match(/\./g) || []).length;
+        if (decimalCount > 1) {
+            value = value.replace(/\.(?=.*\.)/, '');
+        }
+
+        // Convert to number and format
+        let num = parseFloat(value);
+        if (isNaN(num)) {
+            input.value = '0.00';
+            return;
+        }
+
+        // Format with commas and two decimal places
+        input.value = num.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        // Update balance after formatting
+        if (input.id !== 'balance') {
+            updateBalance();
+        }
     }
-    
-    // Convert to number and format
-    let num = parseFloat(value);
-    if (isNaN(num)) {
-        input.value = '0.00';
-        return;
+
+    // Parse currency string to number
+    function parseCurrency(value) {
+        return parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
     }
-    
-    // Format with commas and two decimal places
-    input.value = num.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-    
-    // Update balance after formatting
-    if (input.id !== 'balance') {
+
+    // Validate account number (numbers only, no spaces, no decimals)
+    function validateAccountNumber() {
+        const input = document.getElementById('accountNumber');
+        const errorDiv = document.getElementById('accountNumberError');
+        let value = input.value;
+
+        // Remove any non-numeric characters
+        value = value.replace(/[^0-9]/g, '');
+        input.value = value;
+
+        if (value === '') {
+            errorDiv.textContent = '';
+            input.classList.remove('validation-error', 'validation-success');
+            return;
+        }
+
+        // Validate format
+        if (!/^\d+$/.test(value)) {
+            errorDiv.textContent = 'Account number must contain only numbers.';
+            input.classList.add('validation-error');
+            input.classList.remove('validation-success');
+            return false;
+        }
+
+        // Check length of account number 
+        if (value.length < 3) {
+            errorDiv.textContent = 'Account number must be at least 3 digits.';
+            input.classList.add('validation-error');
+            input.classList.remove('validation-success');
+            return false;
+        }
+
+        //error validation handling ui
+        errorDiv.textContent = '';
+        input.classList.remove('validation-error');
+        input.classList.add('validation-success');
+        return true;
+    }
+
+    // Check for duplicate account number (exclude current account)
+    function checkDuplicateAccount() {
+        const input = document.getElementById('accountNumber');
+        const errorDiv = document.getElementById('accountNumberError');
+        const value = input.value;
+
+        if (!value || !validateAccountNumber()) return;
+
+        // If it's the same as the original, no need to check
+        if (value === originalAccountNumber) {
+            errorDiv.textContent = '';
+            errorDiv.className = 'success-message';
+            errorDiv.textContent = '✓ Current account number.';
+            input.classList.remove('validation-error');
+            input.classList.add('validation-success');
+            return true;
+        }
+
+        // Placeholder values, duplicate check to tables still under development
+        const duplicateAccounts = ['1000', '2000', '3000', '4000', '5000'];
+
+        if (duplicateAccounts.includes(value)) {
+            errorDiv.textContent = 'This account number is taken. Please choose a different number.';
+            errorDiv.className = 'error-message';
+            input.classList.add('validation-error');
+            input.classList.remove('validation-success');
+            return false;
+        }
+
+        errorDiv.textContent = '';
+        errorDiv.className = 'success-message';
+        errorDiv.textContent = 'Account number is available.';
+        input.classList.remove('validation-error');
+        input.classList.add('validation-success');
+
+        return true;
+    }
+
+    // Check for duplicate account name (ignores current account's name to resolve a bug we found)
+    function checkDuplicateName() {
+        const input = document.getElementById('accountName');
+        const errorDiv = document.getElementById('accountNameError');
+        const value = input.value.trim();
+
+        if (!value) return;
+
+        // If it's the same as the original, no need to check it, carry on
+        if (value === originalAccountName) {
+            errorDiv.textContent = '';
+            errorDiv.className = 'success-message';
+            errorDiv.textContent = '✓ Current account name.';
+            input.classList.remove('validation-error');
+            input.classList.add('validation-success');
+            return true;
+        }
+
+        const duplicateNames = ['cash', 'accounts receivable', 'inventory', 'accounts payable'];
+
+        if (duplicateNames.includes(value.toLowerCase())) {
+            errorDiv.textContent = 'This account name already exists. Please choose a different name.';
+            errorDiv.className = 'error-message';
+            input.classList.add('validation-error');
+            input.classList.remove('validation-success');
+            return false;
+        }
+
+        errorDiv.textContent = '';
+        errorDiv.className = 'success-message';
+        errorDiv.textContent = 'Account name is available.';
+        input.classList.remove('validation-error');
+        input.classList.add('validation-success');
+
+        return true;
+    }
+
+    function updateSubcategories() {
+        const category = document.getElementById('category').value;
+        const subcategorySelect = document.getElementById('subcategory');
+
+        // Clear existing options
+        subcategorySelect.innerHTML = '<option value="">Choose Subcategory</option>';
+
+        if (category && subcategories[category]) {
+            subcategories[category].forEach(function (subcategory) {
+                const option = document.createElement('option');
+                option.value = subcategory;
+                option.textContent = subcategory;
+                // Pre-select current subcategory if it matches
+                if (subcategory === currentSubcategory) {
+                    option.selected = true;
+                }
+                subcategorySelect.appendChild(option);
+            });
+        }
+
         updateBalance();
     }
-}
 
-// Parse currency string to number
-function parseCurrency(value) {
-    return parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
-}
+    //function to dynamically update balance information based on inputted information by the user 
+    function updateBalance() {
+        const initialBalance = parseCurrency(document.getElementById('initialBalance').value);
+        const debitAmount = parseCurrency(document.getElementById('debitAmount').value);
+        const creditAmount = parseCurrency(document.getElementById('creditAmount').value);
+        const normalSide = document.getElementById('normalSide').value;
 
-// Validate account number (numbers only, no spaces, no decimals)
-function validateAccountNumber() {
-    const input = document.getElementById('accountNumber');
-    const errorDiv = document.getElementById('accountNumberError');
-    let value = input.value;
-    
-    // Remove any non-numeric characters
-    value = value.replace(/[^0-9]/g, '');
-    input.value = value;
-    
-    if (value === '') {
-        errorDiv.textContent = '';
-        input.classList.remove('validation-error', 'validation-success');
-        return;
-    }
-    
-    // Validate format
-    if (!/^\d+$/.test(value)) {
-        errorDiv.textContent = 'Account number must contain only numbers.';
-        input.classList.add('validation-error');
-        input.classList.remove('validation-success');
-        return false;
-    }
-    
-    // Check length
-    if (value.length < 3) {
-        errorDiv.textContent = 'Account number must be at least 3 digits.';
-        input.classList.add('validation-error');
-        input.classList.remove('validation-success');
-        return false;
-    }
-    
-    errorDiv.textContent = '';
-    input.classList.remove('validation-error');
-    input.classList.add('validation-success');
-    return true;
-}
+        let balance;
 
-// Check for duplicate account number (exclude current account)
-function checkDuplicateAccount() {
-    const input = document.getElementById('accountNumber');
-    const errorDiv = document.getElementById('accountNumberError');
-    const value = input.value;
-    
-    if (!value || !validateAccountNumber()) return;
-    
-    // If it's the same as the original, no need to check
-    if (value === originalAccountNumber) {
-        errorDiv.textContent = '';
-        errorDiv.className = 'success-message';
-        errorDiv.textContent = '✓ Current account number.';
-        input.classList.remove('validation-error');
-        input.classList.add('validation-success');
-        return true;
-    }
-    
-    // Placeholder values, duplicate check to tables still under development
-    const duplicateAccounts = ['1000', '2000', '3000', '4000', '5000'];
-    
-    if (duplicateAccounts.includes(value)) {
-        errorDiv.textContent = 'This account number is taken. Please choose a different number.';
-        errorDiv.className = 'error-message';
-        input.classList.add('validation-error');
-        input.classList.remove('validation-success');
-        return false;
-    }
-    
-    errorDiv.textContent = '';
-    errorDiv.className = 'success-message';
-    errorDiv.textContent = 'Account number is available.';
-    input.classList.remove('validation-error');
-    input.classList.add('validation-success');
-    
-    return true;
-}
+        if (normalSide === 'Debit') {
+            // For debit normal side: Balance = Initial + Debits - Credits
+            balance = initialBalance + debitAmount - creditAmount;
+        } else if (normalSide === 'Credit') {
+            // For credit normal side: Balance = Initial + Credits - Debits
+            balance = initialBalance + creditAmount - debitAmount;
+        } else {
+            // No normal side selected, just use initial balance
+            balance = initialBalance;
+        }
 
-// Check for duplicate account name (ignores current account's name to resolve a bug we found)
-function checkDuplicateName() {
-    const input = document.getElementById('accountName');
-    const errorDiv = document.getElementById('accountNameError');
-    const value = input.value.trim();
-    
-    if (!value) return;
-    
-    // If it's the same as the original, no need to check it, carry on
-    if (value === originalAccountName) {
-        errorDiv.textContent = '';
-        errorDiv.className = 'success-message';
-        errorDiv.textContent = '✓ Current account name.';
-        input.classList.remove('validation-error');
-        input.classList.add('validation-success');
-        return true;
-    }
-    
-    const duplicateNames = ['cash', 'accounts receivable', 'inventory', 'accounts payable'];
-    
-    if (duplicateNames.includes(value.toLowerCase())) {
-        errorDiv.textContent = 'This account name already exists. Please choose a different name.';
-        errorDiv.className = 'error-message';
-        input.classList.add('validation-error');
-        input.classList.remove('validation-success');
-        return false;
-    }
-    
-    errorDiv.textContent = '';
-    errorDiv.className = 'success-message';
-    errorDiv.textContent = 'Account name is available.';
-    input.classList.remove('validation-error');
-    input.classList.add('validation-success');
-    
-    return true;
-}
-
-function updateSubcategories() {
-    const category = document.getElementById('category').value;
-    const subcategorySelect = document.getElementById('subcategory');
-    
-    // Clear existing options
-    subcategorySelect.innerHTML = '<option value="">Choose Subcategory</option>';
-    
-    if (category && subcategories[category]) {
-        subcategories[category].forEach(function(subcategory) {
-            const option = document.createElement('option');
-            option.value = subcategory;
-            option.textContent = subcategory;
-            // Pre-select current subcategory if it matches
-            if (subcategory === currentSubcategory) {
-                option.selected = true;
-            }
-            subcategorySelect.appendChild(option);
+        // Format balance with commas and two decimal places
+        document.getElementById('balance').value = balance.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
     }
-    
-    updateBalance();
-}
 
-function updateBalance() {
-    const initialBalance = parseCurrency(document.getElementById('initialBalance').value);
-    const debitAmount = parseCurrency(document.getElementById('debitAmount').value);
-    const creditAmount = parseCurrency(document.getElementById('creditAmount').value);
-    const normalSide = document.getElementById('normalSide').value;
-    
-    let balance;
-    
-    if (normalSide === 'Debit') {
-        // For debit normal side: Balance = Initial + Debits - Credits
-        balance = initialBalance + debitAmount - creditAmount;
-    } else if (normalSide === 'Credit') {
-        // For credit normal side: Balance = Initial + Credits - Debits
-        balance = initialBalance + creditAmount - debitAmount;
-    } else {
-        // No normal side selected, just use initial balance
-        balance = initialBalance;
+    //validate inputted information by the user 
+    function validateForm() {
+        const accountNumber = document.getElementById('accountNumber').value.trim();
+        const accountName = document.getElementById('accountName').value.trim();
+        const normalSide = document.getElementById('normalSide').value;
+        const category = document.getElementById('category').value;
+        const statement = document.getElementById('statement').value;
+
+        // Check for validation errors
+        const hasAccountNumberError = document.getElementById('accountNumberError').textContent.includes('already exists') ||
+            document.getElementById('accountNumberError').textContent.includes('must');
+        const hasAccountNameError = document.getElementById('accountNameError').textContent.includes('already exists');
+
+        if (hasAccountNumberError) {
+            alert('Wait! Please fix the account number error before submitting.');
+            return false;
+        }
+
+        if (hasAccountNameError) {
+            alert('Wait! Please fix the account name error before submitting.');
+            return false;
+        }
+
+        if (!accountNumber) {
+            alert('Wait! Account Number is required.');
+            return false;
+        }
+
+        if (!validateAccountNumber()) {
+            alert('Wait! Please enter a valid account number (only numbers and at least 3 digits).');
+            return false;
+        }
+
+        if (!accountName) {
+            alert('Wait! Account Name is required.');
+            return false;
+        }
+
+        if (!normalSide) {
+            alert('Wait! Normal Side is required.');
+            return false;
+        }
+
+        if (!category) {
+            alert('Wait! Category is required.');
+            return false;
+        }
+
+        if (!statement) {
+            alert('Wait! Financial Statement is required.');
+            return false;
+        }
+
+        return true;
     }
-    
-    // Format balance with commas and two decimal places
-    document.getElementById('balance').value = balance.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        // Format initial currency values
+        formatCurrency(document.getElementById('initialBalance'));
+        formatCurrency(document.getElementById('debitAmount'));
+        formatCurrency(document.getElementById('creditAmount'));
+
+        // Populate subcategories based on current category
+        updateSubcategories();
+
+        // Update balance
+        updateBalance();
     });
-}
-
-function validateForm() {
-    const accountNumber = document.getElementById('accountNumber').value.trim();
-    const accountName = document.getElementById('accountName').value.trim();
-    const normalSide = document.getElementById('normalSide').value;
-    const category = document.getElementById('category').value;
-    const statement = document.getElementById('statement').value;
-    
-    // Check for validation errors
-    const hasAccountNumberError = document.getElementById('accountNumberError').textContent.includes('already exists') || 
-                                  document.getElementById('accountNumberError').textContent.includes('must');
-    const hasAccountNameError = document.getElementById('accountNameError').textContent.includes('already exists');
-    
-    if (hasAccountNumberError) {
-        alert('Please fix the account number error before submitting.');
-        return false;
-    }
-    
-    if (hasAccountNameError) {
-        alert('Please fix the account name error before submitting.');
-        return false;
-    }
-    
-    if (!accountNumber) {
-        alert('Account Number is required.');
-        return false;
-    }
-    
-    if (!validateAccountNumber()) {
-        alert('Please enter a valid account number (only numbers and at least 3 digits).');
-        return false;
-    }
-    
-    if (!accountName) {
-        alert('Account Name is required.');
-        return false;
-    }
-    
-    if (!normalSide) {
-        alert('Normal Side is required.');
-        return false;
-    }
-    
-    if (!category) {
-        alert('Category is required.');
-        return false;
-    }
-    
-    if (!statement) {
-        alert('Financial Statement is required.');
-        return false;
-    }
-    
-    return true;
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Format initial currency values
-    formatCurrency(document.getElementById('initialBalance'));
-    formatCurrency(document.getElementById('debitAmount'));
-    formatCurrency(document.getElementById('creditAmount'));
-    
-    // Populate subcategories based on current category
-    updateSubcategories();
-    
-    // Update balance
-    updateBalance();
-});
 </script>
 </body>
+
 </html>

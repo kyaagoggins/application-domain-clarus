@@ -1,10 +1,12 @@
 <?php
+
 /** 
  * KSU student project for Clarus Accounting tool
  * This script is used by admins for account edit form submissions
  * Initially drafted by Eric Poole; Reviewed and updated by Kyaa Goggins
  * Kyaa Goggins: Added more error handling like missing try/catches
  */
+
 
 session_start();
 
@@ -21,52 +23,84 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
+// Include database configuration
 include '../db_connect.php';
 
-
+// Check if form was submitted
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header("Location: dashboard.php");
     exit();
 }
 
-$original_account_number = trim($_POST['original_account_number']);
-$original_name = trim($_POST['original_name']);
-$account_number = trim($_POST['account_number']);
-$name = trim($_POST['name']);
-$description = trim($_POST['description']);
-$normal_side = $_POST['normal_side'];
-$category = $_POST['category'];
-$subcategory = trim($_POST['subcategory']);
-$initial_balance = $_POST['initial_balance'];
-$debit = $_POST['debit'];
-$credit = $_POST['credit'];
-$order_type = $_POST['order_type'];
-$statement = $_POST['statement'];
-$comment = trim($_POST['comment']);
+// Get form data
+//$original_account_number = trim($_POST['original_account_number'] ?? '');
+$original_name = trim($_POST['original_name'] ?? '');
+$account_number = trim($_POST['account_number'] ?? '');
+$name = trim($_POST['name'] ?? '');
+$description = trim($_POST['description'] ?? '');
+$normal_side = $_POST['normal_side'] ?? '';
+$category = $_POST['category'] ?? '';
+$subcategory = trim($_POST['subcategory'] ?? '');
+$initial_balance = $_POST['initial_balance'] ?? '0';
+$debit = $_POST['debit'] ?? '0';
+$credit = $_POST['credit'] ?? '0';
+$order_type = $_POST['order_type'] ?? '';
+$statement = $_POST['statement'] ?? '';
+$comment = trim($_POST['comment'] ?? '');
 $user_id = $_SESSION['user_id'];
 
+// Validation
+$errors = [];
 
+// Required field validation
+//if (empty($original_account_number)) {
+//    $errors[] = "Original account number is required for update.";
+//}
+if (empty($account_number)) {
+    $errors[] = "Account number is required.";
+}
+if (empty($name)) {
+    $errors[] = "Account name is required.";
+}
+if (empty($normal_side)) {
+    $errors[] = "Normal side is required.";
+}
+if (empty($category)) {
+    $errors[] = "Category is required.";
+}
+if (empty($statement)) {
+    $errors[] = "Financial statement is required.";
+}
+
+// Account number validation (only integers, no decimals, spaces, or alphanumeric)
+if (!empty($account_number) && !preg_match('/^[0-9]+$/', $account_number)) {
+    $errors[] = "Account number must contain only numbers (no decimals, spaces, or letters).";
+}
+
+// Account number length validation
+if (!empty($account_number) && strlen($account_number) < 3) {
+    $errors[] = "Account number must be at least 3 digits.";
+}
 
 // Monetary value validation and formatting
-function validateAndFormatMoney($value, $fieldName)
-{
+function validateAndFormatMoney($value, $fieldName) {
     global $errors;
-
+    
     if (empty($value)) {
         return '0.00';
     }
-
+    
     // Remove commas and whitespace
     $cleanValue = str_replace([',', ' '], '', $value);
-
+    
     // Validate numeric
     if (!is_numeric($cleanValue)) {
         $errors[] = "$fieldName must be a valid monetary amount.";
         return '0.00';
     }
-
+    
     // Format to 2 decimal places
-    return number_format((float) $cleanValue, 2, '.', '');
+    return number_format((float)$cleanValue, 2, '.', '');
 }
 
 // Format monetary values
@@ -75,45 +109,57 @@ $debit = validateAndFormatMoney($debit, "Debit amount");
 $credit = validateAndFormatMoney($credit, "Credit amount");
 
 // Calculate balance
-$balance = number_format((float) $initial_balance + (float) $debit - (float) $credit, 2, '.', '');
+$balance = number_format((float)$initial_balance + (float)$debit - (float)$credit, 2, '.', '');
 
 // Database validation and update
 if (empty($errors)) {
-
+    try {
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        
         // Begin transaction
         $pdo->beginTransaction();
-
+        
         // Fetch the complete original record for audit logging
-        $acctRecordOrig = $pdo->prepare("
+        $stmt = $pdo->prepare("
             SELECT account_number, name, description, normal_side, category, subcategory, 
                    initial_balance, debit, credit, balance, order_type, statement, comment, 
                    user_id, is_active 
             FROM accounts 
-            WHERE account_number = :original_account_number
+            WHERE account_number = :account_number
         ");
-        $acctRecordOrig->execute([':original_account_number' => $original_account_number]);
-        $originalAccount = $acctRecordOrig->fetch(PDO::FETCH_ASSOC);
-
+        $stmt->execute([':account_number' => $account_number]);
+        $originalAccount = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         if (!$originalAccount) {
-            throw new Exception("The original account was not found. It may have been deleted by another user.");
+            throw new Exception("Original account not found. It may have been deleted by another user.");
         }
-
+        
+        /*Removed this logic because team decided to remove the ability to update account numbers once created
         // Check for duplicate account number (if changed)
         if ($account_number !== $original_account_number) {
-            $acctNumCheck = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE account_number = :account_number");
-            $acctNumCheck->execute([':account_number' => $account_number]);
-
-            if ($acctNumCheck->fetchColumn() > 0) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE account_number = :account_number");
+            $stmt->execute([':account_number' => $account_number]);
+            
+            if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account number '$account_number' already exists. Please use a different account number.";
             }
         }
-
+        */
+        
+        // Check for duplicate account name (if changed)
+        if ($name !== $original_name) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE name = :name");
+            $stmt->execute([':name' => $name]);
+            
+            if ($stmt->fetchColumn() > 0) {
+                $errors[] = "Account name '$name' already exists. Please use a different account name.";
+            }
+        }
+        
         // If no errors, update the account
         if (empty($errors)) {
-            $updateAccts = $pdo->prepare("
+            $stmt = $pdo->prepare("
                 UPDATE accounts SET 
                     account_number = :account_number,
                     name = :name,
@@ -129,10 +175,10 @@ if (empty($errors)) {
                     statement = :statement,
                     comment = :comment,
                     user_id = :user_id
-                WHERE account_number = :original_account_number
+                WHERE account_number = :account_number
             ");
-
-            $result = $updateAccts->execute([
+            
+            $result = $stmt->execute([
                 ':account_number' => $account_number,
                 ':name' => $name,
                 ':description' => $description,
@@ -146,15 +192,14 @@ if (empty($errors)) {
                 ':order_type' => $order_type,
                 ':statement' => $statement,
                 ':comment' => $comment,
-                ':user_id' => $user_id,
-                ':original_account_number' => $original_account_number
+                ':user_id' => $user_id
             ]);
-
-            if ($result && $updateAccts->rowCount() > 0) {
+            
+            if ($result && $stmt->rowCount() > 0) {
                 // Check for changes and log to change_log table
                 $changes_detected = false;
                 $change_fields = [];
-
+                
                 // Compare each field for changes
                 if ($originalAccount['name'] !== $name) {
                     $changes_detected = true;
@@ -204,9 +249,10 @@ if (empty($errors)) {
                     $changes_detected = true;
                     $change_fields['user_id'] = true;
                 }
-
+                
                 // Log changes to change_log table if any changes were detected
                 if ($changes_detected) {
+                    try {
                         $log_stmt = $pdo->prepare("
                             INSERT INTO change_log 
                             (change_time, account_number, 
@@ -225,7 +271,7 @@ if (empty($errors)) {
                              :debit_after, :credit_after, :balance_after, :user_id_after, :order_type_after, 
                              :statement_after, :comment_after, :is_active_after)
                         ");
-
+                        
                         $log_stmt->execute([
                             ':account_number' => $account_number,
                             ':name_before' => $originalAccount['name'],
@@ -255,48 +301,90 @@ if (empty($errors)) {
                             ':comment_after' => $comment,
                             ':is_active_after' => $originalAccount['is_active'] // Assuming is_active doesn't change in this update
                         ]);
-                     
+                    } catch (Exception $e) {
+                        // Log error but don't fail the transaction
+                        error_log("Could not log account changes to change_log: " . $e->getMessage());
+                    }
                 }
-
+                
                 // Commit the transaction
                 $pdo->commit();
-
-                // Log the update (optional - keeping existing audit log)
                 
+                // Log the update (optional - keeping existing audit log)
+                try {
                     $log_stmt = $pdo->prepare("
                         INSERT INTO account_audit_log 
                         (account_number, action, performed_by, performed_at, notes) 
                         VALUES 
                         (:account_number, 'UPDATE', :user_id, NOW(), :notes)
                     ");
-
+                    
                     $notes = "Account updated by user {$_SESSION['username']} (ID: {$user_id})";
-                    if ($account_number !== $original_account_number) {
-                        $notes .= " - Account number changed from $original_account_number to $account_number";
-                    }
+                    
                     if ($name !== $original_name) {
                         $notes .= " - Name changed from '$original_name' to '$name'";
                     }
-
+                    
                     $log_stmt->execute([
                         ':account_number' => $account_number,
                         ':user_id' => $user_id,
                         ':notes' => $notes
                     ]);
+                } catch (Exception $e) {
+                    // Audit log table might not exist, continue without logging
+                    error_log("Could not log account update: " . $e->getMessage());
+                }
                 
-
+                // Success message with formatted values
+                $formatted_initial = '$' . number_format((float)$initial_balance, 2);
+                $formatted_debit = '$' . number_format((float)$debit, 2);
+                $formatted_credit = '$' . number_format((float)$credit, 2);
+                $formatted_balance = '$' . number_format((float)$balance, 2);
+                
                 echo "<script>
-                    alert('This account was updated successfully!');
-                    window.location.href='view_account.php?account_number=" . $account_number . "';
+                    alert('Account updated successfully!\\n\\n" .
+                    "Account Number: $account_number\\n" .
+                    "Account Name: $name\\n" .
+                    "Category: $category\\n" .
+                    "Normal Side: $normal_side\\n" .
+                    "Current Balance: $formatted_balance');
+                    window.location.href='view_account.php?account_number=" . urlencode($account_number) . "';
                 </script>";
             } else {
                 throw new Exception("No changes were made to the account or account not found.");
             }
         } else {
-            throw new Exception("An error occurred when making these changes. Please try again.");
+            // Rollback transaction due to validation errors
+            $pdo->rollback();
         }
-
-
+        
+    } catch(PDOException $e) {
+        // Rollback transaction on database error
+        if ($pdo->inTransaction()) {
+            $pdo->rollback();
+        }
+        $errors[] = "Database Error: " . $e->getMessage();
+        error_log("Account update database error: " . $e->getMessage());
+    } catch(Exception $e) {
+        // Rollback transaction on general error
+        if ($pdo->inTransaction()) {
+            $pdo->rollback();
+        }
+        $errors[] = "Error: " . $e->getMessage();
+        error_log("Account update error: " . $e->getMessage());
+    }
 }
 
+// Display errors if any
+if (!empty($errors)) {
+    $errorMessage = "Please correct the following errors:\\n\\n";
+    foreach ($errors as $error) {
+        $errorMessage .= "• " . $error . "\\n";
+    }
+    
+    echo "<script>
+        alert('$errorMessage');
+        history.back();
+    </script>";
+}
 ?>
