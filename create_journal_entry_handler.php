@@ -25,36 +25,33 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Get form data
-    $account_id = $_POST['account_id'] ?? '';
-    $entry_date = $_POST['entry_date'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $reference = $_POST['reference'] ?? '';
-    $is_adjusting_entry = isset($_POST['is_adjusting_entry']) ? (int) $_POST['is_adjusting_entry'] : 0;
+    $account_id = $_POST['account_id'];
+    $entry_date = $_POST['entry_date'];
+    $description = $_POST['description'];
+    $reference = $_POST['reference'];
+    $is_adjusting_entry = $_POST['is_adjusting_entry'];
     $entry_lines = json_decode($_POST['entry_lines'] ?? '[]', true);
-
-    // Validate data
-    if (empty($account_id) || empty($entry_date) || empty($description) || empty($entry_lines)) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
-        exit;
-    }
 
     // Calculate totals
     $total_debit = 0;
     $total_credit = 0;
-    foreach ($entry_lines as $line) {
+    foreach ($entry_lines as $line) 
+    {
         $total_debit += $line['debit'];
         $total_credit += $line['credit'];
     }
 
     // Validate balanced entry
-    if (abs($total_debit - $total_credit) > 0.01) {
+    if (abs($total_debit - $total_credit) > 0.01) 
+    {
         echo json_encode(['success' => false, 'message' => 'Debits must equal credits']);
         exit;
     }
 
     // Handle file uploads
     $uploaded_files = [];
-    if (isset($_FILES['source_documents']) && !empty($_FILES['source_documents']['name'][0])) {
+    if (isset($_FILES['source_documents']) && !empty($_FILES['source_documents']['name'][0])) 
+    {
         $upload_dir = '../uploads/journal_documents/';
 
         // Create directory if it doesn't exist

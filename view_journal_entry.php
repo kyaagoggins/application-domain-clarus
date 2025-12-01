@@ -18,7 +18,7 @@ if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
     exit;
 }
 
-$username = $_SESSION['username'] ?? 'User';
+$username = $_SESSION['username'];
 $userId = $_SESSION['user_id'];
 $userAccessLevel = $_SESSION['access_level'];
 $canApprove = ($userAccessLevel >= 1);

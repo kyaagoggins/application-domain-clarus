@@ -19,12 +19,19 @@ if (isset($_GET['user_id']) && isset($_GET['action'])) {
     $user_info = $info_stmt->fetch(PDO::FETCH_ASSOC);
         
     if (!$user_info) {
-        echo "<script>alert('Error: User not found.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Hmm.. this user was not found. Please go back and try again.'); window.location.href='dashboard.php';</script>";
         exit;
     }
         
-    // Determine the new status
-    $new_status = ($action == 'activate') ? 1 : 0;
+    // Check if we are activating or deactivating the user
+    if ($action == 'activate') 
+    {
+        $new_status = 1;
+    } 
+    else {
+        $new_status = 0;
+    }
+
         
     // Update user status and clear suspension_remove_date for both actions
     $updateStatus = $pdo->prepare("
@@ -40,21 +47,28 @@ if (isset($_GET['user_id']) && isset($_GET['action'])) {
         ':user_id' => $user_id
     ]);
         
-    if ($updateStatus->rowCount() > 0) {
+    if ($updateStatus->rowCount() > 0) 
+    {
         $user_name = $user_info['first_name'] . ' ' . $user_info['last_name'];
             
-        if ($action == 'activate') {
-            $message = "User " . $user_name . " is now active!";
-            if ($user_info['suspension_remove_date']) {
+        if ($action == 'activate') 
+        {
+            $message = "This user is now active!";
+            if ($user_info['suspension_remove_date']) 
+            {
                 $message .= " The user's suspension has been cleared.";
             }
-        } else {
-             $message = "User " . $user_name . " has been deactivated successfully!";
+        } 
+        else 
+        {
+             $message = "This user has been deactivated successfully!";
         }
             
-        echo "<script>alert('" . addslashes($message) . "'); window.location.href='dashboard.php';</script>";
-    } else {
-        echo "<script>alert('Error: No changes were made.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('" . $message."'); window.location.href='dashboard.php';</script>";
+    } 
+    else 
+    {
+        echo "<script>alert('It looks like nothing was updated? If this doesn't sound right, go back and try again.'); window.location.href='dashboard.php';</script>";
     }
         
 } else {

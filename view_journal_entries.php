@@ -330,11 +330,7 @@ include 'header.php';
     <?php if ($totalEntries == 0): ?>
         <div class="no-entries">
             <h3>No journal entries found</h3>
-            <p>Create a new journal entry to get started.</p>
-            <a href="create_journal_entry.php?account_id=<?php echo ($account_id ?: ''); ?>"
-                style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #2980b9; color: white; text-decoration: none; border-radius: 4px;">
-                <i class="fa-solid fa-circle-plus"></i> Create Journal Entry
-            </a>
+            <p>To create a new journal entry, navigate to the <b>Accounts</b> tab, select <b>View Ledger</b> for the account you would like to create a journal entry for, then click <b>New Journal Entry</b>. </p>
         </div>
     <?php endif; ?>
 
@@ -530,20 +526,7 @@ include 'header.php';
         }
     }
 
-    // Close modal when clicking outside
-    window.onclick = function (event) {
-        const modal = document.getElementById('rejectModal');
-        if (event.target == modal) {
-            closeRejectModal();
-        }
-    }
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeRejectModal();
-        }
-    });
 </script>
 </body>
 

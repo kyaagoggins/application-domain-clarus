@@ -16,11 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $securityAnswer2 = $_POST['securityAnswer2'];
     $securityAnswer3 = $_POST['securityAnswer3'];
 
-    // Validate input is completely filled out
-    if (empty($email) || empty($securityAnswer1) || empty($securityAnswer2) || empty($securityAnswer3)) {
-        die("Oops.. one or more fields were missing and all are required. Please go back and try again.");
-    }
-
 
     // Create thedatabase connection
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
@@ -34,7 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get user data
     $user = $getUserData->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
+    if ($user) 
+    {
         // Verify all three security answers
         $answer1Match = password_verify($securityAnswer1, $user['security_question_answer_1']);
         $answer2Match = password_verify($securityAnswer2, $user['security_question_answer_2']);
@@ -55,7 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $log_stmt->execute();
         }
 
-    } else {
+    } 
+    else {
         // Email not found
         echo "Oops, something isn't right...<br>";
         echo "We didn't recognize this email address.";
@@ -67,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ?>
     <!DOCTYPE html>
     <html>
-    <!-- header information needs to remain here because this is part of the application that does not include the navigation bar header with styling references -->
+    <!-- From Kyaa: header information needs to remain here because this is part of the application that does not include the navigation bar header with styling references -->
 
     <head>
         <title>Account Verification</title>

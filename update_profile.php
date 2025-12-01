@@ -14,7 +14,8 @@ if (!isset($_SESSION['username'])) {
 include '../db_connect.php';
 
 // Check if form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") 
+{
 
     // Get session username
     $username = $_SESSION['username'];
@@ -36,7 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $profile_image_uploaded = false;
     $profile_image_url = "";
 
-    if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) {
+    if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) 
+    {
 
         $target_dir = "uploads/profile_images/";
 
@@ -72,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Build dynamic UPDATE query based on non-empty fields
+    // Build dynamic UPDATE query based on only the field that have data
     $updateFields = [];
     $params = [];
 

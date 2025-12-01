@@ -1,7 +1,8 @@
 <?php
+
 //KSU student project for Clarus Accounting tool
 //This page provides help context for each part of the applications
-//Initially drafted by Eric Poole, Expanded on by Kyaa Goggins
+//Initially drafted by Eric Poole, Expanded on by Jared Louissant
 
 //Question: why do we need to start a session for this page? 
 //Answer: yes because of the requirement to show logged in users name on each page
@@ -12,6 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: home.html?error=session_expired');
     exit;
 }
+
 
 // Check session timeout
 if (isset($_SESSION['expires']) && time() > $_SESSION['expires']) {
@@ -27,61 +29,80 @@ $canEditAccounts = ($userAccessLevel >= 5);
 
 include 'header.php';
 ?>
-
 <div class="container"
-    style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-    <!--<img src="https://thumbs.dreamstime.com/b/calculator-icon-vector-isolated-white-background-your-web-mobile-app-design-calculator-logo-concept-calculator-icon-134617239.jpg" width="100px">-->
+     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+
     <h1>Clarus Help</h1>
-    <h3 style="text-align: left">About Chart of Accounts</h3>
-    <p style="text-align: left">A chart of accounts (COA) is an organized list of all financial accounts in a company's
-        general ledger, used to classify, record, and summarize financial transactions for reporting and analysis. It
-        acts as the framework for financial reporting by providing an index of accounts like assets, liabilities,
-        equity, revenue, and expenses, each assigned a unique code for consistent tracking and decision-making.</p>
-    <h3 style="text-align: left">About Accounts</h3>
-    <p style="text-align: left">In an accounting system, an account is a record of financial transactions for a specific
-        item, such as cash, accounts receivable, or rent expense. These accounts are organized into a chart of accounts
-        which categorizes all of a company's financial data, typically into five main types: assets, liabilities,
-        equity, revenue, and expenses. Each transaction affects at least two accounts, following the double-entry
-        accounting system, to maintain a balanced financial record.</p>
-    <h3 style="text-align: left">About Ledgers</h3>
-    <p style="text-align: left">In an accounting system, a ledger is a central record of all financial transactions,
-        organized by account type. It acts as a master file or "book of accounts," which is used to create financial
-        statements and is essential for tracking a company's assets, liabilities, equity, revenue, and expenses.</p>
-    <h3 style="text-align: left">About User Managment in Clarus</h3>
-    <p style="text-align: left"><b>Admins:</b> Admins have "full reign" of your Clarus account. They can create and edit
-        users as well as any account data.</p>
-    <p style="text-align: left"><b>Managers:</b> Managers can view accounts but can’t add, edit, or deactivate accounts.
-        Managers can approve transactions created by Accountants. Managers do not have access to user management.</p>
-    <p style="text-align: left"><b>Accountants:</b> Accountants can view account data and create transactions.
-        Transactions created by an accountant must be approved by a manager.</p>
-    <h3 style="text-align: left">Financial Ratios with Color-Coded Indicators:</h3>
+
+    <h3 style="text-align: left">About the Chart of Accounts</h3>
     <p style="text-align: left">
-        🟢 Green (Good) - Ratios within optimal healthy ranges<br />
-        🟡 Yellow (Warning) - Ratios in borderline/caution ranges<br />
-        🔴 Red (Danger) - Ratios that need immediate attention<br />
-        Ratios Included:<br />
-        Current Ratio - Liquidity measure<br />
-        🟢 1.5-3.0 | 🟡 1.0-1.5 | 🔴
-        <1.0<br />
-        Quick Ratio - Acid test without inventory<br />
-        🟢 1.0-2.0 | 🟡 0.7-1.0 | 🔴
-        <0.7 Debt-to-Equity Ratio - Financial leverage<br />
-        🟢 <1.0 | 🟡 1.0-2.0 | 🔴>2.0<br />
-            Debt Ratio - Asset financing by debt<br />
-            🟢 <40% | 🟡 40-60% | 🔴>60%<br />
-                Profit Margin - Profitability measure<br />
-                🟢 >10% | 🟡 5-10% | 🔴
-                <5%<br />
-                Return on Assets (ROA) - Asset efficiency<br />
-                🟢 >5% | 🟡 0-5% | 🔴
-                <0%<br />
-                Return on Equity (ROE) - Shareholder return<br />
-                🟢 >15% | 🟡 10-15% | 🔴
-                <10%<br />
-                Working Capital - Operating liquidity<br />
-                🟢 >$0 | 🟡 $0 | 🔴
-                <$0<br />
+        The Chart of Accounts is the main structure used to organize a company’s financial information. It lists every
+        account a business uses such as assets, liabilities, equity, revenue, and expenses. Each account has its own code
+        so information stays consistent. This setup makes it easier to record transactions accurately and to create
+        financial reports that are clear and easy to understand.
     </p>
+
+    <h3 style="text-align: left">About Accounts</h3>
+    <p style="text-align: left">
+        An account tracks all activity for a specific financial item such as cash, accounts receivable, or rent. Accounts
+        fit into the Chart of Accounts so everything stays organized. Accounting uses a double entry system which means
+        every transaction updates at least two accounts. This helps keep all financial records balanced and complete.
+    </p>
+
+    <h3 style="text-align: left">About Ledgers</h3>
+    <p style="text-align: left">
+        The ledger is the central place where all financial activity is stored. It gathers transactions by account and
+        serves as the main source for financial statements. A well maintained ledger shows the true financial position of
+        a business which is important for tracking performance and making decisions.
+    </p>
+
+    <h3 style="text-align: left">About User Management in Clarus</h3>
+    <p style="text-align: left"><b>Admins:</b> Admins have full access to the Clarus system. They can create and edit
+        users along with any account information. They handle the highest level of system control.</p>
+
+    <p style="text-align: left"><b>Managers:</b> Managers can view account information and approve transactions submitted
+        by Accountants. They cannot create, edit, or deactivate accounts and they do not manage users.</p>
+
+    <p style="text-align: left"><b>Accountants:</b> Accountants can view accounts and submit transactions. All of their
+        transactions must be approved by a Manager before they are finalized.</p>
+
+    <h3 style="text-align: left">Financial Ratios with Color Indicators</h3>
+    <p style="text-align: left">
+        Financial ratios help show the overall health of an organization. Clarus uses color indicators to make it easier
+        to quickly understand what each ratio is telling you:
+        <br><br>
+        🟢 Green means the ratio is in a healthy range<br>
+        🟡 Yellow means the ratio may need attention<br>
+        🔴 Red means the ratio may indicate a concern<br><br>
+
+        <b>Current Ratio</b> which measures short term liquidity<br>
+        🟢 1.5 to 3.0 | 🟡 1.0 to 1.5 | 🔴 less than 1.0<br><br>
+
+        <b>Quick Ratio</b> which measures liquidity without inventory<br>
+        🟢 1.0 to 2.0 | 🟡 0.7 to 1.0 | 🔴 less than 0.7<br><br>
+
+        <b>Debt to Equity Ratio</b> which shows the level of financial leverage<br>
+        🟢 less than 1.0 | 🟡 1.0 to 2.0 | 🔴 greater than 2.0<br><br>
+
+        <b>Debt Ratio</b> which shows how much of the assets are financed by debt<br>
+        🟢 less than 40 percent | 🟡 40 to 60 percent | 🔴 greater than 60 percent<br><br>
+
+        <b>Profit Margin</b> which measures how much profit is made from revenue<br>
+        🟢 greater than 10 percent | 🟡 5 to 10 percent | 🔴 less than 5 percent<br><br>
+
+        <b>Return on Assets</b> which shows how efficiently assets create income<br>
+        🟢 greater than 5 percent | 🟡 0 to 5 percent | 🔴 less than 0 percent<br><br>
+
+        <b>Return on Equity</b> which shows the return earned for shareholders<br>
+        🟢 greater than 15 percent | 🟡 10 to 15 percent | 🔴 less than 10 percent<br><br>
+
+        <b>Working Capital</b> which reflects short term financial strength<br>
+        🟢 greater than zero | 🟡 equal to zero | 🔴 less than zero<br>
+    </p>
+
+</div>
+
+
     </body>
 
     </html>

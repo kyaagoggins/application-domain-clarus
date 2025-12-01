@@ -235,10 +235,13 @@ include 'header.php';
     <div class="dashboard-header">
         <h1><i class="fa-solid fa-chart-column"></i> Accounting Dashboard</h1>
         <p>Financial Overview and Key Performance Indicators</p>
+        <!--Eric: I tried adding in some user and date info, it works but it doesn't add the value I thought it would, removing for now-->
+        <!--
         <p style="font-size: 14px; margin-top: 10px;">
             <i class="fa-regular fa-calendar-days"></i> Report Date: <?php echo date('F j, Y'); ?> |
             <i class="fa-solid fa-user"></i> User: <?php echo ($username); ?>
         </p>
+        -->
     </div>
 
     <!-- Quick Stats -->

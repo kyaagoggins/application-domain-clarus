@@ -1,7 +1,8 @@
 <?php
-//KSU student project for Clarus Accounting tool
-//This page is used to send an email from the Clarus system
-//Initially drafted by Eric Poole.
+    //KSU student project for Clarus Accounting tool
+    //This page is used to send an email from the Clarus system
+    //Initially drafted by Eric Poole.
+
 session_start();
 
 // Get form data
@@ -14,11 +15,11 @@ $from_user = $_SESSION['username'];
 
 // Email configuration variables
 $smtp_host = ''; //Removed from code submission for security purposes
-$smtp_port = 587;               //Removed from code submission for security purposes
+$smtp_port = 587;               
 $smtp_username = '';  //Removed from code submission for security purposes
 $smtp_password = '';     //Removed from code submission for security purposes
 $from_email = '';     //Removed from code submission for security purposes
-$from_name = 'Clarus System Administration';
+$from_name = 'Clarus Accounting';
 
 // Create email headers
 $headers = [
@@ -31,13 +32,16 @@ $headers = [
 
 //Begin send mail process
 $header_string = '';
-foreach ($headers as $key => $value) {
+foreach ($headers as $key => $value) 
+{
     $header_string .= $key . ': ' . $value . "\r\n";
 }
 
-if (mail($to_email, $subject, $message, $header_string)) {
+if (mail($to_email, $subject, $message, $header_string)) 
+{
     echo 'Yay! Your email was sent successfully!';
-} else {
+} 
+else {
     echo 'Oops.. it looks like something went wrong. Please try again later.';
 }
 ?>
