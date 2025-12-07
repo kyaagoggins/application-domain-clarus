@@ -1,7 +1,6 @@
 <?php
 /**
  * KSU student project for Clarus Accounting tool
- * Create Account Handler
  * Initially drafted by Eric Poole. Reviewed and updated by Kyaa Goggins
  * Processes the new account form submission
  */
@@ -35,46 +34,30 @@ if (!isset($servername) || !isset($dbname) || !isset($username_db) || !isset($pa
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Get form data
-    $account_number = trim($_POST['account_number'] ?? '');
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $normal_side = $_POST['normal_side'] ?? '';
-    $category = $_POST['category'] ?? '';
-    $subcategory = trim($_POST['subcategory'] ?? '');
-    $initial_balance = $_POST['initial_balance'] ?? '0';
-    $debit = $_POST['debit'] ?? '0';
-    $credit = $_POST['credit'] ?? '0';
-    $order_type = $_POST['order_type'] ?? '';
-    $statement = $_POST['statement'] ?? '';
-    $comment = trim($_POST['comment'] ?? '');
+    $account_number = $_POST['account_number'];
+    $name = $_POST['name'];
+    $description = $_POST['description'];
+    $normal_side = $_POST['normal_side'];
+    $category = $_POST['category'];
+    $subcategory = $_POST['subcategory'];
+    $initial_balance = $_POST['initial_balance'];
+    $debit = $_POST['debit'];
+    $credit = $_POST['credit'];
+    $order_type = $_POST['order_type'];
+    $statement = $_POST['statement'];
+    $comment = trim($_POST['comment']);
     $user_id = $_SESSION['user_id'];
 
-    // Validation
-    $errors = [];
-
-    // Required field validation
-    if (empty($account_number)) {
-        $errors[] = "Account number is required.";
-    }
-    if (empty($name)) {
-        $errors[] = "Account name is required.";
-    }
-    if (empty($normal_side)) {
-        $errors[] = "Normal side is required.";
-    }
-    if (empty($category)) {
-        $errors[] = "Category is required.";
-    }
+    // Server Side Field Validation
 
     // Account number validation (only integers, no decimals, spaces, or alphanumeric)
     if (!empty($account_number) && !preg_match('/^[0-9]+$/', $account_number)) {
-        $errors[] = "Account number must contain only numbers (no decimals, spaces, or letters).";
+        die("Oops! Account number must contain only numbers (no decimals, spaces, or letters).");
     }
 
     // Monetary value validation and formatting
     function validateAndFormatMoney($value, $fieldName)
     {
-        global $errors;
 
         if (empty($value)) {
             return '0.00';
@@ -85,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Validate numeric
         if (!is_numeric($cleanValue)) {
-            $errors[] = "$fieldName must be a valid monetary amount.";
+
             return '0.00';
         }
 
@@ -102,8 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $balance = number_format((float) $initial_balance + (float) $debit - (float) $credit, 2, '.', '');
 
     // Database validation and insertion
-    if (empty($errors)) {
-        try {
+
             $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -113,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account number '$account_number' already exists. Please use a different account number.";
+                die("Oops! This account number is already taken. Please go back and try again.");
             }
 
             // Check for duplicate account name
@@ -121,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account name '$name' already exists. Please use a different account name.";
+                die("Oops! This account name is already taken. Please go back and try again.");
             }
 
             // If no errors, insert the account
@@ -174,23 +158,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-        } catch (PDOException $e) {
-            $errors[] = "Database Error: " . $e->getMessage();
-        }
-    }
-
-    // Display errors if any
-    if (!empty($errors)) {
-        $errorMessage = "Please correct the following errors:\\n\\n";
-        foreach ($errors as $error) {
-            $errorMessage .= "• " . $error . "\\n";
-        }
-
-        echo "<script>
-            alert(" . $errorMessage . ");
-            history.back();
-        </script>";
-    }
 
 } else {
     // If not POST request, redirect to form

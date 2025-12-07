@@ -4,6 +4,7 @@
  * Financial Reports Generation
  * Generate Trial Balance, Income Statement, Balance Sheet, and Retained Earnings Statement
  * Initially drafted by Eric Poole; Reviewed and updated by Kyaa Goggins
+ * Update 12/4: Eric sunsetting an excel integration, could not develop in time
  */
 
 session_start();
@@ -161,9 +162,11 @@ include 'header.php';
                 <button class="btn-action btn-email" onclick="emailReport()">
                     <span><i class="fa-solid fa-envelope"></i></span> Email
                 </button>
+                <!--
                 <button class="btn-action btn-excel" onclick="exportToExcel()">
                     <span><i class="fa-solid fa-chart-column"></i></span> Export to Excel
                 </button>
+                -->
             </div>
 
             <div id="reportContent" class="report-content">
@@ -397,6 +400,7 @@ include 'header.php';
             })
     }
 
+    //this extra credit function was sunsetted 12/4, it could not be completed in time for final submission, UI updated
     function exportToExcel() {
         if (!currentReportData) {
             alert('Oh no! Please generate a report first.');

@@ -56,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Only allow these certain file formats
-        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-            die("Oopsies.. Only these file formats are allowed: JPG, JPEG, PNG & GIF files.");
+        if ($imageFileType != "jpg") {
+            die("Oopsies.. Only the jpg file format is allowed.");
         }
 
         // Upload file
@@ -132,8 +132,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($profile_image_uploaded) {
-        $updateFields[] = "profile_image_url = :profile_image_url";
-        $params[':profile_image_url'] = $profile_image_url;
+        //$updateFields[] = "profile_image_url = :profile_image_url";
+        //$params[':profile_image_url'] = $profile_image_url;
     }
 
     // Always update the updated_at timestamp

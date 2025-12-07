@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 echo "<script>
                     alert('This user request was approved! User account created successfully.');
-                    window.location.href='view_user_requests.php';
+                    window.location.href='view_access_requests.php';
                 </script>";
 
             
@@ -105,12 +105,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             echo "<script>
                 alert('Request REJECTED and removed from the system.');
-                window.location.href='view_user_requests.php';
+                window.location.href='view_access_requests.php';
             </script>";
         }
 
 } else {
-    header('Location: view_user_requests.php');
+    header('Location: view_access_requests.php');
     exit;
 }
 ?>

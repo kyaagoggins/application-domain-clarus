@@ -11,25 +11,20 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Database configuration
+// Connect to the external db file
 include '../db_connect.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") 
+{
     //user specific information 
     $user_id = $_POST['user_id'];
     $suspension_end_date = $_POST['suspension_end_date'];
 
-    // Validate input
-    //route user back to user management table 
-    if (empty($user_id) || empty($suspension_end_date)) {
-        echo "<script>alert('Error: Missing required data.'); window.location.href='user_management.php';</script>";
-        exit;
-    }
 
-    // Validate date is in the future
-    //route user back to user management table 
+    // Validate that the suspension end date is in the future
+    //route user back to user management table if not proper data selected
     if (strtotime($suspension_end_date) <= time()) {
-        echo "<script>alert('Error: Suspension end date must be in the future.'); window.location.href='user_management.php';</script>";
+        echo "<script>alert('Oops! The suspension end date must be in the future. Please go back and try again.'); window.location.href='user_management.php';</script>";
         exit;
     }
 
@@ -45,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //route user back to user management table 
     if (!$user_info) {
-        echo "<script>alert('Error: User not found.'); window.location.href='user_management.php';</script>";
+        echo "<script>alert('Hmm... that user was not found. Please go back and try again.'); window.location.href='user_management.php';</script>";
         exit;
     }
 
@@ -68,11 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $formatted_date = date('F j, Y', strtotime($suspension_end_date));
 
         echo "<script>
-                alert('Okay! User " . addslashes($user_name) . " has been suspended until " . $formatted_date . ".');
+                alert('Okay! User " . $user_name. " has been suspended until " . $formatted_date . ".');
                 window.location.href='dashboard.php';
             </script>";
     } else {
-        echo "<script>alert('Error: Wait! Failed to suspend user.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Hmm... Something went wrong and the user was not suspended. Please go back and try again.'); window.location.href='dashboard.php';</script>";
     }
 } else {
     //sends user back to user dashboard home 

@@ -94,7 +94,7 @@ include 'header.php';
         <br>
 
         <div>
-            <label for="profileImage">Profile Image:</label>
+            <label for="profileImage">Profile Image (jpg file):</label>
             <input type="file" id="profileImage" name="profileImage" accept="image/*">
             <?php if (file_exists("/uploads/profile_images/{$userId}.jpg")): ?>
                 <div style="margin-top: 10px;">

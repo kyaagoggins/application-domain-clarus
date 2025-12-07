@@ -31,26 +31,26 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 }
 
 // Get form data
-//$original_account_number = trim($_POST['original_account_number'] ?? '');
-$original_name = trim($_POST['original_name'] ?? '');
-$account_number = trim($_POST['account_number'] ?? '');
-$name = trim($_POST['name'] ?? '');
-$description = trim($_POST['description'] ?? '');
-$normal_side = $_POST['normal_side'] ?? '';
-$category = $_POST['category'] ?? '';
-$subcategory = trim($_POST['subcategory'] ?? '');
-$initial_balance = $_POST['initial_balance'] ?? '0';
-$debit = $_POST['debit'] ?? '0';
-$credit = $_POST['credit'] ?? '0';
-$order_type = $_POST['order_type'] ?? '';
-$statement = $_POST['statement'] ?? '';
-$comment = trim($_POST['comment'] ?? '');
+//$original_account_number = trim($_POST['original_account_number']);
+$original_name = trim($_POST['original_name']);
+$account_number = trim($_POST['account_number']);
+$name = trim($_POST['name']);
+$description = trim($_POST['description']);
+$normal_side = $_POST['normal_side'];
+$category = $_POST['category'];
+$subcategory = trim($_POST['subcategory']);
+$initial_balance = $_POST['initial_balance'];
+$debit = $_POST['debit'];
+$credit = $_POST['credit'];
+$order_type = $_POST['order_type'];
+$statement = $_POST['statement'];
+$comment = trim($_POST['comment']);
 $user_id = $_SESSION['user_id'];
 
 // Validation
 $errors = [];
 
-// Required field validation
+// Eric: removing this validation, no longer needed due to removing front end ability to change account ID
 //if (empty($original_account_number)) {
 //    $errors[] = "Original account number is required for update.";
 //}

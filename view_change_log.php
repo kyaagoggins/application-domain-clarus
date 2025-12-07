@@ -96,8 +96,9 @@ include 'header.php';
                 <tr class="change-row clickable-row" data-change-id="<?php echo $change['change_id']; ?>"
                     data-account-number="<?php echo ($change['account_number']); ?>"
                     data-change-time="<?php echo $change['change_time']; ?>"
-                    onclick="showChangeDetails(<?php echo (json_encode($change)); ?>)">
-
+                
+                    onclick='showChangeDetails(<?php echo json_encode($change); ?>)'>
+                    
                     <td><?php echo ($change['change_id']); ?></td>
                     <td><?php echo date('M j, Y g:i A', strtotime($change['change_time'])); ?></td>
                     <td style="font-family: monospace; font-weight: bold;">

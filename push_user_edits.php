@@ -40,13 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die("The passwords provided did not match. Please go back and try again.");
         }
     }
-
+try {
     // Create database connection
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Begin transaction
     $pdo->beginTransaction();
+
 
     // Check if user exists
     $checkUser = $pdo->prepare("SELECT user_id FROM users WHERE user_id = :user_id");
@@ -62,45 +63,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //$profile_image_url = $existing_user['profile_image_url']; // Keep current image by default
     if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) {
 
-        $target_dir = "uploads/profile_images/";
+    $target_dir = "uploads/profile_images/";
 
-        // Create directory if it doesn't exist
-        if (!file_exists($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }
-
-        $imageFileType = strtolower(pathinfo($_FILES['profileImage']['name'], PATHINFO_EXTENSION));
-        $target_file = $target_dir . $edit_user_id . "." . $imageFileType;
-
-        // Validate image
-        $check = getimagesize($_FILES['profileImage']['tmp_name']);
-        if ($check === false) {
-            throw new Exception("File is not an image.");
-        }
-
-        // Check file size (5MB limit)
-        if ($_FILES['profileImage']['size'] > 5000000) {
-            throw new Exception("File is too large. Maximum size is 5MB.");
-        }
-
-        // Allow certain file formats
-        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-            throw new Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
-        }
-
-        // Remove existing files for this user_id
-        $existingFiles = glob($target_dir . $edit_user_id . ".*");
-        foreach ($existingFiles as $existingFile) {
-            unlink($existingFile);
-        }
-
-        // Upload file
-        if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $target_file)) {
-            $profile_image_url = $target_file;
-        } else {
-            throw new Exception("Error uploading profile image.");
+    // Create directory if it doesn't exist
+    if (!file_exists($target_dir)) {
+        if (!mkdir($target_dir, 0777, true)) {
+            throw new Exception("Failed to create upload directory. Check server permissions.");
         }
     }
+
+    $imageFileType = strtolower(pathinfo($_FILES['profileImage']['name'], PATHINFO_EXTENSION));
+    $target_file = $target_dir . $edit_user_id . "." . $imageFileType;
+
+    // Validate image
+    $check = getimagesize($_FILES['profileImage']['tmp_name']);
+    if ($check === false) {
+        throw new Exception("File is not an image.");
+    }
+
+    // Check file size (5MB limit)
+    if ($_FILES['profileImage']['size'] > 5000000) {
+        throw new Exception("File is too large. Maximum size is 5MB.");
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != "jpg") {
+        throw new Exception("Only .jpg files are allowed for profile images.");
+    }
+
+    // Remove existing files for this user_id
+    $existingFiles = glob($target_dir . $edit_user_id . ".*");
+    if (is_array($existingFiles)) {
+        foreach ($existingFiles as $existingFile) {
+            if (!@unlink($existingFile)) {
+                // Log warning but don't fail - old file may not exist
+                error_log("Warning: Could not delete existing file: " . $existingFile);
+            }
+        }
+    }
+
+    // Upload file
+    if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $target_file)) {
+        $profile_image_url = $target_file;
+    } else {
+        throw new Exception("Error uploading profile image. Check directory permissions.");
+    }
+}
 
     // Build UPDATE query - start with basic fields
     $userUpdateSql = "UPDATE users SET 
@@ -150,7 +158,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userUpdate = $pdo->prepare($userUpdateSql);
     $userUpdate->execute($params);
 
-    if ($userUpdate->rowCount() > 0) {
+    if ($userUpdate->rowCount() > 0) 
+    {
         // Commit transaction
         $pdo->commit();
 
@@ -159,12 +168,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<a href='edit_user.php?user_id=" . $edit_user_id . "'>Edit this user again</a> | ";
         echo "<a href='dashboard.php'>Back to User Management</a>";
 
-    } else {
-        $pdo->rollBack();
+    } 
+    else 
+    {
+        if (isset($pdo))
+    {
+        $pdo->rollBack();    
+    }
         echo "No changes were made to the profile. <a href='dashboard.php'>Return to the user dashboard.</a>";
     }
 
-} else {
+
+} catch (Throwable $e) { 
+    if (isset($pdo))
+    {
+        $pdo->rollBack();    
+    }
+    
+    die("Error: " . $e->getMessage());
+}
+}
+else {
     echo "Invalid request method.";
 }
+
 ?>
