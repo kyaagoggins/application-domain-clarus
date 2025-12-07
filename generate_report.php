@@ -15,6 +15,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+//user session details 
 $userId = $_SESSION['user_id'];
 
 // Include database configuration
@@ -66,7 +67,7 @@ if ($_POST['show_zero_balances']) {
     $showZeroBalances = 0;
 }
 
-// Validate report type
+// Validate report type given by the request
 $validReports = ['trial_balance', 'income_statement', 'balance_sheet', 'retained_earnings'];
 if (!in_array($reportType, $validReports)) {
     echo json_encode(['success' => false, 'message' => 'Invalid report type']);
@@ -186,6 +187,7 @@ function generateTrialBalance($pdo, $dateType, $asOfDate, $startDate, $endDate, 
     $html .= '</thead>';
     $html .= '<tbody>';
 
+    //inputs information for the row display
     foreach ($trialBalanceData as $row) {
         $html .= '<tr>';
         $html .= '<td>' . ($row['account_number']) . '</td>';
@@ -222,6 +224,7 @@ function generateTrialBalance($pdo, $dateType, $asOfDate, $startDate, $endDate, 
         'As of ' . date('F j, Y', strtotime($asOfDate)) :
         'For the period ' . date('F j, Y', strtotime($startDate)) . ' to ' . date('F j, Y', strtotime($endDate));
 
+    //return specifications for this report type    
     return [
         'success' => true,
         'report_type' => 'trial_balance',
@@ -315,6 +318,7 @@ function generateIncomeStatement($pdo, $startDate, $endDate, $includeAdjusting)
     $html .= '<thead><tr class="category-header"><th colspan="2">REVENUE</th></tr></thead>';
     $html .= '<tbody>';
 
+    //error handling for empty case
     if (empty($revenues)) {
         $html .= '<tr><td colspan="2" style="text-align: center; color: #666;">No revenue accounts found for this period</td></tr>';
     } else {
@@ -338,6 +342,7 @@ function generateIncomeStatement($pdo, $startDate, $endDate, $includeAdjusting)
     $html .= '<thead><tr class="category-header"><th colspan="2">EXPENSES</th></tr></thead>';
     $html .= '<tbody>';
 
+    //error handling for empty case 
     if (empty($expenses)) {
         $html .= '<tr><td colspan="2" style="text-align: center; color: #666;">No expense accounts found for this period</td></tr>';
     } else {
@@ -370,6 +375,7 @@ function generateIncomeStatement($pdo, $startDate, $endDate, $includeAdjusting)
 
     $reportDateText = 'For the period from ' . date('F j, Y', strtotime($startDate)) . ' to ' . date('F j, Y', strtotime($endDate));
 
+    //return specifications for this report type    
     return [
         'success' => true,
         'report_type' => 'income_statement',
@@ -517,6 +523,7 @@ function generateBalanceSheet($pdo, $asOfDate, $includeAdjusting)
     $html .= '<thead><tr class="category-header"><th colspan="2">ASSETS</th></tr></thead>';
     $html .= '<tbody>';
 
+    //displays information for each asset received by db
     foreach ($assets as $asset) {
         if (floatval($asset['balance']) == 0)
             continue;
@@ -536,6 +543,7 @@ function generateBalanceSheet($pdo, $asOfDate, $includeAdjusting)
     $html .= '<thead><tr class="category-header"><th colspan="2">LIABILITIES</th></tr></thead>';
     $html .= '<tbody>';
 
+    //displays information for each asset received by db
     foreach ($liabilities as $liability) {
         if (floatval($liability['balance']) == 0)
             continue;
@@ -555,6 +563,7 @@ function generateBalanceSheet($pdo, $asOfDate, $includeAdjusting)
     $html .= '<thead><tr class="category-header"><th colspan="2">EQUITY</th></tr></thead>';
     $html .= '<tbody>';
 
+    //displays information for each asset received by db
     foreach ($equity as $eq) {
         if (floatval($eq['balance']) == 0)
             continue;
@@ -600,6 +609,7 @@ function generateBalanceSheet($pdo, $asOfDate, $includeAdjusting)
 
     $reportDateText = 'As of ' . date('F j, Y', strtotime($asOfDate));
 
+    //return specifications for this report type
     return [
         'success' => true,
         'report_type' => 'balance_sheet',
@@ -738,6 +748,7 @@ function generateRetainedEarningsStatement($pdo, $startDate, $endDate, $includeA
 
     $reportDateText = 'For the period from ' . date('F j, Y', strtotime($startDate)) . ' to ' . date('F j, Y', strtotime($endDate));
 
+    //return specifications for this report type
     return [
         'success' => true,
         'report_type' => 'retained_earnings',

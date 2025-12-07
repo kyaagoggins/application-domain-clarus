@@ -123,10 +123,6 @@ include 'header.php';
                 <i class="fa-solid fa-plus"></i> Add New Account
             </button>
         <?php endif; ?>
-        <button style="width:250px" onclick="addNewAccount()" title="Add a New Account Record"
-            class="nav-btn nav-btn-add">
-            <i class="fa-solid fa-plus"></i> Add New Account
-        </button>
         <button style="width:250px" onclick="toggleInactiveAccounts()" title="Show/Hide Inactive Accounts"
             class="nav-btn nav-btn-filter">
             <i class="fa-solid fa-eye"></i> Toggle Inactive Accounts

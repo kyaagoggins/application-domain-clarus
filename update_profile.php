@@ -7,15 +7,14 @@ session_start();
 
 // Check if user is already logged in
 if (!isset($_SESSION['username'])) {
-    die("It looks like your login timed out. Please log in first.");
+    die("Oh no! It looks like your login timed out. Please log in first.");
 }
 
 // Connect to the external database file
 include '../db_connect.php';
 
 // Check if form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") 
-{
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Get session username
     $username = $_SESSION['username'];
@@ -37,8 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     $profile_image_uploaded = false;
     $profile_image_url = "";
 
-    if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) 
-    {
+    //if the profile image is appropriately loaded 
+    if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) {
 
         $target_dir = "uploads/profile_images/";
 
@@ -53,12 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
         // Check file size (limit to 5MB)
         if ($_FILES['profileImage']['size'] > 5000000) {
-            die("Oops, this file is too large. The maximum size is 5MB.");
+            die("Oopsies, this file is too large. The maximum size is 5MB.");
         }
 
         // Only allow these certain file formats
         if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-            die("Oops.. Only these file formats are allowed: JPG, JPEG, PNG & GIF files.");
+            die("Oopsies.. Only these file formats are allowed: JPG, JPEG, PNG & GIF files.");
         }
 
         // Upload file
@@ -66,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             $profile_image_url = $target_file;
             $profile_image_uploaded = true;
         } else {
-            die("Oops, we hit a snap uploading the profile image. Please try again.");
+            die("Oopsies, we hit a snap uploading the profile image. Please try again.");
         }
     }
 
@@ -142,10 +141,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     //$updateFields[] = "updated_at = NOW()";
 
     // Build final SQL query
-    $sql = "UPDATE users SET " . implode(", ", $updateFields) . " WHERE username = :username";
+    $updateUserSql = "UPDATE users SET " . implode(", ", $updateFields) . " WHERE username = :username";
     $params[':username'] = $username;
 
-    $insertProfileChanges = $pdo->prepare($sql);
+    $insertProfileChanges = $pdo->prepare($updateUserSql);
 
     // Execute the update
     if ($insertProfileChanges->execute($params)) {

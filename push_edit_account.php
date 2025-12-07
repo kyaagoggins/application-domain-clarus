@@ -1,12 +1,10 @@
 <?php
-
 /** 
  * KSU student project for Clarus Accounting tool
  * This script is used by admins for account edit form submissions
  * Initially drafted by Eric Poole; Reviewed and updated by Kyaa Goggins
  * Kyaa Goggins: Added more error handling like missing try/catches
  */
-
 
 session_start();
 
@@ -83,24 +81,25 @@ if (!empty($account_number) && strlen($account_number) < 3) {
 }
 
 // Monetary value validation and formatting
-function validateAndFormatMoney($value, $fieldName) {
+function validateAndFormatMoney($value, $fieldName)
+{
     global $errors;
-    
+
     if (empty($value)) {
         return '0.00';
     }
-    
+
     // Remove commas and whitespace
     $cleanValue = str_replace([',', ' '], '', $value);
-    
+
     // Validate numeric
     if (!is_numeric($cleanValue)) {
         $errors[] = "$fieldName must be a valid monetary amount.";
         return '0.00';
     }
-    
+
     // Format to 2 decimal places
-    return number_format((float)$cleanValue, 2, '.', '');
+    return number_format((float) $cleanValue, 2, '.', '');
 }
 
 // Format monetary values
@@ -109,17 +108,17 @@ $debit = validateAndFormatMoney($debit, "Debit amount");
 $credit = validateAndFormatMoney($credit, "Credit amount");
 
 // Calculate balance
-$balance = number_format((float)$initial_balance + (float)$debit - (float)$credit, 2, '.', '');
+$balance = number_format((float) $initial_balance + (float) $debit - (float) $credit, 2, '.', '');
 
 // Database validation and update
 if (empty($errors)) {
     try {
         $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username_db, $password_db);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+
         // Begin transaction
         $pdo->beginTransaction();
-        
+
         // Fetch the complete original record for audit logging
         $stmt = $pdo->prepare("
             SELECT account_number, name, description, normal_side, category, subcategory, 
@@ -130,34 +129,35 @@ if (empty($errors)) {
         ");
         $stmt->execute([':account_number' => $account_number]);
         $originalAccount = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if (!$originalAccount) {
             throw new Exception("Original account not found. It may have been deleted by another user.");
         }
-        
+
         /*Removed this logic because team decided to remove the ability to update account numbers once created
         // Check for duplicate account number (if changed)
         if ($account_number !== $original_account_number) {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE account_number = :account_number");
             $stmt->execute([':account_number' => $account_number]);
-            
+
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account number '$account_number' already exists. Please use a different account number.";
             }
         }
         */
-        
+
         // Check for duplicate account name (if changed)
         if ($name !== $original_name) {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE name = :name");
             $stmt->execute([':name' => $name]);
-            
+
             if ($stmt->fetchColumn() > 0) {
                 $errors[] = "Account name '$name' already exists. Please use a different account name.";
             }
         }
-        
+
         // If no errors, update the account
+        //error handling the info received by the db
         if (empty($errors)) {
             $stmt = $pdo->prepare("
                 UPDATE accounts SET 
@@ -177,7 +177,7 @@ if (empty($errors)) {
                     user_id = :user_id
                 WHERE account_number = :account_number
             ");
-            
+
             $result = $stmt->execute([
                 ':account_number' => $account_number,
                 ':name' => $name,
@@ -194,12 +194,12 @@ if (empty($errors)) {
                 ':comment' => $comment,
                 ':user_id' => $user_id
             ]);
-            
+
             if ($result && $stmt->rowCount() > 0) {
                 // Check for changes and log to change_log table
                 $changes_detected = false;
                 $change_fields = [];
-                
+
                 // Compare each field for changes
                 if ($originalAccount['name'] !== $name) {
                     $changes_detected = true;
@@ -249,8 +249,9 @@ if (empty($errors)) {
                     $changes_detected = true;
                     $change_fields['user_id'] = true;
                 }
-                
+
                 // Log changes to change_log table if any changes were detected
+                // changes/event log insertion in db
                 if ($changes_detected) {
                     try {
                         $log_stmt = $pdo->prepare("
@@ -271,7 +272,7 @@ if (empty($errors)) {
                              :debit_after, :credit_after, :balance_after, :user_id_after, :order_type_after, 
                              :statement_after, :comment_after, :is_active_after)
                         ");
-                        
+
                         $log_stmt->execute([
                             ':account_number' => $account_number,
                             ':name_before' => $originalAccount['name'],
@@ -306,10 +307,10 @@ if (empty($errors)) {
                         error_log("Could not log account changes to change_log: " . $e->getMessage());
                     }
                 }
-                
+
                 // Commit the transaction
                 $pdo->commit();
-                
+
                 // Log the update (optional - keeping existing audit log)
                 try {
                     $log_stmt = $pdo->prepare("
@@ -318,13 +319,13 @@ if (empty($errors)) {
                         VALUES 
                         (:account_number, 'UPDATE', :user_id, NOW(), :notes)
                     ");
-                    
+
                     $notes = "Account updated by user {$_SESSION['username']} (ID: {$user_id})";
-                    
+
                     if ($name !== $original_name) {
                         $notes .= " - Name changed from '$original_name' to '$name'";
                     }
-                    
+
                     $log_stmt->execute([
                         ':account_number' => $account_number,
                         ':user_id' => $user_id,
@@ -334,13 +335,14 @@ if (empty($errors)) {
                     // Audit log table might not exist, continue without logging
                     error_log("Could not log account update: " . $e->getMessage());
                 }
-                
+
                 // Success message with formatted values
-                $formatted_initial = '$' . number_format((float)$initial_balance, 2);
-                $formatted_debit = '$' . number_format((float)$debit, 2);
-                $formatted_credit = '$' . number_format((float)$credit, 2);
-                $formatted_balance = '$' . number_format((float)$balance, 2);
-                
+                $formatted_initial = '$' . number_format((float) $initial_balance, 2);
+                $formatted_debit = '$' . number_format((float) $debit, 2);
+                $formatted_credit = '$' . number_format((float) $credit, 2);
+                $formatted_balance = '$' . number_format((float) $balance, 2);
+
+                //alert and notification to the user results of request
                 echo "<script>
                     alert('Account updated successfully!\\n\\n" .
                     "Account Number: $account_number\\n" .
@@ -357,15 +359,15 @@ if (empty($errors)) {
             // Rollback transaction due to validation errors
             $pdo->rollback();
         }
-        
-    } catch(PDOException $e) {
+
+    } catch (PDOException $e) {
         // Rollback transaction on database error
         if ($pdo->inTransaction()) {
             $pdo->rollback();
         }
         $errors[] = "Database Error: " . $e->getMessage();
         error_log("Account update database error: " . $e->getMessage());
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         // Rollback transaction on general error
         if ($pdo->inTransaction()) {
             $pdo->rollback();
@@ -376,12 +378,13 @@ if (empty($errors)) {
 }
 
 // Display errors if any
+//necessary error handling
 if (!empty($errors)) {
     $errorMessage = "Please correct the following errors:\\n\\n";
     foreach ($errors as $error) {
-        $errorMessage .= "• " . $error . "\\n";
+        $errorMessage .= "- " . $error . "\\n";
     }
-    
+
     echo "<script>
         alert('$errorMessage');
         history.back();

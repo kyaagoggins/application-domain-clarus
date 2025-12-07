@@ -30,6 +30,7 @@ $userAccessLevel = isset($_SESSION['access_level']) ? (int) $_SESSION['access_le
 include 'header.php';
 ?>
 
+<!-- stylesheet reference and consistent container initialization -->
 <link rel="stylesheet" href="/styling/financial_reports.css">
 <div class="container"
     style="width: 85%; height: 85%; overflow: scroll; scrollbar-width: none; -ms-overflow-style: none;">
@@ -57,7 +58,7 @@ include 'header.php';
                 <i class="report-card-icon fa-solid fa-piggy-bank"></i>
                 <div class="report-card-title">Income Statement</div>
                 <div class="report-card-description">
-                    Shows revenues, expenses, and net income for a specific period. Also known as Profit & Loss
+                    Shows revenues, expenses, and net income for a specific period of time. Also known as Profit & Loss
                     Statement.
                 </div>
             </div>
@@ -74,7 +75,8 @@ include 'header.php';
                 <i class="report-card-icon fa-solid fa-chart-line"></i>
                 <div class="report-card-title">Retained Earnings Statement</div>
                 <div class="report-card-description">
-                    Shows changes in retained earnings from beginning to end of period, including net income and
+                    Shows changes in retained earnings from the beginning to the end of the period, including net income
+                    and
                     dividends.
                 </div>
             </div>
@@ -172,6 +174,8 @@ include 'header.php';
 </div>
 
 <script>
+    //javascript handling for creation of the financial reports and formatting
+
     let currentReportType = '';
     let currentReportData = null;
 
@@ -196,6 +200,7 @@ include 'header.php';
         updateDateFields();
     }
 
+    //functionality for updating report information text displayed
     function updateReportInfo(reportType) {
         const infoText = document.getElementById('reportInfoText');
         const dateTypeGroup = document.getElementById('dateTypeGroup');
@@ -222,7 +227,6 @@ include 'header.php';
                 document.getElementById('dateType').value = 'date_range';
                 break;
         }
-
         updateDateFields();
     }
 

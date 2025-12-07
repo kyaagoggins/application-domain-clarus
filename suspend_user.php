@@ -20,12 +20,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $suspension_end_date = $_POST['suspension_end_date'];
 
     // Validate input
+    //route user back to user management table 
     if (empty($user_id) || empty($suspension_end_date)) {
         echo "<script>alert('Error: Missing required data.'); window.location.href='user_management.php';</script>";
         exit;
     }
 
     // Validate date is in the future
+    //route user back to user management table 
     if (strtotime($suspension_end_date) <= time()) {
         echo "<script>alert('Error: Suspension end date must be in the future.'); window.location.href='user_management.php';</script>";
         exit;
@@ -41,12 +43,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $get_user_info->execute([':user_id' => $user_id]);
     $user_info = $get_user_info->fetch(PDO::FETCH_ASSOC);
 
+    //route user back to user management table 
     if (!$user_info) {
         echo "<script>alert('Error: User not found.'); window.location.href='user_management.php';</script>";
         exit;
     }
 
     // Update user to suspended status
+    //pushes db changes to post 
     $update_user = $pdo->prepare("
             UPDATE users 
             SET active = 0, 
@@ -64,11 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $formatted_date = date('F j, Y', strtotime($suspension_end_date));
 
         echo "<script>
-                alert('User " . addslashes($user_name) . " has been suspended until " . $formatted_date . ".');
+                alert('Okay! User " . addslashes($user_name) . " has been suspended until " . $formatted_date . ".');
                 window.location.href='dashboard.php';
             </script>";
     } else {
-        echo "<script>alert('Error: Failed to suspend user.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Error: Wait! Failed to suspend user.'); window.location.href='dashboard.php';</script>";
     }
 } else {
     //sends user back to user dashboard home 
